@@ -344,39 +344,34 @@
           </div>
         </div>
 
-        <!-- Formulaire.
-             ACTION : remplacer par votre endpoint (ex. Formspree : https://formspree.io/f/XXXXXXX).
-             Sans backend, GitHub Pages ne peut pas traiter le formulaire — un service comme
-             Formspree, Getform ou Web3Forms le rend fonctionnel en 2 minutes. -->
-        <form class="contact-form reveal" action="https://formspree.io/f/VOTRE_ID" method="POST">
+        <!-- Formulaire connecté à Brevo (collecte de contacts + emailing, conforme RGPD).
+             Les contacts arrivent directement dans la liste Brevo de Bastian. -->
+        <form class="contact-form reveal" action="https://2fabf66e.sibforms.com/serve/MUIFABJZJ3joZtfAP8vy8_VvMCyx0M8ZpPc4YNzWi84sH29nFCN5v0IWmjnHjT0Um-_jtVCWGf8qdfmAuaDQGccXsF84zgXtDIFrKKT6kqGztv0UwyaPIPQmYemxperToJhqE9OI13q4Qo_Bh6BwCanHk8ObFDJIL74JP7KNcOQ8q89QPeJHUYrUOJqr8ldcns_dK_b8dHl09PTJPw==" method="POST">
+          <input type="hidden" name="locale" value="fr" />
+          <!-- Piège anti-spam : ce champ doit rester vide (seuls les robots le remplissent) -->
+          <div class="hp" aria-hidden="true">
+            <label>Laissez ce champ vide
+              <input type="text" name="email_address_check" value="" tabindex="-1" autocomplete="off" />
+            </label>
+          </div>
+          <div class="field">
+            <label for="prenom">Prénom</label>
+            <input type="text" id="prenom" name="PRENOM" autocomplete="given-name" />
+          </div>
           <div class="field">
             <label for="nom">Nom</label>
-            <input type="text" id="nom" name="nom" autocomplete="name" required />
+            <input type="text" id="nom" name="NOM" autocomplete="family-name" />
           </div>
           <div class="field">
             <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" autocomplete="email" required />
-          </div>
-          <div class="field">
-            <label for="sujet">Sujet</label>
-            <select id="sujet" name="sujet">
-              <option>Investissement</option>
-              <option>Accompagnement / coaching</option>
-              <option>Consulting business</option>
-              <option>Création de contenu / partenariat</option>
-              <option>Autre</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="message">Message</label>
-            <textarea id="message" name="message" rows="4" required></textarea>
+            <input type="email" id="email" name="EMAIL" autocomplete="email" required />
           </div>
           <label class="consent">
-            <input type="checkbox" name="consentement" required />
-            <span>J'accepte d'être recontacté(e) par Bastian Tallec et que mes informations soient conservées à cette seule fin. Elles ne sont jamais revendues.</span>
+            <input type="checkbox" name="OPT_IN" required />
+            <span>J'accepte d'être recontacté(e) par Bastian Tallec et de recevoir ses informations par e-mail. Mes données ne sont jamais revendues et je peux me désinscrire à tout moment. <a href="confidentialite.html">Politique de confidentialité</a>.</span>
           </label>
-          <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
-          <p class="form-note">Réponse personnelle sous 48 h.</p>
+          <button type="submit" class="btn btn-primary btn-block">Je m'inscris</button>
+          <p class="form-note">Pas de spam. Désinscription en 1 clic.</p>
         </form>
       </div>
     </section>
@@ -413,7 +408,7 @@
     </div>
     <div class="container footer-bottom">
       <p>© <span id="annee">2026</span> Bastian Tallec. Tous droits réservés.</p>
-      <p>Site statique hébergé sur GitHub&nbsp;Pages.</p>
+      <p><a href="confidentialite.html">Politique de confidentialité</a> · Site hébergé sur GitHub&nbsp;Pages.</p>
     </div>
   </footer>
 
