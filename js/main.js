@@ -70,3 +70,34 @@
   var annee = document.getElementById("annee");
   if (annee) annee.textContent = new Date().getFullYear();
 })();
+
+/* ---------- Formulaire Brevo : envoi en arrière-plan + message de succès ---------- */
+(function () {
+  var form = document.querySelector(".contact-form");
+  if (!form) return;
+  var success = document.getElementById("form-success");
+  var btn = form.querySelector('button[type="submit"]');
+  var btnText = btn ? btn.textContent : "";
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    // Piège anti-spam : si rempli, on ignore (robot)
+    var hp = form.querySelector('input[name="email_address_check"]');
+    if (hp && hp.value) return;
+
+    var data = new URLSearchParams(new FormData(form));
+    if (btn) { btn.disabled = true; btn.textContent = "Envoi…"; }
+
+    fetch(form.action, { method: "POST", mode: "no-cors", body: data })
+      .then(done).catch(done);
+
+    function done() {
+      form.reset();
+      if (btn) { btn.disabled = false; btn.textContent = btnText; }
+      if (success) {
+        success.hidden = false;
+        success.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  });
+})();

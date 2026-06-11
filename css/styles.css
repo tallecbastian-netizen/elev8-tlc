@@ -393,3 +393,10 @@ h1, h2, h3 { font-family: var(--font-display); line-height: 1.08; font-weight: 8
 .legal ul { padding-left: 20px; list-style: disc; margin-bottom: 10px; }
 .legal a { color: var(--em); }
 .footer-bottom a { color: inherit; text-decoration: underline; }
+
+/* ---------- Message de succès du formulaire ---------- */
+.form-success {
+  margin-top: 8px; padding: 14px 16px; border-radius: 14px;
+  background: rgba(45, 212, 160, 0.12); border: 1px solid var(--em);
+  color: var(--text); font-size: 0.92rem; text-align: center;
+}
