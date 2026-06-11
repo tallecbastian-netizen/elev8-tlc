@@ -1,2 +1,1 @@
-Publication du site Bastian Tallec - 11/06/2026 15:46:01,14 
-Initialized empty Git repository in C:/Users/BASTIAN/Documents/GitHub/Landing Page/Page Web Bastian/.git/
+Publication du site Bastian Tallec - 11/06/2026 16:04:10,59 
