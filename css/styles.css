@@ -400,3 +400,6 @@ h1, h2, h3 { font-family: var(--font-display); line-height: 1.08; font-weight: 8
   background: rgba(45, 212, 160, 0.12); border: 1px solid var(--em);
   color: var(--text); font-size: 0.92rem; text-align: center;
 }
+
+/* Libellé facultatif */
+.field .opt { color: var(--muted); font-weight: 400; font-size: 0.8em; }

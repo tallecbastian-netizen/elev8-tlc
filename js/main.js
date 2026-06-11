@@ -85,6 +85,13 @@
     var hp = form.querySelector('input[name="email_address_check"]');
     if (hp && hp.value) return;
 
+    // Normalise le téléphone au format attendu par Brevo (indicatif, sans + ni 0 initial)
+    var tel = form.querySelector('input[name="SMS"]');
+    if (tel && tel.value.trim()) {
+      var d = tel.value.replace(/[^\d+]/g, "").replace(/^\+/, "");
+      if (d.length === 10 && d.charAt(0) === "0") d = "33" + d.slice(1); // numéro FR
+      tel.value = d;
+    }
     var data = new URLSearchParams(new FormData(form));
     if (btn) { btn.disabled = true; btn.textContent = "Envoi…"; }
 
