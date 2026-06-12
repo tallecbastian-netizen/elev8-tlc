@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Connexion — Bastian Tallec</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0A0B0E; --surface:#15171D; --surface-2:#1C1F27; --border:rgba(255,255,255,.08); --border-2:rgba(255,255,255,.15);
+  --text:#ECEEF1; --muted:#9AA1AB; --silver:#CDD4DD;
+  --gold:#E6C685; --grad-gold:linear-gradient(135deg,#F7E7BC 0%,#DCB868 44%,#B0853A 100%); --ring:rgba(220,184,104,.45);
+  --font-display:"Sora",system-ui,sans-serif; --font-cond:"Oswald",system-ui,sans-serif; --font-body:"Inter",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;} *{margin:0;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;display:grid;place-items:center;padding:24px;
+  background-image:radial-gradient(60% 45% at 50% -8%,rgba(220,184,104,.12),transparent 60%);}
+a{color:var(--gold);text-decoration:none;}
+.card{width:min(100%,420px);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:34px 30px;text-align:center;}
+.brand-mark{display:inline-grid;place-items:center;height:46px;padding:0 14px;border-radius:12px;background:rgba(220,184,104,.10);border:1px solid var(--ring);font-family:var(--font-display);font-weight:800;letter-spacing:.12em;margin-bottom:18px;}
+.brand-mark b{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
+h1{font-family:var(--font-display);font-weight:700;font-size:1.5rem;margin-bottom:6px;}
+.sub{color:var(--muted);font-size:.92rem;margin-bottom:22px;}
+label{display:block;text-align:left;font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.14em;font-size:.74rem;color:var(--silver);margin:0 0 7px 2px;}
+input{width:100%;padding:14px 15px;border-radius:11px;background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);font-size:1rem;font-family:var(--font-body);outline:none;transition:border-color .2s;}
+input:focus{border-color:var(--gold);}
+#code{letter-spacing:.4em;text-align:center;font-size:1.3rem;font-family:var(--font-cond);}
+button{width:100%;margin-top:16px;padding:14px 16px;border:0;border-radius:11px;background:var(--grad-gold);color:#1a1407;font-family:var(--font-cond);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:.95rem;cursor:pointer;transition:filter .2s,opacity .2s;}
+button:hover{filter:brightness(1.05);} button:disabled{opacity:.5;cursor:default;}
+.msg{margin-top:14px;font-size:.86rem;min-height:1.1em;}
+.msg.err{color:#ff9b9b;} .msg.ok{color:#9be3b0;}
+.hint{margin-top:18px;font-size:.8rem;color:var(--muted);}
+.link-back{display:inline-block;margin-top:18px;font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.14em;font-size:.76rem;color:var(--muted);}
+.link-back:hover{color:var(--gold);}
+.step{display:none;} .step.active{display:block;}
+</style>
+</head>
+<body>
+  <div class="card">
+    <span class="brand-mark"><b>TLC</b></span>
+    <h1>Connexion</h1>
+    <p class="sub">Espace réservé. Reçois un code à usage unique par e-mail.</p>
+
+    <!-- Étape 1 : e-mail -->
+    <div class="step active" id="step-email">
+      <label for="email">Ton adresse e-mail</label>
+      <input type="email" id="email" placeholder="prenom@mail.com" autocomplete="email" />
+      <button id="btn-send">Recevoir mon code</button>
+    </div>
+
+    <!-- Étape 2 : code -->
+    <div class="step" id="step-code">
+      <label for="code">Code reçu par e-mail</label>
+      <input type="text" id="code" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="one-time-code" />
+      <button id="btn-verify">Valider</button>
+      <p class="hint">Pas reçu ? <a href="#" id="resend">Renvoyer un code</a></p>
+    </div>
+
+    <div class="msg" id="msg"></div>
+    <a class="link-back" href="index.html">← Retour au site</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+  (function(){
+    var nextUrl = new URLSearchParams(location.search).get("next") || "";
+    var $ = function(id){ return document.getElementById(id); };
+    var msg = $("msg");
+    function show(text, kind){ msg.textContent = text || ""; msg.className = "msg" + (kind ? " "+kind : ""); }
+    function step(which){
+      $("step-email").classList.toggle("active", which==="email");
+      $("step-code").classList.toggle("active", which==="code");
+    }
+    function route(a){
+      if(nextUrl){ location.replace(nextUrl); return; }
+      if(a && a.role==="admin") location.replace("suivi-membres.html");
+      else location.replace("espace-membre.html");
+    }
+
+    // Pas encore configuré → message clair
+    if(!window.TLCAuth.configured()){
+      show("La connexion n'est pas encore activée (configuration Supabase à terminer).", "err");
+      $("btn-send").disabled = true;
+      return;
+    }
+
+    // Déjà connecté ? on route directement
+    window.TLCAuth.currentAccess().then(function(a){
+      if(a && (a.role==="admin"||a.role==="member")) route(a);
+    });
+
+    var currentEmail = "";
+    async function sendCode(){
+      var email = ($("email").value||"").trim().toLowerCase();
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ show("Entre une adresse e-mail valide.", "err"); return; }
+      $("btn-send").disabled = true; show("Envoi du code…");
+      try{
+        await window.TLCAuth.sendCode(email);
+        currentEmail = email; step("code"); show("Code envoyé à "+email+". Vérifie tes mails (et les spams).", "ok");
+        setTimeout(function(){ $("code").focus(); }, 100);
+      }catch(e){
+        var m = (e && e.message) || "";
+        if(/not found|signups|disabled|allowed/i.test(m)) show("Cette adresse n'est pas inscrite. Contacte Bastian pour obtenir un accès.", "err");
+        else show("Erreur : "+m, "err");
+      }finally{ $("btn-send").disabled = false; }
+    }
+    async function verify(){
+      var token = ($("code").value||"").trim();
+      if(token.length < 6){ show("Entre les 6 chiffres du code.", "err"); return; }
+      $("btn-verify").disabled = true; show("Vérification…");
+      try{
+        var a = await window.TLCAuth.verifyCode(currentEmail, token);
+        show("Connecté ✓", "ok"); route(a);
+      }catch(e){
+        show("Code invalide ou expiré. Renvoie un code.", "err");
+      }finally{ $("btn-verify").disabled = false; }
+    }
+
+    $("btn-send").addEventListener("click", sendCode);
+    $("email").addEventListener("keydown", function(e){ if(e.key==="Enter") sendCode(); });
+    $("btn-verify").addEventListener("click", verify);
+    $("code").addEventListener("keydown", function(e){ if(e.key==="Enter") verify(); });
+    $("resend").addEventListener("click", function(e){ e.preventDefault(); step("email"); show(""); });
+  })();
+  </script>
+</body>
+</html>

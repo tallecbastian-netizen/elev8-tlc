@@ -96,10 +96,7 @@ a{color:inherit;text-decoration:none;}
     <div class="box">
       <span class="brand-mark"><b>TLC</b></span>
       <h2>Espace Membre</h2>
-      <p>Réservé aux membres de l'accompagnement. Entre ton code d'accès.</p>
-      <input type="password" id="gate-input" placeholder="Code d'accès" autocomplete="off" />
-      <button id="gate-btn">Entrer</button>
-      <div class="err" id="gate-err"></div>
+      <p id="gate-msg">Vérification de ton accès…</p>
     </div>
   </div>
 
@@ -254,18 +251,18 @@ a{color:inherit;text-decoration:none;}
 
   </div>
 
+    <!-- Connexion sécurisée (Supabase). Voir GUIDE-CONNEXION-SUPABASE.md -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth-config.js"></script>
+  <script src="js/auth.js"></script>
   <script>
-    (function(){
-      // ⚠️ Sécurité cosmétique. Change ce code d'accès.
-      var CODE = "ELITE90";
-      var gate=document.getElementById('gate'), content=document.getElementById('content');
-      var inp=document.getElementById('gate-input'), btn=document.getElementById('gate-btn'), err=document.getElementById('gate-err');
-      function open(){ gate.style.display='none'; content.hidden=false; try{sessionStorage.setItem('tlc_member','1');}catch(e){} }
-      function check(){ if(inp.value.trim().toUpperCase()===CODE){ open(); } else { err.textContent="Code incorrect."; inp.value=""; inp.focus(); } }
-      try{ if(sessionStorage.getItem('tlc_member')==='1'){ open(); } }catch(e){}
-      btn.addEventListener('click',check);
-      inp.addEventListener('keydown',function(e){ if(e.key==='Enter') check(); });
-      inp.focus();
+    (async function () {
+      var gate = document.getElementById('gate');
+      var content = document.getElementById('content');
+      var access = await window.TLCAuth.requireMember(); // redirige vers connexion.html si non connecté
+      if (!access) return;                                // redirection en cours
+      if (gate) gate.style.display = 'none';
+      if (content) content.hidden = false;                // accès membre/admin (ou mode chantier)
     })();
   </script>
 </body>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marques & collaborations — Bastian Tallec</title>
+<meta name="description" content="Les marques décrochées par les personnes accompagnées par Bastian Tallec." />
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0A0B0E; --surface:#15171D; --border:rgba(255,255,255,.08); --border-2:rgba(255,255,255,.15);
+  --text:#ECEEF1; --muted:#9AA1AB; --silver:#CDD4DD;
+  --gold:#E6C685; --grad-gold:linear-gradient(135deg,#F7E7BC 0%,#DCB868 44%,#B0853A 100%); --ring:rgba(220,184,104,.45);
+  --font-display:"Sora",system-ui,sans-serif; --font-cond:"Oswald",system-ui,sans-serif; --font-body:"Inter",system-ui,sans-serif;
+  --maxw:1220px;
+}
+*,*::before,*::after{box-sizing:border-box;} *{margin:0;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(60% 40% at 50% -6%,rgba(220,184,104,.10),transparent 60%);}
+a{color:inherit;text-decoration:none;}
+.gold-text{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.container{width:min(100% - 44px,var(--maxw));margin-inline:auto;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;height:78px;}
+.brand{display:inline-flex;align-items:center;gap:12px;}
+.brand-mark{display:grid;place-items:center;height:42px;padding:0 12px;border-radius:12px;background:rgba(220,184,104,.10);border:1px solid rgba(220,184,104,.45);font-family:var(--font-display);font-weight:800;letter-spacing:.12em;font-size:.9rem;}
+.brand-mark b{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.brand-word{font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.2em;font-size:.92rem;color:var(--silver);}
+.back{font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.14em;font-size:.82rem;color:var(--muted);transition:color .2s ease;}
+.back:hover{color:var(--gold);}
+
+.section{padding:clamp(60px,8vw,110px) 0;}
+.eyebrow{display:inline-flex;align-items:center;gap:12px;font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.32em;font-size:.82rem;font-weight:600;color:var(--silver);margin-bottom:18px;}
+.eyebrow::before{content:"";width:30px;height:1px;background:var(--grad-gold);}
+.brands-head{text-align:center;max-width:740px;margin:0 auto clamp(34px,5vw,52px);}
+.brands-head h1{font-family:var(--font-display);font-weight:800;font-size:clamp(2rem,4vw,3rem);line-height:1.08;letter-spacing:-.02em;margin-bottom:14px;}
+.brands-head p{color:var(--muted);}
+.brands-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+.brand-tile{aspect-ratio:16/9;display:grid;place-items:center;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;transition:border-color .2s ease,transform .2s ease;}
+.brand-tile:hover{border-color:rgba(220,184,104,.5);transform:translateY(-3px);}
+.brand-tile img{max-width:100%;max-height:54px;width:auto;filter:grayscale(1) brightness(1.7);opacity:.78;transition:filter .25s ease,opacity .25s ease;}
+.brand-tile:hover img{filter:none;opacity:1;}
+.brand-tile .ph{font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.16em;font-size:.78rem;color:var(--muted);}
+.cta{text-align:center;margin-top:44px;}
+.cta a{display:inline-flex;align-items:center;gap:10px;padding:16px 30px;border-radius:999px;background:var(--grad-gold);color:#1a1407;font-family:var(--font-cond);font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
+@media (max-width:900px){ .brands-grid{grid-template-columns:repeat(3,1fr);} }
+@media (max-width:520px){ .brands-grid{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+  <header>
+    <div class="container topbar">
+      <a class="brand" href="index.html"><span class="brand-mark"><b>TLC</b></span><span class="brand-word">Bastian Tallec</span></a>
+      <a class="back" href="index.html">← Retour à l'accueil</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="brands-head">
+          <span class="eyebrow">Preuve sociale</span>
+          <h1>Les marques décrochées par <span class="gold-text">les personnes que j'accompagne</span></h1>
+          <p>Je ne vends pas du rêve : mes élèves signent avec de vraies marques. Voici quelques-unes
+             des collaborations qu'ils ont obtenues grâce à la méthode.</p>
+        </div>
+
+        <!-- 👉 Remplace chaque .ph par une vraie image :
+             <div class="brand-tile"><img src="assets/img/marques/nom.png" alt="Nom de la marque" loading="lazy"></div>
+             (dépose les logos dans assets/img/marques/) -->
+        <div class="brands-grid">
+          <div class="brand-tile"><span class="ph">Marque 1</span></div>
+          <div class="brand-tile"><span class="ph">Marque 2</span></div>
+          <div class="brand-tile"><span class="ph">Marque 3</span></div>
+          <div class="brand-tile"><span class="ph">Marque 4</span></div>
+          <div class="brand-tile"><span class="ph">Marque 5</span></div>
+          <div class="brand-tile"><span class="ph">Marque 6</span></div>
+          <div class="brand-tile"><span class="ph">Marque 7</span></div>
+          <div class="brand-tile"><span class="ph">Marque 8</span></div>
+          <div class="brand-tile"><span class="ph">Marque 9</span></div>
+          <div class="brand-tile"><span class="ph">Marque 10</span></div>
+        </div>
+
+        <div class="cta">
+          <a href="index.html#contact">Travailler avec moi →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

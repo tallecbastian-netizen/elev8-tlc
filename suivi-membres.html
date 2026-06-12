@@ -99,6 +99,7 @@ a{color:inherit;text-decoration:none;}
 </style>
 </head>
 <body>
+<div id="authgate" style="position:fixed;inset:0;background:#0A0B0E;color:#9AA1AB;display:grid;place-items:center;z-index:9999;font-family:Inter,system-ui,sans-serif;text-align:center;padding:24px;">Vérification de l'accès admin…</div>
 <div class="wrap">
 
   <div class="top">
@@ -169,6 +170,17 @@ a{color:inherit;text-decoration:none;}
   </div>
 </div>
 
+<!-- Connexion sécurisée (Supabase). Voir GUIDE-CONNEXION-SUPABASE.md -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/auth-config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  (async function () {
+    var g = document.getElementById('authgate');
+    var access = await window.TLCAuth.requireAdmin(); // redirige vers connexion.html si non admin
+    if (access && g) g.style.display = 'none';         // admin OK (ou mode chantier)
+  })();
+</script>
 <script src="js/suivi-membres.js" defer></script>
 </body>
 </html>
