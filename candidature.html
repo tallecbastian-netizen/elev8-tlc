@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>Candidature — Elite 90 Days Challenge | Bastian Tallec</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0A0B0E; --bg-2:#0E1014; --surface:#15171D; --surface-2:#1C1F27;
+  --border:rgba(255,255,255,.08); --border-2:rgba(255,255,255,.15);
+  --text:#ECEEF1; --muted:#9AA1AB;
+  --silver:#CDD4DD; --gold:#E6C685; --gold-deep:#B8923E; --gold-hi:#F7E7BC;
+  --grad-gold:linear-gradient(135deg,#F7E7BC 0%,#DCB868 44%,#B0853A 100%);
+  --ring:rgba(220,184,104,.45);
+  --font-display:"Sora",system-ui,sans-serif;
+  --font-cond:"Oswald",system-ui,sans-serif;
+  --font-body:"Inter",system-ui,sans-serif;
+  --r:14px; --r-lg:22px;
+}
+*,*::before,*::after{box-sizing:border-box;} *{margin:0;}
+html{-webkit-text-size-adjust:100%;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;font-size:17px;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(60% 40% at 50% -5%,rgba(220,184,104,.10),transparent 60%);}
+a{color:inherit;text-decoration:none;}
+.gold-text{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.wrap{width:min(100% - 40px,720px);margin-inline:auto;padding:38px 0 90px;}
+
+/* Logo */
+.topbar{display:flex;align-items:center;justify-content:center;gap:13px;margin-bottom:40px;}
+.brand-mark{display:grid;place-items:center;height:42px;padding:0 12px;border-radius:12px;
+  background:rgba(220,184,104,.10);border:1px solid rgba(220,184,104,.45);
+  font-family:var(--font-display);font-weight:800;letter-spacing:.12em;font-size:.9rem;}
+.brand-mark b{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.brand-word{font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.2em;font-size:.92rem;color:var(--silver);}
+
+/* Intro */
+.intro{text-align:center;margin-bottom:42px;}
+.eyebrow{display:inline-block;font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.3em;font-size:.78rem;color:var(--gold);margin-bottom:16px;}
+.intro h1{font-family:var(--font-display);font-weight:800;font-size:clamp(1.8rem,5vw,2.6rem);line-height:1.08;letter-spacing:-.02em;margin-bottom:16px;}
+.intro p{color:var(--muted);max-width:52ch;margin:0 auto;}
+
+/* Questions */
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:clamp(20px,3vw,30px);margin-bottom:18px;}
+.qnum{font-family:var(--font-cond);font-weight:700;letter-spacing:.14em;font-size:.8rem;color:var(--gold);text-transform:uppercase;}
+.qlabel{display:block;font-family:var(--font-display);font-weight:700;font-size:1.12rem;margin:8px 0 18px;letter-spacing:-.01em;}
+.qlabel .req{color:var(--gold);}
+
+/* Options (radios stylisés) */
+.opts{display:grid;gap:10px;}
+.opts.cols2{grid-template-columns:1fr 1fr;}
+.opt{position:relative;display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border-2);border-radius:13px;cursor:pointer;transition:border-color .18s ease,background .18s ease;}
+.opt:hover{border-color:rgba(220,184,104,.5);}
+.opt input{position:absolute;opacity:0;width:0;height:0;}
+.opt .dot{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--border-2);transition:border-color .18s ease;position:relative;}
+.opt input:checked ~ .dot{border-color:var(--gold);}
+.opt input:checked ~ .dot::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--grad-gold);}
+.opt input:checked ~ span{color:#fff;}
+.opt:has(input:checked){border-color:var(--gold);background:rgba(220,184,104,.07);}
+.opt span{color:var(--silver);font-size:.98rem;}
+
+/* Champs texte */
+.f-input,.f-textarea{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border-2);border-radius:13px;padding:14px 16px;transition:border-color .2s ease,box-shadow .2s ease;}
+.f-textarea{resize:vertical;min-height:120px;}
+.f-input:focus,.f-textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--ring);}
+
+/* Échelle 1-10 */
+.scale{display:flex;align-items:center;gap:18px;}
+.scale input[type=range]{flex:1;accent-color:var(--gold);height:6px;}
+.scale .val{font-family:var(--font-display);font-weight:800;font-size:2rem;min-width:54px;text-align:center;}
+
+/* Bouton */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:18px 30px;border-radius:999px;border:1px solid transparent;
+  font-family:var(--font-cond);font-weight:600;font-size:1.05rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;
+  background:var(--grad-gold);color:#1a1407;box-shadow:0 14px 34px -14px var(--ring);transition:transform .2s ease,box-shadow .25s ease;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 22px 48px -16px var(--ring);}
+.btn[disabled]{opacity:.6;cursor:default;transform:none;}
+.submit-note{text-align:center;color:var(--muted);font-size:.82rem;margin-top:14px;}
+
+/* Écran final */
+.final{display:none;text-align:center;padding:30px 0;}
+.final.show{display:block;animation:fade .5s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+.final .badge{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;margin:0 auto 24px;background:rgba(220,184,104,.12);border:1px solid var(--gold);}
+.final .badge svg{width:34px;height:34px;}
+.final h2{font-family:var(--font-display);font-weight:800;font-size:clamp(1.8rem,5vw,2.6rem);margin-bottom:16px;}
+.final p{color:var(--muted);max-width:50ch;margin:0 auto 14px;}
+.final .warn{color:var(--silver);font-weight:500;}
+.final .btn{max-width:360px;margin:28px auto 0;}
+
+@media (max-width:560px){ .opts.cols2{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="topbar">
+      <span class="brand-mark"><b>TLC</b></span>
+      <span class="brand-word">Elite 90 Days Challenge</span>
+    </div>
+
+    <!-- ===== Formulaire de candidature ===== -->
+    <div id="cand-wrap">
+      <div class="intro">
+        <span class="eyebrow">Candidature</span>
+        <h1>Candidature <span class="gold-text">Elite 90 Days Challenge</span></h1>
+        <p>Avant de réserver un appel, merci de répondre aux questions suivantes. Nous sélectionnons
+           uniquement les personnes prêtes à s'investir sérieusement pendant les 90 prochains jours.</p>
+      </div>
+
+      <!-- ACTION : remplace par ton endpoint Formspree (ex. https://formspree.io/f/xxxxxxx) -->
+      <form id="cand" action="https://formspree.io/f/VOTRE_ID_CANDIDATURE" method="POST" novalidate>
+        <input type="hidden" name="_subject" value="Nouvelle candidature — Elite 90 Days Challenge" />
+
+        <div class="qcard">
+          <span class="qnum">Question 1</span>
+          <label class="qlabel" for="nom">Prénom et Nom <span class="req">*</span></label>
+          <input class="f-input" id="nom" name="Prénom et Nom" type="text" autocomplete="name" required />
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 2</span>
+          <span class="qlabel">Quel âge as-tu ? <span class="req">*</span></span>
+          <div class="opts cols2">
+            <label class="opt"><input type="radio" name="Âge" value="18-24 ans" required><span class="dot"></span><span>18 – 24 ans</span></label>
+            <label class="opt"><input type="radio" name="Âge" value="25-34 ans"><span class="dot"></span><span>25 – 34 ans</span></label>
+            <label class="opt"><input type="radio" name="Âge" value="35-44 ans"><span class="dot"></span><span>35 – 44 ans</span></label>
+            <label class="opt"><input type="radio" name="Âge" value="45+"><span class="dot"></span><span>45 ans et +</span></label>
+          </div>
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 3</span>
+          <span class="qlabel">Quelle est ta situation actuelle ? <span class="req">*</span></span>
+          <div class="opts cols2">
+            <label class="opt"><input type="radio" name="Situation" value="Salarié" required><span class="dot"></span><span>Salarié</span></label>
+            <label class="opt"><input type="radio" name="Situation" value="Étudiant"><span class="dot"></span><span>Étudiant</span></label>
+            <label class="opt"><input type="radio" name="Situation" value="Entrepreneur"><span class="dot"></span><span>Entrepreneur</span></label>
+            <label class="opt"><input type="radio" name="Situation" value="Sans emploi"><span class="dot"></span><span>Sans emploi</span></label>
+            <label class="opt"><input type="radio" name="Situation" value="Autre"><span class="dot"></span><span>Autre</span></label>
+          </div>
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 4</span>
+          <span class="qlabel">Quel est ton revenu mensuel actuel ? <span class="req">*</span></span>
+          <div class="opts cols2">
+            <label class="opt"><input type="radio" name="Revenu mensuel" value="Moins de 1000€" required><span class="dot"></span><span>Moins de 1000&nbsp;€</span></label>
+            <label class="opt"><input type="radio" name="Revenu mensuel" value="1000€ à 2000€"><span class="dot"></span><span>1000&nbsp;€ à 2000&nbsp;€</span></label>
+            <label class="opt"><input type="radio" name="Revenu mensuel" value="2000€ à 3000€"><span class="dot"></span><span>2000&nbsp;€ à 3000&nbsp;€</span></label>
+            <label class="opt"><input type="radio" name="Revenu mensuel" value="3000€ à 5000€"><span class="dot"></span><span>3000&nbsp;€ à 5000&nbsp;€</span></label>
+            <label class="opt"><input type="radio" name="Revenu mensuel" value="Plus de 5000€"><span class="dot"></span><span>Plus de 5000&nbsp;€</span></label>
+          </div>
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 5</span>
+          <label class="qlabel" for="q5">Pourquoi regardes-tu cette présentation aujourd'hui ? <span class="req">*</span></label>
+          <textarea class="f-textarea" id="q5" name="Pourquoi cette présentation" required placeholder="Dis-moi où tu en es et ce qui t'a amené ici…"></textarea>
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 6</span>
+          <span class="qlabel">Quelle est ta plus grande frustration aujourd'hui ? <span class="req">*</span></span>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="Plus grande frustration" value="Manque d'argent" required><span class="dot"></span><span>Manque d'argent</span></label>
+            <label class="opt"><input type="radio" name="Plus grande frustration" value="Manque de temps"><span class="dot"></span><span>Manque de temps</span></label>
+            <label class="opt"><input type="radio" name="Plus grande frustration" value="Je ne sais pas par où commencer"><span class="dot"></span><span>Je ne sais pas par où commencer</span></label>
+            <label class="opt"><input type="radio" name="Plus grande frustration" value="J'ai déjà essayé sans résultat"><span class="dot"></span><span>J'ai déjà essayé sans résultat</span></label>
+            <label class="opt"><input type="radio" name="Plus grande frustration" value="Je manque de discipline"><span class="dot"></span><span>Je manque de discipline</span></label>
+            <label class="opt"><input type="radio" name="Plus grande frustration" value="Autre"><span class="dot"></span><span>Autre</span></label>
+          </div>
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 7</span>
+          <span class="qlabel">As-tu déjà essayé de gagner de l'argent en ligne ? <span class="req">*</span></span>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="Déjà gagné en ligne" value="Oui avec succès" required><span class="dot"></span><span>Oui, avec succès</span></label>
+            <label class="opt"><input type="radio" name="Déjà gagné en ligne" value="Oui sans succès"><span class="dot"></span><span>Oui, sans succès</span></label>
+            <label class="opt"><input type="radio" name="Déjà gagné en ligne" value="Non jamais"><span class="dot"></span><span>Non, jamais</span></label>
+          </div>
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 8</span>
+          <span class="qlabel">As-tu déjà tradé ou investi ? <span class="req">*</span></span>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="Déjà tradé / investi" value="Oui régulièrement" required><span class="dot"></span><span>Oui, régulièrement</span></label>
+            <label class="opt"><input type="radio" name="Déjà tradé / investi" value="Oui un peu"><span class="dot"></span><span>Oui, un peu</span></label>
+            <label class="opt"><input type="radio" name="Déjà tradé / investi" value="Non jamais"><span class="dot"></span><span>Non, jamais</span></label>
+          </div>
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 9</span>
+          <span class="qlabel">Combien de temps peux-tu consacrer à ton développement durant les 90 prochains jours ? <span class="req">*</span></span>
+          <div class="opts cols2">
+            <label class="opt"><input type="radio" name="Temps disponible / semaine" value="Moins de 5h" required><span class="dot"></span><span>Moins de 5h / semaine</span></label>
+            <label class="opt"><input type="radio" name="Temps disponible / semaine" value="5 à 10h"><span class="dot"></span><span>5 à 10h / semaine</span></label>
+            <label class="opt"><input type="radio" name="Temps disponible / semaine" value="10 à 20h"><span class="dot"></span><span>10 à 20h / semaine</span></label>
+            <label class="opt"><input type="radio" name="Temps disponible / semaine" value="Plus de 20h"><span class="dot"></span><span>Plus de 20h / semaine</span></label>
+          </div>
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 10</span>
+          <span class="qlabel">Sur une échelle de 1 à 10, à quel point es-tu déterminé à changer ta situation ? <span class="req">*</span></span>
+          <div class="scale">
+            <input type="range" id="determination" name="Détermination (1-10)" min="1" max="10" value="8" />
+            <span class="val gold-text" id="det-val">8</span>
+          </div>
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 11</span>
+          <span class="qlabel">Si nous décidons de travailler ensemble, es-tu prêt à investir dans ton développement personnel et professionnel ? <span class="req">*</span></span>
+          <div class="opts cols2">
+            <label class="opt"><input type="radio" name="Prêt à investir" value="Oui" required><span class="dot"></span><span>Oui</span></label>
+            <label class="opt"><input type="radio" name="Prêt à investir" value="Non"><span class="dot"></span><span>Non</span></label>
+          </div>
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 12</span>
+          <label class="qlabel" for="q12">Pourquoi devrions-nous te sélectionner plutôt qu'une autre personne ? <span class="req">*</span></label>
+          <textarea class="f-textarea" id="q12" name="Pourquoi te sélectionner" required placeholder="Convaincs-moi."></textarea>
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Dernière question</span>
+          <span class="qlabel">Si nous te montrons exactement quoi faire durant les 90 prochains jours, quel budget serais-tu prêt à investir pour être accompagné ? <span class="req">*</span></span>
+          <div class="opts cols2">
+            <label class="opt"><input type="radio" name="Budget envisagé" value="Moins de 500€" required><span class="dot"></span><span>Moins de 500&nbsp;€</span></label>
+            <label class="opt"><input type="radio" name="Budget envisagé" value="500€ à 1000€"><span class="dot"></span><span>500&nbsp;€ à 1000&nbsp;€</span></label>
+            <label class="opt"><input type="radio" name="Budget envisagé" value="1000€ à 2000€"><span class="dot"></span><span>1000&nbsp;€ à 2000&nbsp;€</span></label>
+            <label class="opt"><input type="radio" name="Budget envisagé" value="2000€ à 5000€"><span class="dot"></span><span>2000&nbsp;€ à 5000&nbsp;€</span></label>
+            <label class="opt"><input type="radio" name="Budget envisagé" value="Plus de 5000€"><span class="dot"></span><span>Plus de 5000&nbsp;€</span></label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn">Envoyer ma candidature</button>
+        <p class="submit-note">Tes réponses sont confidentielles et servent uniquement à évaluer ta candidature.</p>
+      </form>
+    </div>
+
+    <!-- ===== Écran final ===== -->
+    <div class="final" id="final" role="status" aria-live="polite">
+      <div class="badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="#E6C685" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M4 12.5l5 5 11-11"/></svg></div>
+      <h2>Félicitations.</h2>
+      <p>Ta candidature a bien été enregistrée.</p>
+      <p>Si ton profil correspond à ce que nous recherchons, tu vas maintenant pouvoir réserver un
+         <strong>entretien stratégique de 30 minutes</strong>.</p>
+      <p class="warn">⚠️ Nous ne travaillons pas avec tout le monde. L'objectif de cet appel est de
+         déterminer si nous sommes capables de t'aider à atteindre tes objectifs durant les 90 prochains jours.</p>
+      <!-- REMPLACER par ton vrai lien Calendly -->
+      <a class="btn" href="https://calendly.com/TON-LIEN/entretien-strategique" target="_blank" rel="noopener">Réserver mon entretien →</a>
+    </div>
+
+  </div>
+
+  <script>
+    (function(){
+      var r=document.getElementById('determination'), o=document.getElementById('det-val');
+      if(r&&o){ r.addEventListener('input',function(){o.textContent=r.value;}); }
+
+      var f=document.getElementById('cand');
+      f.addEventListener('submit',function(e){
+        e.preventDefault();
+        if(!f.checkValidity()){ f.reportValidity(); return; }
+        var data=new URLSearchParams(new FormData(f));
+        var btn=f.querySelector('button[type=submit]');
+        if(btn){ btn.disabled=true; btn.textContent='Envoi…'; }
+        fetch(f.action,{method:'POST',mode:'no-cors',body:data}).then(done).catch(done);
+        function done(){
+          document.getElementById('cand-wrap').hidden=true;
+          var fin=document.getElementById('final'); fin.classList.add('show');
+          window.scrollTo({top:0,behavior:'smooth'});
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
