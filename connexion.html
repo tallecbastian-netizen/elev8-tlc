@@ -78,8 +78,7 @@ button:hover{filter:brightness(1.05);} button:disabled{opacity:.5;cursor:default
     }
     function route(a){
       if(nextUrl){ location.replace(nextUrl); return; }
-      if(a && a.role==="admin") location.replace("suivi-membres.html");
-      else location.replace("espace-membre.html");
+      location.replace("espace-membre.html"); // admin verra le bouton "Gestion" dans l'espace
     }
 
     // Pas encore configuré → message clair
@@ -89,9 +88,13 @@ button:hover{filter:brightness(1.05);} button:disabled{opacity:.5;cursor:default
       return;
     }
 
-    // Déjà connecté ? on route directement
+    // Message si redirigé pour accès inactif/expiré
+    if(new URLSearchParams(location.search).get("reason")==="inactif")
+      show("Ton accès n'est pas actif ou a expiré. Reconnecte-toi une fois que Bastian l'a réactivé.", "err");
+
+    // Déjà connecté ? on route directement (seulement si accès valide)
     window.TLCAuth.currentAccess().then(function(a){
-      if(a && (a.role==="admin"||a.role==="member")) route(a);
+      if(a && (a.role==="admin"||a.role==="member"||a.role==="open")) route(a);
     });
 
     var currentEmail = "";
@@ -115,7 +118,8 @@ button:hover{filter:brightness(1.05);} button:disabled{opacity:.5;cursor:default
       $("btn-verify").disabled = true; show("Vérification…");
       try{
         var a = await window.TLCAuth.verifyCode(currentEmail, token);
-        show("Connecté ✓", "ok"); route(a);
+        if(a && (a.role==="member"||a.role==="admin"||a.role==="open")){ show("Connecté ✓", "ok"); route(a); }
+        else { show("Connecté, mais ton accès n'est pas actif (ou expiré). Contacte Bastian pour l'activer.", "err"); }
       }catch(e){
         show("Code invalide ou expiré. Renvoie un code.", "err");
       }finally{ $("btn-verify").disabled = false; }
