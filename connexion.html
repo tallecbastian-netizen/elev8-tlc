@@ -31,27 +31,22 @@ button{width:100%;margin-top:16px;padding:14px 16px;border:0;border-radius:11px;
 button:disabled{opacity:.5;cursor:default;}
 .msg{margin-top:14px;font-size:.86rem;min-height:1.1em;}
 .msg.err{color:#ff9b9b;} .msg.ok{color:#9be3b0;}
-.foot{margin-top:20px;display:flex;justify-content:space-between;font-size:.76rem;}
-.foot a{color:var(--muted);font-family:var(--fc);text-transform:uppercase;letter-spacing:.12em;}
-.foot a:hover{color:var(--gold);}
+.back{display:inline-block;margin-top:20px;font-family:var(--fc);text-transform:uppercase;letter-spacing:.12em;font-size:.76rem;color:var(--muted);}
+.back:hover{color:var(--gold);}
 </style>
 </head>
 <body>
   <div class="card">
     <span class="brand-mark"><b>TLC</b></span>
     <h1>Espace membre</h1>
-    <p class="sub">Entre ton adresse e-mail pour accéder à tes vidéos.</p>
+    <p class="sub">Entre ton adresse e-mail pour accéder à ton espace.</p>
 
     <label for="email">Ton adresse e-mail</label>
     <input type="email" id="email" placeholder="prenom@mail.com" autocomplete="email" />
-    <button id="btn">Accéder à mes vidéos</button>
+    <button id="btn">Entrer</button>
 
     <div class="msg" id="msg"></div>
-
-    <div class="foot">
-      <a href="index.html">← Retour au site</a>
-      <a href="admin.html">Espace admin →</a>
-    </div>
+    <a class="back" href="index.html">← Retour au site</a>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -63,6 +58,8 @@ button:disabled{opacity:.5;cursor:default;}
     var msg = $("msg");
     function show(t,k){ msg.textContent = t||""; msg.className = "msg" + (k?(" "+k):""); }
 
+    // Déjà connecté ? (admin ou membre valide) -> on entre directement
+    if (window.TLCAuth.isAdmin && window.TLCAuth.isAdmin()) { location.replace("espace-membre.html"); return; }
     var s = window.TLCAuth.memberSession && window.TLCAuth.memberSession();
     if (s && s.until && s.until >= window.TLCAuth.today()) { location.replace("espace-membre.html"); return; }
 
@@ -71,11 +68,14 @@ button:disabled{opacity:.5;cursor:default;}
       if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ show("Entre une adresse e-mail valide.","err"); return; }
       $("btn").disabled = true; show("Vérification…");
       try{
+        // 1) Est-ce l'admin ? -> accès espace membre + gestion
+        if (window.TLCAuth.adminLogin(email)) { show("Accès admin ✓","ok"); location.replace("espace-membre.html"); return; }
+        // 2) Sinon, membre actif ?
         var r = await window.TLCAuth.memberLogin(email);
-        if(r.active){ show("Accès confirmé ✓","ok"); location.replace("espace-membre.html"); }
-        else { show("Ton accès n'est pas actif (ou a expiré). Contacte Bastian pour l'activer.","err"); }
+        if (r.active) { show("Accès confirmé ✓","ok"); location.replace("espace-membre.html"); return; }
+        show("Ton accès n'est pas actif (ou a expiré). Contacte Bastian pour l'activer.","err");
       }catch(e){
-        show("Erreur : "+((e&&e.message)||"réessaie")+". (La base n'est peut-être pas encore initialisée.)","err");
+        show("Erreur : "+((e&&e.message)||"réessaie")+".","err");
       }finally{ $("btn").disabled = false; }
     }
     $("btn").addEventListener("click", enter);
