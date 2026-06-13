@@ -263,12 +263,19 @@ a{color:inherit;text-decoration:none;}
       if (!access) return;                                // redirection en cours
       if (gate) gate.style.display = 'none';
       if (content) content.hidden = false;                // accès membre/admin (ou mode chantier)
-      // Bouton "Gestion des membres" visible uniquement pour l'admin
-      if (content && (access.role === 'admin' || access.role === 'open')) {
+      // Barre du haut : Déconnexion (tout le monde) + Gestion (admin)
+      if (content) {
         var bar = document.createElement('div');
-        bar.style.cssText = 'text-align:center;margin:0 0 24px;';
-        bar.innerHTML = '<a href="gestion-membres.html" style="display:inline-flex;gap:8px;align-items:center;padding:11px 22px;border-radius:999px;background:rgba(220,184,104,.12);border:1px solid rgba(220,184,104,.5);color:#E6C685;font-family:Oswald,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:.82rem;">&#9881; Gestion des membres (admin)</a>';
+        bar.style.cssText = 'display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 26px;';
+        var html = '';
+        if (access.role === 'admin' || access.role === 'open') {
+          html += '<a href="gestion-membres.html" style="display:inline-flex;gap:8px;align-items:center;padding:11px 22px;border-radius:999px;background:rgba(220,184,104,.12);border:1px solid rgba(220,184,104,.5);color:#E6C685;font-family:Oswald,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:.82rem;">&#9881; Gestion des membres (admin)</a>';
+        }
+        html += '<button id="tlc-logout" style="padding:11px 22px;border-radius:999px;background:transparent;border:1px solid rgba(255,255,255,.18);color:#9AA1AB;font-family:Oswald,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:.82rem;cursor:pointer;">Déconnexion</button>';
+        bar.innerHTML = html;
         content.insertBefore(bar, content.firstChild);
+        var lo = document.getElementById('tlc-logout');
+        if (lo) lo.addEventListener('click', function () { window.TLCAuth.signOut(); location.replace('index.html'); });
       }
     })();
   </script>
