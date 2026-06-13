@@ -24,7 +24,7 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:16p
 .brand-mark{display:inline-grid;place-items:center;height:40px;padding:0 12px;border-radius:11px;background:rgba(220,184,104,.10);border:1px solid var(--ring);font-family:var(--fd);font-weight:800;letter-spacing:.12em;}
 .brand-mark b{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
 h1{font-family:var(--fd);font-size:1.25rem;font-weight:700;}
-.top .right{display:flex;align-items:center;gap:12px;font-size:.82rem;color:var(--muted);}
+.top .right{display:flex;align-items:center;gap:12px;font-size:.82rem;color:var(--muted);flex-wrap:wrap;}
 .linkbtn{font-family:var(--fc);text-transform:uppercase;letter-spacing:.12em;font-size:.74rem;color:var(--muted);padding:8px 12px;border:1px solid var(--border-2);border-radius:9px;}
 .linkbtn:hover{color:var(--gold);border-color:var(--gold);}
 .notice{display:none;background:rgba(242,212,121,.10);border:1px solid rgba(242,212,121,.4);color:#f2d479;padding:12px 16px;border-radius:11px;margin-bottom:16px;font-size:.9rem;}
@@ -33,14 +33,14 @@ h1{font-family:var(--fd);font-size:1.25rem;font-weight:700;}
 input,select,textarea{font-family:var(--fb);background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);border-radius:9px;padding:10px 12px;font-size:.92rem;outline:none;}
 input:focus,select:focus,textarea:focus{border-color:var(--gold);}
 #search{flex:1;min-width:180px;}
-.btn{font-family:var(--fc);text-transform:uppercase;letter-spacing:.08em;font-size:.8rem;border:0;border-radius:9px;padding:10px 16px;cursor:pointer;background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);}
+.btn{font-family:var(--fc);text-transform:uppercase;letter-spacing:.08em;font-size:.8rem;border-radius:9px;padding:10px 16px;cursor:pointer;background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);}
 .btn.gold{background:var(--grad-gold);color:#1a1407;border:0;font-weight:600;}
 .btn:hover{border-color:var(--gold);}
 .stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:7px 12px;font-size:.8rem;color:var(--muted);}
 .stat b{color:var(--text);font-family:var(--fd);}
 .tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;}
-table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:760px;}
+table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:820px;}
 th{font-family:var(--fc);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;color:var(--muted);text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);}
 td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
 tr:last-child td{border-bottom:0;}
@@ -48,15 +48,15 @@ tr:last-child td{border-bottom:0;}
 .empty{text-align:center;color:var(--muted);padding:26px;}
 .badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:.72rem;font-family:var(--fc);letter-spacing:.04em;border:1px solid var(--border-2);}
 .s-ok{color:var(--ok);border-color:rgba(155,227,176,.4);} .s-soon{color:var(--soon);border-color:rgba(242,212,121,.4);}
-.s-exp{color:var(--exp);border-color:rgba(255,155,155,.4);} .s-prospect{color:var(--silver);} .s-off{color:var(--muted);}
+.s-exp{color:var(--exp);border-color:rgba(255,155,155,.4);} .s-prospect{color:var(--silver);}
 .acts{white-space:nowrap;}
 .act{font-family:var(--fc);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem;padding:6px 10px;margin:2px;border-radius:7px;border:1px solid var(--border-2);background:transparent;color:var(--silver);cursor:pointer;display:inline-block;}
 .act:hover{border-color:var(--gold);color:var(--gold);}
 .act.gold{background:rgba(220,184,104,.14);border-color:var(--ring);color:var(--gold);}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;align-items:center;justify-content:center;padding:20px;}
-.modal .box{width:min(100%,460px);background:var(--surface);border:1px solid var(--border-2);border-radius:16px;padding:24px;}
-.modal h2{font-family:var(--fd);font-size:1.1rem;margin-bottom:16px;}
-.modal label{display:block;font-family:var(--fc);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;color:var(--silver);margin:10px 0 5px;}
+.modal .box{width:min(100%,460px);background:var(--surface);border:1px solid var(--border-2);border-radius:16px;padding:24px;max-height:90vh;overflow:auto;}
+.modal h2{font-family:var(--fd);font-size:1.1rem;margin-bottom:12px;}
+.modal label{display:block;font-family:var(--fc);text-transform:uppercase;letter-spacing:.1em;font-size:.68rem;color:var(--silver);margin:10px 0 5px;}
 .modal input,.modal select,.modal textarea{width:100%;}
 .modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
 #authgate{position:fixed;inset:0;background:var(--bg);color:var(--muted);display:grid;place-items:center;z-index:999;text-align:center;padding:24px;font-family:var(--fb);}
@@ -86,10 +86,9 @@ tr:last-child td{border-bottom:0;}
       <select id="filter">
         <option value="all">Tous</option>
         <option value="prospect">Prospects</option>
-        <option value="membre">Membres</option>
-        <option value="actif">Actifs</option>
+        <option value="actif">Membres actifs</option>
+        <option value="inactif">Membres inactifs</option>
         <option value="bientot">Expirent &lt; 7 j</option>
-        <option value="expire">Expirés / désactivés</option>
       </select>
       <button class="btn gold" id="btn-add">+ Ajouter</button>
       <button class="btn" id="btn-export">Export CSV</button>
@@ -100,14 +99,13 @@ tr:last-child td{border-bottom:0;}
     <div class="tablewrap">
       <table>
         <thead><tr>
-          <th>Membre</th><th>Promo</th><th>Activation</th><th>Accès jusqu'au</th><th>État</th><th>Cycle 28 j</th><th></th>
+          <th>Personne</th><th>Promo</th><th>Dernier paiement</th><th>Accès jusqu'au</th><th>Catégorie</th><th>Gestion</th><th></th>
         </tr></thead>
         <tbody id="rows"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- Modal ajout / édition -->
   <div class="modal" id="modal">
     <div class="box">
       <h2 id="m-title">Nouvelle fiche</h2>
@@ -117,6 +115,8 @@ tr:last-child td{border-bottom:0;}
       <label for="m-tel">Téléphone</label><input id="m-tel" type="tel" placeholder="06…" />
       <label for="m-statut">Statut</label>
       <select id="m-statut"><option value="prospect">Prospect</option><option value="membre">Membre</option></select>
+      <label for="m-paiement">Date du dernier paiement (vide = pas payé → inactif)</label>
+      <input id="m-paiement" type="date" />
       <label for="m-promo">Promo</label><input id="m-promo" type="text" placeholder="ex : Promo 1" />
       <label for="m-notes">Notes</label><textarea id="m-notes" rows="2"></textarea>
       <div class="actions">

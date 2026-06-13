@@ -646,5 +646,25 @@ h1,h2,h3{font-family:var(--font-display);line-height:1.05;font-weight:800;letter
   if(location.hash === '#confirm'){ var s=document.getElementById('form-success'); if(s) s.hidden=false; }
 })();
 </script>
+
+<!-- Inscription : envoi à Brevo (sans quitter la page) + ajout du prospect dans Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/auth-config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+(function(){
+  var f = document.getElementById('contact-form');
+  if(!f) return;
+  f.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var g = function(n){ var el = f.querySelector('[name="'+n+'"]'); return el ? (el.value || '') : ''; };
+    var email = g('EMAIL'), tel = g('SMS');
+    try { fetch(f.action, { method:'POST', mode:'no-cors', body:new URLSearchParams(new FormData(f)) }); } catch(e){}
+    if(window.TLCAuth && window.TLCAuth.addProspect){ window.TLCAuth.addProspect(email, null, tel); }
+    var s = document.getElementById('form-success'); if(s){ s.hidden = false; }
+    try { f.reset(); } catch(e){}
+  });
+})();
+</script>
 </body>
 </html>

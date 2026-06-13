@@ -1,15 +1,16 @@
 /* ============================================================
-   TLCAuth — connexion + contrôle d'accès (Supabase, code par e-mail)
-   - Admin  : e-mail listé dans auth-config.js (ADMIN_EMAILS) → accès total.
-   - Membre : doit exister dans la table "membres" avec
-              statut='membre', actif=true ET acces_jusqu_au >= aujourd'hui.
-              Sinon → accès refusé (inactif/expiré).
-   Tant que Supabase n'est pas configuré (placeholders), tout reste ouvert
-   (mode chantier) pour ne pas te bloquer.
+   TLCAuth — accès TLC (SANS code, tout par e-mail)
+   • MEMBRE : tape son e-mail -> vérifié via la fonction Supabase
+     acces_actif() (membre + actif + non expiré). Accès aux vidéos.
+   • ADMIN  : tape son e-mail (doit être dans ADMIN_EMAILS) -> page de gestion.
+     La gestion lit/écrit dans Supabase via des fonctions (synchro auto).
+   Tant que Supabase n'est pas configuré -> "mode chantier" (tout ouvert).
 ============================================================ */
 (function () {
   var CFG = window.TLC_CONFIG || {};
   var _client = null;
+  var MKEY = "tlc_member";
+  var AKEY = "tlc_admin";
 
   function configured() {
     return CFG.SUPABASE_URL && CFG.SUPABASE_URL.indexOf("VOTRE") < 0 &&
@@ -25,75 +26,71 @@
     return (CFG.ADMIN_EMAILS || (CFG.ADMIN_EMAIL ? [CFG.ADMIN_EMAIL] : []))
       .map(function (e) { return (e || "").toLowerCase(); });
   }
-  function today() { return new Date().toISOString().slice(0, 10); } // AAAA-MM-JJ
-
-  async function sessionEmail() {
-    var c = client(); if (!c) return null;
-    try {
-      var r = await c.auth.getSession();
-      var s = r.data && r.data.session;
-      return s ? (s.user.email || "").toLowerCase() : null;
-    } catch (e) { return null; }
-  }
-
-  // { role:'open'|'admin'|'member'|'inactive'|null, email, until }
-  async function currentAccess() {
-    if (!configured()) return { role: "open" };
-    var c = client(); if (!c) return { role: null, reason: "config" };
-    var email = await sessionEmail();
-    if (!email) return { role: null };
-    if (admins().indexOf(email) >= 0) return { role: "admin", email: email };
-    try {
-      var q = await c.from("membres")
-        .select("statut,actif,acces_jusqu_au")
-        .eq("email", email).maybeSingle();
-      if (q.error) return { role: "inactive", email: email, reason: "error" };
-      var m = q.data;
-      if (m && m.statut === "membre" && m.actif && m.acces_jusqu_au && m.acces_jusqu_au >= today()) {
-        return { role: "member", email: email, until: m.acces_jusqu_au };
-      }
-      return { role: "inactive", email: email };
-    } catch (e) { return { role: "inactive", email: email }; }
-  }
-
+  function today() { return new Date().toISOString().slice(0, 10); }
   function go(u) { location.replace(u); }
 
-  // Page "membre" (vidéos) : admin OU membre actif.
+  /* ---------- MEMBRE ---------- */
+  function setMember(email, until) {
+    try { localStorage.setItem(MKEY, JSON.stringify({ email: (email || "").toLowerCase(), until: until || null })); } catch (e) {}
+  }
+  function memberSession() { try { return JSON.parse(localStorage.getItem(MKEY) || "null"); } catch (e) { return null; } }
+  function memberLogout() { try { localStorage.removeItem(MKEY); } catch (e) {} }
+
+  async function memberLogin(email) {
+    email = (email || "").trim().toLowerCase();
+    if (!configured()) { setMember(email, today()); return { active: true, until: null }; }
+    var c = client(); if (!c) throw new Error("Connexion non configurée.");
+    var r = await c.rpc("acces_actif", { p_email: email });
+    if (r.error) throw r.error;
+    var until = r.data || null;
+    if (until) { setMember(email, until); return { active: true, until: until }; }
+    memberLogout(); return { active: false };
+  }
+
+  /* ---------- ADMIN (e-mail seul) ---------- */
+  function adminLogin(email) {
+    email = (email || "").trim().toLowerCase();
+    if (admins().indexOf(email) >= 0) { try { localStorage.setItem(AKEY, email); } catch (e) {} return true; }
+    return false;
+  }
+  function adminSession() { try { return localStorage.getItem(AKEY); } catch (e) { return null; } }
+  function adminLogout() { try { localStorage.removeItem(AKEY); } catch (e) {} }
+  function isAdmin() { var e = adminSession(); return !!(e && admins().indexOf((e || "").toLowerCase()) >= 0); }
+
+  /* ---------- Gardes de page ---------- */
   async function requireMember() {
     if (!configured()) return { role: "open" };
-    var a = await currentAccess();
-    if (a.role === "admin" || a.role === "member") return a;
-    if (a.role === "inactive") { go("connexion.html?reason=inactif"); return null; }
-    go("connexion.html?next=espace-membre.html"); return null;
+    if (isAdmin()) return { role: "admin", email: adminSession() };
+    var s = memberSession();
+    if (s && s.email) {
+      try {
+        var c = client();
+        var r = await c.rpc("acces_actif", { p_email: s.email });
+        if (!r.error && r.data) { setMember(s.email, r.data); return { role: "member", email: s.email, until: r.data }; }
+      } catch (e) {}
+      memberLogout();
+    }
+    go("connexion.html"); return null;
   }
-  // Page "admin" (gestion des membres) : admin uniquement.
   async function requireAdmin() {
     if (!configured()) return { role: "open" };
-    var a = await currentAccess();
-    if (a.role === "admin") return a;
-    if (a.role === "member" || a.role === "inactive") { go("espace-membre.html"); return null; }
-    go("connexion.html?next=gestion-membres.html"); return null;
+    if (isAdmin()) return { role: "admin", email: adminSession() };
+    go("admin.html"); return null;
   }
 
-  async function sendCode(email) {
-    var c = client(); if (!c) throw new Error("Connexion non configurée.");
-    // shouldCreateUser:true → un membre peut se connecter sans pré-inscription Auth ;
-    // c'est la table "membres" qui décide de l'accès.
-    var r = await c.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } });
-    if (r.error) throw r.error;
+  async function addProspect(email, nom, tel) {
+    if (!configured()) return;
+    var c = client(); if (!c) return;
+    try { await c.rpc("add_prospect", { p_email: (email || "").toLowerCase(), p_nom: nom || null, p_tel: tel || null }); } catch (e) {}
   }
-  async function verifyCode(email, token) {
-    var c = client(); if (!c) throw new Error("Connexion non configurée.");
-    var r = await c.auth.verifyOtp({ email: email, token: token, type: "email" });
-    if (r.error) throw r.error;
-    return await currentAccess();
-  }
-  async function signOut() { var c = client(); if (c) await c.auth.signOut(); }
+
+  function signOut() { memberLogout(); adminLogout(); }
 
   window.TLCAuth = {
-    configured: configured, client: client, supabase: client, today: today,
-    admins: admins, currentAccess: currentAccess,
-    requireMember: requireMember, requireAdmin: requireAdmin,
-    sendCode: sendCode, verifyCode: verifyCode, signOut: signOut
+    configured: configured, client: client, supabase: client, today: today, admins: admins,
+    memberLogin: memberLogin, memberSession: memberSession, memberLogout: memberLogout,
+    requireMember: requireMember, addProspect: addProspect,
+    adminLogin: adminLogin, adminSession: adminSession, adminLogout: adminLogout, isAdmin: isAdmin,
+    requireAdmin: requireAdmin, signOut: signOut
   };
 })();
