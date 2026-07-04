@@ -260,6 +260,68 @@ h1,h2,h3{font-family:var(--font-display);line-height:1.05;font-weight:800;letter
   *,*::before,*::after{animation:none!important;transition:none!important;}
   .reveal{opacity:1;transform:none;}
 }
+
+/* ===================== VSL SECTION ===================== */
+.vsl-section{padding:72px 0 60px;background:linear-gradient(180deg,rgba(220,184,104,.04) 0%,transparent 60%);}
+.vsl-head{text-align:center;margin-bottom:28px;}
+.vsl-eyebrow{display:inline-block;font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.3em;font-size:.72rem;color:var(--gold);margin-bottom:12px;}
+.vsl-head h2{font-family:var(--font-display);font-weight:800;font-size:clamp(1.5rem,3.5vw,2.2rem);line-height:1.1;letter-spacing:-.02em;margin-bottom:10px;}
+.vsl-head p{color:var(--muted);font-size:.95rem;max-width:52ch;margin:0 auto;}
+.vsl-inner{width:min(100%,820px);margin-inline:auto;}
+.video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;border:1px solid var(--border-2);box-shadow:0 30px 70px -28px rgba(0,0,0,.9),0 0 0 1px rgba(220,184,104,.08);background:#000;}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+.watch-note{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:.82rem;color:var(--muted);}
+.watch-note::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);opacity:.7;flex-shrink:0;}
+.vsl-cta{margin-top:32px;text-align:center;}
+.vsl-cta-note{margin-top:13px;color:var(--muted);font-size:.88rem;}
+.vsl-proof{margin-top:52px;border-top:1px solid var(--border);padding-top:40px;text-align:center;}
+.vsl-proof-label{font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.25em;font-size:.72rem;color:var(--muted);margin-bottom:20px;}
+.vsl-proof-list{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;}
+.vsl-proof-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 20px;font-size:.88rem;color:var(--silver);line-height:1.4;max-width:220px;text-align:left;}
+.vsl-proof-item strong{display:block;color:var(--gold);font-size:.78rem;font-family:var(--font-cond);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+
+/* ===================== LOCKED VSL BUTTON ===================== */
+#yt-player{position:absolute;inset:0;width:100%;height:100%;}
+#yt-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+.btn-vsl.locked{opacity:.45;cursor:not-allowed;pointer-events:none;}
+/* ===================== FORM MULTI-ÉTAPES ===================== */
+.mstep-progress{display:flex;gap:6px;margin-bottom:24px;}
+.mstep-dot{flex:1;height:3px;border-radius:3px;background:var(--border-2);transition:background .3s;}
+.mstep-dot.active{background:var(--gold);}
+.mstep-dot.done{background:var(--gold);}
+.mstep{display:none;}
+.mstep.is-active{display:block;}
+.mstep-label{font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.2em;font-size:.72rem;color:var(--gold);margin-bottom:8px;}
+.mstep-question{font-family:var(--font-display);font-weight:700;font-size:1.15rem;margin-bottom:18px;line-height:1.3;}
+.mstep-options{display:grid;gap:10px;}
+.mstep-opt{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border-2);border-radius:12px;cursor:pointer;transition:border-color .2s,background .2s;background:var(--bg);}
+.mstep-opt:hover{border-color:var(--gold);background:rgba(220,184,104,.06);}
+.mstep-opt.selected{border-color:var(--gold);background:rgba(220,184,104,.1);}
+.mstep-opt input[type="radio"]{accent-color:var(--gold);width:18px;height:18px;flex:none;}
+.mstep-nav{display:flex;gap:12px;margin-top:20px;}
+.mstep-nav .btn{flex:1;}
+.modal-result{display:none;text-align:center;padding:16px 0;}
+.modal-result.is-active{display:block;}
+/* ===================== MODAL CANDIDATURE ===================== */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);z-index:900;align-items:center;justify-content:center;padding:20px;}
+.modal-backdrop.is-open{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-lg);width:min(100%,520px);max-height:90vh;overflow-y:auto;padding:40px 36px 36px;position:relative;}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.4rem;line-height:1;padding:6px;border-radius:8px;transition:color .2s;}
+.modal-close:hover{color:var(--text);}
+.modal-head{margin-bottom:28px;}
+.modal-head .eyebrow{display:inline-block;font-family:var(--font-cond);text-transform:uppercase;letter-spacing:.3em;font-size:.72rem;color:var(--gold);margin-bottom:10px;}
+.modal-head h2{font-family:var(--font-display);font-weight:800;font-size:clamp(1.3rem,3vw,1.75rem);line-height:1.15;margin-bottom:8px;}
+.modal-head p{color:var(--muted);font-size:.92rem;}
+.modal-form .modal-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.modal-form .field{margin-bottom:14px;}
+.modal-note{margin-top:10px;color:var(--muted-2);font-size:.8rem;text-align:center;}
+.modal-success{display:none;text-align:center;padding:20px 0;}
+.modal-success .check{font-size:2.5rem;margin-bottom:12px;}
+.modal-success p{color:var(--silver);font-size:.95rem;}
+@media(max-width:480px){
+  .modal-box{padding:28px 20px 24px;}
+  .modal-form .modal-row{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
@@ -279,6 +341,7 @@ h1,h2,h3{font-family:var(--font-display);line-height:1.05;font-weight:800;letter
         <li><a href="#temoignages">Témoignages</a></li>
         <li><a href="marques.html">Marques</a></li>
         <li><a href="connexion.html">Espace membre</a></li>
+        <li><a href="event.html">Événements</a></li>
         <li><a href="#contact" class="nav-cta">Me contacter</a></li>
       </ul>
     </nav>
@@ -286,6 +349,43 @@ h1,h2,h3{font-family:var(--font-display);line-height:1.05;font-weight:800;letter
 </header>
 
 <main id="contenu-principal">
+
+  <!-- VSL — Section principale publicité (ads → index.html) -->
+  <section class="vsl-section" id="vsl" aria-label="Présentation Elite 90 Days">
+    <div class="container">
+      <div class="vsl-inner">
+        <div class="vsl-head">
+          <span class="vsl-eyebrow">Présentation exclusive</span>
+          <h2>Regarde cette vidéo <span class="gold-text">jusqu'au bout</span></h2>
+          <p>Ce que je partage ici n'est disponible nulle part ailleurs. C'est ce qui te permettra de candidater en connaissance de cause.</p>
+        </div>
+
+        <!-- ⚠️ Remplace "u7dvBvDFAkM" par l'ID de ta vraie VSL une fois uploadée sur YouTube
+              → YouTube Studio › Modifier la vidéo › Plus d'options › cocher "Autoriser l'intégration" -->
+        <div class="video-wrap">
+          <div id="yt-player"></div>
+        </div>
+        <p class="watch-note">Regarde jusqu'à la fin — le bouton de candidature apparaît ensuite</p>
+
+        <div class="vsl-cta">
+          <button type="button" id="btn-vsl-cta" class="btn btn-primary btn-vsl locked" disabled onclick="openCandidatureModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Regarde la vidéo jusqu'au bout
+          </button>
+          <p class="vsl-cta-note">Places limitées · Réservé aux personnes prêtes à s'investir 90 jours</p>
+        </div>
+
+        <div class="vsl-proof">
+          <p class="vsl-proof-label">Ils ont franchi le pas</p>
+          <div class="vsl-proof-list">
+            <div class="vsl-proof-item"><strong>Résultat</strong>"+3 clients en 6 semaines, la méthode est béton."</div>
+            <div class="vsl-proof-item"><strong>Résultat</strong>"J'ai enfin une offre claire et des clients qui payent."</div>
+            <div class="vsl-proof-item"><strong>Résultat</strong>"Premier contrat signé dès la 3e semaine du challenge."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- HÉRO -->
   <section class="hero" aria-labelledby="hero-titre">
@@ -557,6 +657,155 @@ h1,h2,h3{font-family:var(--font-display);line-height:1.05;font-weight:800;letter
   </section>
 </main>
 
+<!-- MODAL CANDIDATURE — Formulaire de qualification multi-étapes -->
+<div class="modal-backdrop" id="candidature-modal" role="dialog" aria-modal="true" aria-labelledby="modal-titre">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeCandidatureModal()" aria-label="Fermer">✕</button>
+
+    <!-- Étape 0 : Identité -->
+    <div class="mstep is-active" id="ms-0">
+      <div class="modal-head">
+        <span class="eyebrow">Elite 90 Days</span>
+        <h2 id="modal-titre">Dis-moi en deux mots qui tu es</h2>
+        <p>Pour personnaliser notre échange, j'ai besoin de quelques infos.</p>
+      </div>
+      <form class="modal-form" id="ms-0-form" novalidate>
+        <div class="modal-row">
+          <div class="field"><input type="text" id="cand-prenom" name="prenom" autocomplete="given-name" placeholder=" " required /><label for="cand-prenom">Prénom</label></div>
+          <div class="field"><input type="text" id="cand-nom" name="nom" autocomplete="family-name" placeholder=" " required /><label for="cand-nom">Nom</label></div>
+        </div>
+        <div class="field"><input type="email" id="cand-email" name="email" autocomplete="email" placeholder=" " required /><label for="cand-email">E-mail</label></div>
+        <div class="field"><input type="tel" id="cand-tel" name="tel" autocomplete="tel" inputmode="tel" placeholder=" " required /><label for="cand-tel">Téléphone</label></div>
+        <div class="mstep-nav">
+          <button type="submit" class="btn btn-primary">Commencer la candidature <span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <p class="modal-note">Tes informations sont confidentielles et ne seront jamais revendues.</p>
+      </form>
+    </div>
+
+    <!-- Étape 1 -->
+    <div class="mstep" id="ms-1">
+      <div class="mstep-progress"></div>
+      <p class="mstep-label">Question 1 / 6</p>
+      <p class="mstep-question">Quelle est ta situation actuelle&nbsp;?</p>
+      <div class="mstep-options">
+        <label class="mstep-opt"><input type="radio" name="q1" value="1" /><span>Salarié(e) — je veux lancer mon activité</span></label>
+        <label class="mstep-opt"><input type="radio" name="q1" value="2" /><span>J'ai lancé mon activité il y a moins de 2 ans</span></label>
+        <label class="mstep-opt"><input type="radio" name="q1" value="3" /><span>J'ai une activité établie depuis plus de 2 ans</span></label>
+        <label class="mstep-opt"><input type="radio" name="q1" value="4" /><span>En reconversion / sans activité fixe pour l'instant</span></label>
+      </div>
+      <div class="mstep-nav">
+        <button type="button" class="btn btn-ghost" onclick="msBack()">← Retour</button>
+        <button type="button" class="btn btn-primary" onclick="msNext(1)">Suivant →</button>
+      </div>
+    </div>
+
+    <!-- Étape 2 -->
+    <div class="mstep" id="ms-2">
+      <div class="mstep-progress"></div>
+      <p class="mstep-label">Question 2 / 6</p>
+      <p class="mstep-question">Quel est ton chiffre d'affaires mensuel actuel&nbsp;?</p>
+      <div class="mstep-options">
+        <label class="mstep-opt"><input type="radio" name="q2" value="1" /><span>Pas encore de CA</span></label>
+        <label class="mstep-opt"><input type="radio" name="q2" value="2" /><span>Moins de 500 € / mois</span></label>
+        <label class="mstep-opt"><input type="radio" name="q2" value="3" /><span>500 € – 2 000 € / mois</span></label>
+        <label class="mstep-opt"><input type="radio" name="q2" value="4" /><span>2 000 € – 5 000 € / mois</span></label>
+        <label class="mstep-opt"><input type="radio" name="q2" value="5" /><span>Plus de 5 000 € / mois</span></label>
+      </div>
+      <div class="mstep-nav">
+        <button type="button" class="btn btn-ghost" onclick="msBack()">← Retour</button>
+        <button type="button" class="btn btn-primary" onclick="msNext(2)">Suivant →</button>
+      </div>
+    </div>
+
+    <!-- Étape 3 -->
+    <div class="mstep" id="ms-3">
+      <div class="mstep-progress"></div>
+      <p class="mstep-label">Question 3 / 6</p>
+      <p class="mstep-question">Quel est ton objectif principal sur 90 jours&nbsp;?</p>
+      <div class="mstep-options">
+        <label class="mstep-opt"><input type="radio" name="q3" value="1" /><span>Lancer mon activité (partir de zéro)</span></label>
+        <label class="mstep-opt"><input type="radio" name="q3" value="2" /><span>Atteindre mes premiers clients payants</span></label>
+        <label class="mstep-opt"><input type="radio" name="q3" value="3" /><span>Passer un palier de revenus</span></label>
+        <label class="mstep-opt"><input type="radio" name="q3" value="4" /><span>Structurer et scaler mon business</span></label>
+      </div>
+      <div class="mstep-nav">
+        <button type="button" class="btn btn-ghost" onclick="msBack()">← Retour</button>
+        <button type="button" class="btn btn-primary" onclick="msNext(3)">Suivant →</button>
+      </div>
+    </div>
+
+    <!-- Étape 4 -->
+    <div class="mstep" id="ms-4">
+      <div class="mstep-progress"></div>
+      <p class="mstep-label">Question 4 / 6</p>
+      <p class="mstep-question">Quel est le principal obstacle qui te bloque aujourd'hui&nbsp;?</p>
+      <div class="mstep-options">
+        <label class="mstep-opt"><input type="radio" name="q4" value="1" /><span>Manque de clarté sur mon offre ou ma stratégie</span></label>
+        <label class="mstep-opt"><input type="radio" name="q4" value="2" /><span>Problème de vente et de closing</span></label>
+        <label class="mstep-opt"><input type="radio" name="q4" value="3" /><span>Manque de temps ou d'organisation</span></label>
+        <label class="mstep-opt"><input type="radio" name="q4" value="4" /><span>Aucun accompagnement — je suis seul(e)</span></label>
+      </div>
+      <div class="mstep-nav">
+        <button type="button" class="btn btn-ghost" onclick="msBack()">← Retour</button>
+        <button type="button" class="btn btn-primary" onclick="msNext(4)">Suivant →</button>
+      </div>
+    </div>
+
+    <!-- Étape 5 -->
+    <div class="mstep" id="ms-5">
+      <div class="mstep-progress"></div>
+      <p class="mstep-label">Question 5 / 6</p>
+      <p class="mstep-question">Es-tu prêt(e) à investir dans un accompagnement premium pour atteindre ton objectif&nbsp;?</p>
+      <div class="mstep-options">
+        <label class="mstep-opt"><input type="radio" name="q5" value="1" /><span>Oui — mon budget est prêt</span></label>
+        <label class="mstep-opt"><input type="radio" name="q5" value="2" /><span>Oui — mais j'ai besoin de connaître les détails</span></label>
+        <label class="mstep-opt"><input type="radio" name="q5" value="3" /><span>Peut-être — je dois y réfléchir</span></label>
+        <label class="mstep-opt"><input type="radio" name="q5" value="4" /><span>Non — je cherche quelque chose de gratuit</span></label>
+      </div>
+      <div class="mstep-nav">
+        <button type="button" class="btn btn-ghost" onclick="msBack()">← Retour</button>
+        <button type="button" class="btn btn-primary" onclick="msNext(5)">Suivant →</button>
+      </div>
+    </div>
+
+    <!-- Étape 6 -->
+    <div class="mstep" id="ms-6">
+      <div class="mstep-progress"></div>
+      <p class="mstep-label">Question 6 / 6</p>
+      <p class="mstep-question">En combien de temps veux-tu voir des résultats concrets&nbsp;?</p>
+      <div class="mstep-options">
+        <label class="mstep-opt"><input type="radio" name="q6" value="1" /><span>Dès maintenant — je suis prêt(e) à démarrer</span></label>
+        <label class="mstep-opt"><input type="radio" name="q6" value="2" /><span>Dans 1 à 3 mois</span></label>
+        <label class="mstep-opt"><input type="radio" name="q6" value="3" /><span>Dans 6 mois et plus</span></label>
+        <label class="mstep-opt"><input type="radio" name="q6" value="4" /><span>Pas de date précise — je verrai</span></label>
+      </div>
+      <div class="mstep-nav">
+        <button type="button" class="btn btn-ghost" onclick="msBack()">← Retour</button>
+        <button type="button" class="btn btn-primary" id="ms-submit-btn" onclick="msSubmit()">Envoyer ma candidature →</button>
+      </div>
+    </div>
+
+    <!-- Résultat : Qualifié → Calendly -->
+    <div class="modal-result" id="ms-result-ok">
+      <div style="font-size:2.2rem;margin-bottom:12px;">🎯</div>
+      <p class="mstep-label" style="margin-bottom:8px;">Félicitations&nbsp;!</p>
+      <p style="font-family:var(--font-display);font-weight:700;font-size:1.2rem;margin-bottom:12px;">Tu corresponds au profil Elite 90 Days</p>
+      <p style="color:var(--muted);font-size:.92rem;margin-bottom:16px;">Tu vas être redirigé(e) vers mon calendrier pour réserver ton appel de découverte. 🚀</p>
+      <div style="width:32px;height:3px;background:var(--gold);border-radius:3px;margin:0 auto;"></div>
+    </div>
+
+    <!-- Résultat : Non qualifié → On te recontacte -->
+    <div class="modal-result" id="ms-result-wait">
+      <div style="font-size:2.2rem;margin-bottom:12px;">📩</div>
+      <p class="mstep-label" style="margin-bottom:8px;">Merci pour ta candidature</p>
+      <p style="font-family:var(--font-display);font-weight:700;font-size:1.2rem;margin-bottom:12px;">On t'a bien reçu(e)</p>
+      <p style="color:var(--muted);font-size:.92rem;">Ton profil est enregistré. Si une opportunité correspond à ta situation, Bastian reviendra vers toi personnellement.</p>
+    </div>
+
+  </div>
+</div>
+
 <footer class="site-footer">
   <div class="container footer-inner">
     <a class="brand" href="#haut" aria-label="Bastian Tallec accueil">
@@ -664,6 +913,174 @@ h1,h2,h3{font-family:var(--font-display);line-height:1.05;font-weight:800;letter
     var s = document.getElementById('form-success'); if(s){ s.hidden = false; }
     try { f.reset(); } catch(e){}
   });
+})();
+</script>
+
+<!-- Modal candidature — formulaire qualification multi-étapes -->
+<script>
+(function(){
+  var CALENDLY_URL = 'https://calendly.com/bastian-tlc/appel-decouverte';
+  var currentStep = 0;
+  var formData = {};
+  var TOTAL_Q = 6;
+
+  window.openCandidatureModal = function(){
+    var m = document.getElementById('candidature-modal');
+    if(m){ m.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
+  };
+  window.closeCandidatureModal = function(){
+    var m = document.getElementById('candidature-modal');
+    if(m){ m.classList.remove('is-open'); document.body.style.overflow = ''; }
+  };
+  var backdrop = document.getElementById('candidature-modal');
+  if(backdrop) backdrop.addEventListener('click', function(e){ if(e.target===backdrop) closeCandidatureModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeCandidatureModal(); });
+
+  function showStep(n){
+    for(var i=0;i<=TOTAL_Q;i++){
+      var el=document.getElementById('ms-'+i);
+      if(el) el.classList.toggle('is-active', i===n);
+    }
+    ['ms-result-ok','ms-result-wait'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) el.classList.remove('is-active');
+    });
+    if(n>=1 && n<=TOTAL_Q){
+      var activeStep=document.getElementById('ms-'+n);
+      if(activeStep){
+        var prog=activeStep.querySelector('.mstep-progress');
+        if(prog){
+          var dots='';
+          for(var d=1;d<=TOTAL_Q;d++){
+            var cls=d<n?'done':d===n?'active':'';
+            dots+='<span class="mstep-dot'+(cls?' '+cls:'')+'"></span>';
+          }
+          prog.innerHTML=dots;
+        }
+      }
+      var qName='q'+n;
+      if(formData[qName]){
+        document.querySelectorAll('input[name="'+qName+'"]').forEach(function(r){
+          r.checked=(r.value===formData[qName]);
+          r.closest('.mstep-opt').classList.toggle('selected', r.checked);
+        });
+      }
+    }
+    currentStep=n;
+  }
+
+  document.querySelectorAll('.mstep-opt input[type="radio"]').forEach(function(radio){
+    radio.addEventListener('change', function(){
+      var name=radio.name;
+      document.querySelectorAll('input[name="'+name+'"]').forEach(function(r){
+        r.closest('.mstep-opt').classList.toggle('selected', r===radio);
+      });
+    });
+  });
+
+  var f0=document.getElementById('ms-0-form');
+  if(f0){
+    f0.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      var g=function(n){ var el=document.getElementById(n); return el?el.value.trim():''; };
+      var prenom=g('cand-prenom'), nom=g('cand-nom'), email=g('cand-email'), tel=g('cand-tel');
+      if(!prenom||!nom||!email||!tel){ return; }
+      formData.prenom=prenom; formData.nom=nom; formData.email=email; formData.tel=tel;
+      showStep(1);
+    });
+  }
+
+  window.msBack = function(){
+    if(currentStep>1) showStep(currentStep-1);
+    else showStep(0);
+  };
+
+  window.msNext = function(step){
+    var qName='q'+step;
+    var sel=document.querySelector('input[name="'+qName+'"]:checked');
+    if(!sel){ return; }
+    formData[qName]=sel.value;
+    showStep(step+1);
+  };
+
+  function isQualified(a){
+    if(a.q1==='3') return false;
+    if(a.q3==='1') return false;
+    if(a.q6==='3'||a.q6==='4') return false;
+    return true;
+  }
+
+  window.msSubmit = function(){
+    var sel=document.querySelector('input[name="q6"]:checked');
+    if(!sel){ return; }
+    formData.q6=sel.value;
+    var btn=document.getElementById('ms-submit-btn');
+    if(btn){ btn.disabled=true; btn.textContent='Envoi en cours…'; }
+    var qualified=isQualified(formData);
+    (function(){
+      try{
+        var c=window.TLCAuth && window.TLCAuth.client();
+        if(!c) return;
+        c.from('form_qualif').insert({
+          email: formData.email, prenom: formData.prenom, nom: formData.nom, tel: formData.tel,
+          q1: formData.q1, q2: formData.q2, q3: formData.q3,
+          q4: formData.q4, q5: formData.q5, q6: formData.q6,
+          qualifie: qualified
+        });
+        if(qualified && window.TLCAuth.addProspect){
+          window.TLCAuth.addProspect(formData.email, (formData.prenom+' '+formData.nom).trim(), formData.tel);
+        }
+      }catch(e){}
+    })();
+    for(var i=0;i<=TOTAL_Q;i++){
+      var el=document.getElementById('ms-'+i);
+      if(el) el.classList.remove('is-active');
+    }
+    if(qualified){
+      var ok=document.getElementById('ms-result-ok');
+      if(ok) ok.classList.add('is-active');
+      setTimeout(function(){
+        closeCandidatureModal();
+        window.open(
+          CALENDLY_URL+'?email='+encodeURIComponent(formData.email)+'&name='+encodeURIComponent((formData.prenom+' '+formData.nom).trim()),
+          '_blank'
+        );
+      }, 2200);
+    } else {
+      var wait=document.getElementById('ms-result-wait');
+      if(wait) wait.classList.add('is-active');
+    }
+  };
+})();
+</script>
+
+<!-- YouTube IFrame API — lecture VSL complète → déverrouille le bouton de candidature -->
+<script>
+(function(){
+  var VIDEO_ID = 'u7dvBvDFAkM';
+  var player;
+  window.onYouTubeIframeAPIReady = function(){
+    player = new YT.Player('yt-player', {
+      videoId: VIDEO_ID,
+      playerVars: { rel:0, modestbranding:1, color:'white', autoplay:1, mute:1 },
+      events: {
+        onStateChange: function(event){
+          if(event.data === YT.PlayerState.ENDED){
+            var btn = document.getElementById('btn-vsl-cta');
+            if(btn){
+              btn.classList.remove('locked');
+              btn.disabled = false;
+              btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Faire ma candidature';
+            }
+          }
+        }
+      }
+    });
+  };
+  var tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  var first = document.getElementsByTagName('script')[0];
+  first.parentNode.insertBefore(tag, first);
 })();
 </script>
 </body>
