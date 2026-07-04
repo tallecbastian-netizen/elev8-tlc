@@ -1,16 +1,14 @@
 /* ============================================================
-   TLCAuth — accès TLC (SANS code, tout par e-mail)
-   • MEMBRE : tape son e-mail -> vérifié via la fonction Supabase
-     acces_actif() (membre + actif + non expiré). Accès aux vidéos.
-   • ADMIN  : tape son e-mail (doit être dans ADMIN_EMAILS) -> page de gestion.
-     La gestion lit/écrit dans Supabase via des fonctions (synchro auto).
+   TLCAuth — accès TLC
+   • MEMBRE : e-mail seul -> fonction acces_actif() (membre + actif + non expiré).
+   • ADMIN  : e-mail + MOT DE PASSE vérifié par Supabase (vraie connexion).
+             Une fois connecté, lui seul peut lire/gérer la base.
    Tant que Supabase n'est pas configuré -> "mode chantier" (tout ouvert).
 ============================================================ */
 (function () {
   var CFG = window.TLC_CONFIG || {};
   var _client = null;
   var MKEY = "tlc_member";
-  var AKEY = "tlc_admin";
 
   function configured() {
     return CFG.SUPABASE_URL && CFG.SUPABASE_URL.indexOf("VOTRE") < 0 &&
@@ -26,10 +24,11 @@
     return (CFG.ADMIN_EMAILS || (CFG.ADMIN_EMAIL ? [CFG.ADMIN_EMAIL] : []))
       .map(function (e) { return (e || "").toLowerCase(); });
   }
+  function isAdminEmail(e) { return admins().indexOf((e || "").toLowerCase()) >= 0; }
   function today() { return new Date().toISOString().slice(0, 10); }
   function go(u) { location.replace(u); }
 
-  /* ---------- MEMBRE ---------- */
+  /* ---------- MEMBRE (e-mail seul) ---------- */
   function setMember(email, until) {
     try { localStorage.setItem(MKEY, JSON.stringify({ email: (email || "").toLowerCase(), until: until || null })); } catch (e) {}
   }
@@ -47,20 +46,33 @@
     memberLogout(); return { active: false };
   }
 
-  /* ---------- ADMIN (e-mail seul) ---------- */
-  function adminLogin(email) {
-    email = (email || "").trim().toLowerCase();
-    if (admins().indexOf(email) >= 0) { try { localStorage.setItem(AKEY, email); } catch (e) {} return true; }
-    return false;
+  /* ---------- ADMIN (e-mail + mot de passe Supabase) ---------- */
+  async function sessionEmail() {
+    var c = client(); if (!c) return null;
+    try { var r = await c.auth.getSession(); var s = r.data && r.data.session; return s ? (s.user.email || "").toLowerCase() : null; }
+    catch (e) { return null; }
   }
-  function adminSession() { try { return localStorage.getItem(AKEY); } catch (e) { return null; } }
-  function adminLogout() { try { localStorage.removeItem(AKEY); } catch (e) {} }
-  function isAdmin() { var e = adminSession(); return !!(e && admins().indexOf((e || "").toLowerCase()) >= 0); }
+  async function currentAccess() {
+    if (!configured()) return { role: "open" };
+    var email = await sessionEmail();
+    if (!email) return { role: null };
+    if (isAdminEmail(email)) return { role: "admin", email: email };
+    return { role: "authed", email: email };
+  }
+  async function adminSignIn(email, password) {
+    email = (email || "").trim().toLowerCase();
+    var c = client(); if (!c) throw new Error("Connexion non configurée.");
+    if (!isAdminEmail(email)) throw new Error("Cette adresse n'est pas administratrice.");
+    var r = await c.auth.signInWithPassword({ email: email, password: password });
+    if (r.error) throw r.error;
+    return true;
+  }
 
   /* ---------- Gardes de page ---------- */
   async function requireMember() {
     if (!configured()) return { role: "open" };
-    if (isAdmin()) return { role: "admin", email: adminSession() };
+    var a = await currentAccess();
+    if (a.role === "admin") return a;
     var s = memberSession();
     if (s && s.email) {
       try {
@@ -74,8 +86,30 @@
   }
   async function requireAdmin() {
     if (!configured()) return { role: "open" };
-    if (isAdmin()) return { role: "admin", email: adminSession() };
-    go("admin.html"); return null;
+    var a = await currentAccess();
+    if (a.role === "admin") return a;
+    go("connexion.html?admin=1"); return null;
+  }
+
+  /* ---------- Lien magique (OTP e-mail) ---------- */
+  async function sendCode(email, redirectTo) {
+    email = (email || "").trim().toLowerCase();
+    if (!configured()) {
+      // Mode chantier : accès direct sans envoi d'e-mail
+      await memberLogin(email);
+      return { dev: true };
+    }
+    var c = client(); if (!c) throw new Error("Connexion non configurée.");
+    var dest = redirectTo ||
+      (typeof window !== "undefined"
+        ? window.location.origin + window.location.pathname
+        : "");
+    var r = await c.auth.signInWithOtp({
+      email: email,
+      options: { emailRedirectTo: dest }
+    });
+    if (r.error) throw r.error;
+    return { sent: true };
   }
 
   async function addProspect(email, nom, tel) {
@@ -84,13 +118,18 @@
     try { await c.rpc("add_prospect", { p_email: (email || "").toLowerCase(), p_nom: nom || null, p_tel: tel || null }); } catch (e) {}
   }
 
-  function signOut() { memberLogout(); adminLogout(); }
+  async function signOut() {
+    var c = client();
+    if (c) { try { await c.auth.signOut(); } catch (e) {} }
+    memberLogout();
+  }
 
   window.TLCAuth = {
-    configured: configured, client: client, supabase: client, today: today, admins: admins,
+    configured: configured, client: client, supabase: client, today: today,
+    admins: admins, isAdminEmail: isAdminEmail,
     memberLogin: memberLogin, memberSession: memberSession, memberLogout: memberLogout,
     requireMember: requireMember, addProspect: addProspect,
-    adminLogin: adminLogin, adminSession: adminSession, adminLogout: adminLogout, isAdmin: isAdmin,
-    requireAdmin: requireAdmin, signOut: signOut
+    currentAccess: currentAccess, adminSignIn: adminSignIn,
+    requireAdmin: requireAdmin, signOut: signOut, sendCode: sendCode
   };
 })();

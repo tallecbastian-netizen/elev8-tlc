@@ -180,8 +180,3 @@ a{color:inherit;text-decoration:none;}
     var g = document.getElementById('authgate');
     var access = await window.TLCAuth.requireAdmin(); // redirige vers connexion.html si non admin
     if (access && g) g.style.display = 'none';         // admin OK (ou mode chantier)
-  })();
-</script>
-<script src="js/suivi-membres.js" defer></script>
-</body>
-</html>

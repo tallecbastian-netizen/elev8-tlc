@@ -27,26 +27,65 @@ h1{font-family:var(--fd);font-weight:700;font-size:1.5rem;margin-bottom:6px;}
 label{display:block;text-align:left;font-family:var(--fc);text-transform:uppercase;letter-spacing:.14em;font-size:.74rem;color:var(--silver);margin:0 0 7px 2px;}
 input{width:100%;padding:14px 15px;border-radius:11px;background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);font-size:1rem;font-family:var(--fb);outline:none;transition:border-color .2s;}
 input:focus{border-color:var(--gold);}
+.pwd{margin-top:14px;display:none;}
 button{width:100%;margin-top:16px;padding:14px 16px;border:0;border-radius:11px;background:var(--grad-gold);color:#1a1407;font-family:var(--fc);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:.95rem;cursor:pointer;}
 button:disabled{opacity:.5;cursor:default;}
+button.btn-outline{background:transparent;border:1px solid var(--border-2);color:var(--muted);margin-top:10px;font-size:.82rem;}
+button.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
 .msg{margin-top:14px;font-size:.86rem;min-height:1.1em;}
 .msg.err{color:#ff9b9b;} .msg.ok{color:#9be3b0;}
 .back{display:inline-block;margin-top:20px;font-family:var(--fc);text-transform:uppercase;letter-spacing:.12em;font-size:.76rem;color:var(--muted);}
 .back:hover{color:var(--gold);}
+
+/* ---- état envoyé ---- */
+.icon-sent{font-size:2.4rem;margin-bottom:12px;display:block;}
+
+/* ---- chargement ---- */
+.spinner{width:36px;height:36px;border:3px solid var(--border-2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* états */
+#st-sent,#st-loading{display:none;}
 </style>
 </head>
 <body>
   <div class="card">
     <span class="brand-mark"><b>TLC</b></span>
-    <h1>Espace membre</h1>
-    <p class="sub">Entre ton adresse e-mail pour accéder à ton espace.</p>
 
-    <label for="email">Ton adresse e-mail</label>
-    <input type="email" id="email" placeholder="prenom@mail.com" autocomplete="email" />
-    <button id="btn">Entrer</button>
+    <!-- ──────────── ÉTAT 1 : formulaire ──────────── -->
+    <div id="st-form">
+      <h1>Espace membre</h1>
+      <p class="sub" id="sub-hint">Entre ton adresse e-mail pour accéder à ton espace.</p>
 
-    <div class="msg" id="msg"></div>
-    <a class="back" href="index.html">← Retour au site</a>
+      <label for="email">Ton adresse e-mail</label>
+      <input type="email" id="email" placeholder="prenom@mail.com" autocomplete="email" />
+
+      <div class="pwd" id="pwd-wrap">
+        <label for="password">Mot de passe admin</label>
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+
+      <button id="btn">Entrer</button>
+      <div class="msg" id="msg"></div>
+      <a class="back" href="index.html">← Retour au site</a>
+    </div>
+
+    <!-- ──────────── ÉTAT 2 : lien envoyé ──────────── -->
+    <div id="st-sent">
+      <span class="icon-sent">📬</span>
+      <h1>Vérifie ta boîte mail</h1>
+      <p class="sub">Un lien d'accès a été envoyé à <strong id="sent-email"></strong>. Clique dessus pour entrer dans ton espace.</p>
+      <p class="sub" style="margin-top:10px;font-size:.82rem;">Le lien expire dans 1 heure. Vérifie aussi tes spams.</p>
+      <button class="btn-outline" id="btn-resend">Renvoyer un lien</button>
+      <br/><a class="back" href="index.html">← Retour au site</a>
+    </div>
+
+    <!-- ──────────── ÉTAT 3 : traitement callback ──────────── -->
+    <div id="st-loading">
+      <div class="spinner"></div>
+      <h1>Connexion…</h1>
+      <p class="sub">Vérification de ton accès en cours…</p>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -57,29 +96,116 @@ button:disabled{opacity:.5;cursor:default;}
     var $ = function(id){ return document.getElementById(id); };
     var msg = $("msg");
     function show(t,k){ msg.textContent = t||""; msg.className = "msg" + (k?(" "+k):""); }
+    function showState(id){
+      ["st-form","st-sent","st-loading"].forEach(function(s){ $(s).style.display = s===id ? "" : "none"; });
+    }
+    var pwdShown = false;
+    var lastEmail = "";
 
-    // Déjà connecté ? (admin ou membre valide) -> on entre directement
-    if (window.TLCAuth.isAdmin && window.TLCAuth.isAdmin()) { location.replace("espace-membre.html"); return; }
+    // ── Détection callback magic link (hash #access_token ou ?code=) ──
+    var isCallback = window.location.hash.indexOf("access_token") >= 0 ||
+                     window.location.search.indexOf("code=") >= 0;
+
+    if (isCallback) {
+      showState("st-loading");
+      // Supabase v2 a besoin d'un petit délai pour traiter le hash
+      setTimeout(async function(){
+        var c = window.TLCAuth.client();
+        if (!c) { showState("st-form"); return; }
+        try {
+          var res = await c.auth.getSession();
+          var session = res.data && res.data.session;
+          if (!session) { showState("st-form"); show("Lien invalide ou expiré. Recommence.","err"); return; }
+          var email = (session.user.email || "").toLowerCase();
+          // Admin avec session Supabase
+          if (window.TLCAuth.isAdminEmail(email)) { location.replace("espace-membre.html"); return; }
+          // Membre : vérifier acces_actif
+          var r = await window.TLCAuth.memberLogin(email);
+          if (r.active) { location.replace("espace-membre.html"); }
+          else { showState("st-form"); show("Ton accès n'est pas actif (ou a expiré). Contacte Bastian pour l'activer.","err"); }
+        } catch(e) {
+          showState("st-form"); show("Erreur lors de la connexion. Réessaie.","err");
+        }
+      }, 400);
+      return; // ne pas exécuter la suite
+    }
+
+    // ── Déjà connecté ? ──
+    window.TLCAuth.currentAccess().then(function(a){ if (a && a.role === "admin") location.replace("espace-membre.html"); });
     var s = window.TLCAuth.memberSession && window.TLCAuth.memberSession();
     if (s && s.until && s.until >= window.TLCAuth.today()) { location.replace("espace-membre.html"); return; }
+
+    // ── Auto-révèle admin si ?admin=1 ──
+    if (window.location.search.indexOf("admin=1") >= 0) { revealPwd(); }
+
+    function revealPwd(){
+      pwdShown = true;
+      $("pwd-wrap").style.display = "block";
+      $("btn").textContent = "Se connecter";
+      $("sub-hint").textContent = "Entre ton adresse e-mail et ton mot de passe admin.";
+      setTimeout(function(){ $("password").focus(); }, 80);
+    }
 
     async function enter(){
       var email = ($("email").value||"").trim().toLowerCase();
       if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ show("Entre une adresse e-mail valide.","err"); return; }
-      $("btn").disabled = true; show("Vérification…");
-      try{
-        // 1) Est-ce l'admin ? -> accès espace membre + gestion
-        if (window.TLCAuth.adminLogin(email)) { show("Accès admin ✓","ok"); location.replace("espace-membre.html"); return; }
-        // 2) Sinon, membre actif ?
-        var r = await window.TLCAuth.memberLogin(email);
-        if (r.active) { show("Accès confirmé ✓","ok"); location.replace("espace-membre.html"); return; }
-        show("Ton accès n'est pas actif (ou a expiré). Contacte Bastian pour l'activer.","err");
-      }catch(e){
+      lastEmail = email;
+
+      // ── Admin : e-mail puis mot de passe ──
+      if (window.TLCAuth.isAdminEmail(email)) {
+        if (!pwdShown) { show("Compte admin : entre ton mot de passe.",""); revealPwd(); return; }
+        var pwd = $("password").value || "";
+        if (!pwd) { show("Entre ton mot de passe.","err"); return; }
+        $("btn").disabled = true; show("Connexion…");
+        try {
+          await window.TLCAuth.adminSignIn(email, pwd);
+          show("Connecté ✓","ok"); location.replace("espace-membre.html");
+        } catch(e){
+          show("Mot de passe incorrect (ou compte admin pas encore créé dans Supabase).","err");
+        } finally { $("btn").disabled = false; }
+        return;
+      }
+
+      // ── Membre : magic link (ou accès direct en mode chantier) ──
+      $("btn").disabled = true; show("Envoi du lien…");
+      try {
+        var redirectTo = window.location.origin + window.location.pathname;
+        var result = await window.TLCAuth.sendCode(email, redirectTo);
+        if (result.dev) {
+          // Mode chantier : accès direct
+          show("Accès direct (mode chantier) ✓","ok");
+          location.replace("espace-membre.html");
+        } else {
+          // Lien envoyé
+          $("sent-email").textContent = email;
+          showState("st-sent");
+        }
+      } catch(e) {
         show("Erreur : "+((e&&e.message)||"réessaie")+".","err");
-      }finally{ $("btn").disabled = false; }
+        $("btn").disabled = false;
+      }
     }
+
+    async function resend(){
+      if (!lastEmail) { showState("st-form"); return; }
+      $("btn-resend").disabled = true;
+      try {
+        var redirectTo = window.location.origin + window.location.pathname;
+        await window.TLCAuth.sendCode(lastEmail, redirectTo);
+        // petit feedback visuel
+        var orig = $("btn-resend").textContent;
+        $("btn-resend").textContent = "Lien renvoyé ✓";
+        setTimeout(function(){ $("btn-resend").textContent = orig; $("btn-resend").disabled = false; }, 3000);
+      } catch(e) {
+        showState("st-form");
+        show("Erreur lors du renvoi. Réessaie.","err");
+      }
+    }
+
     $("btn").addEventListener("click", enter);
+    $("btn-resend").addEventListener("click", resend);
     $("email").addEventListener("keydown", function(e){ if(e.key==="Enter") enter(); });
+    $("password").addEventListener("keydown", function(e){ if(e.key==="Enter") enter(); });
   })();
   </script>
 </body>

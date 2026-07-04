@@ -1,10 +1,9 @@
 -- ============================================================
 --  TLC — Base "membres" : Prospect -> Membre actif -> Membre inactif
---  Gestion depuis le site (sans code) -> écrit dans Supabase via fonctions.
+--  Membres : accès e-mail seul.  Admin : e-mail + mot de passe (vraie connexion).
+--  La base n'est lisible/modifiable QUE par l'admin connecté.
 --  À COLLER dans : Supabase (projet "Site Web TLC" / vnyereucdquqkutgsddv)
---                  -> SQL Editor -> New query -> tout coller -> Run.
---  ➜ Si tu l'avais déjà lancé : relance-le entièrement, c'est SANS danger
---    (create if not exists / create or replace / drop policy if exists).
+--                  -> SQL Editor -> tout coller -> Run.  (Relançable sans danger.)
 -- ============================================================
 
 -- 1) Table
@@ -33,16 +32,12 @@ create trigger trg_tlc_lower_email
   before insert or update on public.membres
   for each row execute function public.tlc_lower_email();
 
--- 3) RLS : table verrouillée. Tout passe par les fonctions ci-dessous.
+-- 3) RLS : table totalement verrouillée. Tout passe par les fonctions ci-dessous.
 alter table public.membres enable row level security;
 drop policy if exists "tlc admin all" on public.membres;
-create policy "tlc admin all" on public.membres
-  for all
-  using  ( lower(auth.jwt() ->> 'email') in ('tallecbastian.pro@gmail.com') )
-  with check ( lower(auth.jwt() ->> 'email') in ('tallecbastian.pro@gmail.com') );
 drop policy if exists "tlc member read own" on public.membres;
 
--- 4) MEMBRE : accès par e-mail -> renvoie la date de fin d'accès (paiement + 28 j) si ACTIF.
+-- 4) MEMBRE (public, e-mail) : renvoie la date de fin d'accès (paiement + 28 j) si ACTIF.
 create or replace function public.acces_actif(p_email text)
 returns date language sql security definer set search_path = public as $$
   select (date_dernier_paiement + 28)
@@ -54,7 +49,7 @@ returns date language sql security definer set search_path = public as $$
    limit 1;
 $$;
 
--- 5) PROSPECT : ajout auto après le formulaire Brevo.
+-- 5) PROSPECT (public) : ajout auto après le formulaire Brevo.
 create or replace function public.add_prospect(p_email text, p_nom text default null, p_tel text default null)
 returns void language plpgsql security definer set search_path = public as $$
 begin
@@ -64,10 +59,16 @@ begin
 end;
 $$;
 
--- 6) ADMIN (gestion sur le site, sans code) : lire / créer / modifier / agir / supprimer.
+-- 6) ADMIN : réservé à l'admin CONNECTÉ. Chaque fonction vérifie l'identité.
+--    👉 Mets ici le(s) même(s) e-mail(s) admin que dans js/auth-config.js.
 create or replace function public.list_membres()
-returns setof public.membres language sql security definer set search_path = public as $$
-  select * from public.membres order by created_at desc;
+returns setof public.membres language plpgsql security definer set search_path = public as $$
+begin
+  if coalesce(lower(auth.jwt() ->> 'email'), '') not in ('tallecbastian.pro@gmail.com') then
+    raise exception 'Accès refusé';
+  end if;
+  return query select * from public.membres order by created_at desc;
+end;
 $$;
 
 create or replace function public.membre_save(
@@ -76,6 +77,9 @@ create or replace function public.membre_save(
 returns uuid language plpgsql security definer set search_path = public as $$
 declare v_id uuid;
 begin
+  if coalesce(lower(auth.jwt() ->> 'email'), '') not in ('tallecbastian.pro@gmail.com') then
+    raise exception 'Accès refusé';
+  end if;
   if p_id is null then
     insert into public.membres(nom, email, telephone, statut, date_dernier_paiement, promo, notes, source)
     values (p_nom, lower(p_email), p_tel, coalesce(p_statut,'prospect'), p_paiement, p_promo, p_notes, 'manuel')
@@ -94,6 +98,9 @@ $$;
 create or replace function public.membre_action(p_id uuid, p_action text)
 returns void language plpgsql security definer set search_path = public as $$
 begin
+  if coalesce(lower(auth.jwt() ->> 'email'), '') not in ('tallecbastian.pro@gmail.com') then
+    raise exception 'Accès refusé';
+  end if;
   if p_action = 'pay' then
     update public.membres set statut='membre', actif=true, date_dernier_paiement=current_date where id=p_id;
   elsif p_action = 'to_member' then
@@ -106,20 +113,20 @@ begin
 end;
 $$;
 
--- Droits : appelables par le site (clé publique).
+-- 7) Droits : membres/prospects = public ; gestion = admin connecté uniquement.
 revoke all on function public.acces_actif(text) from public;
 revoke all on function public.add_prospect(text, text, text) from public;
-revoke all on function public.list_membres() from public;
-revoke all on function public.membre_save(uuid, text, text, text, text, date, text, text) from public;
-revoke all on function public.membre_action(uuid, text) from public;
 grant execute on function public.acces_actif(text) to anon, authenticated;
 grant execute on function public.add_prospect(text, text, text) to anon, authenticated;
-grant execute on function public.list_membres() to anon, authenticated;
-grant execute on function public.membre_save(uuid, text, text, text, text, date, text, text) to anon, authenticated;
-grant execute on function public.membre_action(uuid, text) to anon, authenticated;
+
+revoke all on function public.list_membres() from public, anon;
+revoke all on function public.membre_save(uuid, text, text, text, text, date, text, text) from public, anon;
+revoke all on function public.membre_action(uuid, text) from public, anon;
+grant execute on function public.list_membres() to authenticated;
+grant execute on function public.membre_save(uuid, text, text, text, text, date, text, text) to authenticated;
+grant execute on function public.membre_action(uuid, text) to authenticated;
 
 -- ============================================================
---  Fait. Le site ajoute les prospects tout seul et tu gères tout
---  (prospect -> membre + paiement, renouveler +28j, désactiver)
---  depuis la page "Gestion des membres", synchro direct avec Supabase.
+--  Résultat : tes membres/prospects entrent par e-mail ; toi tu te connectes
+--  avec e-mail + mot de passe, et seul toi (connecté) peux voir/gérer la base.
 -- ============================================================

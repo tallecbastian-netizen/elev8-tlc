@@ -272,13 +272,4 @@ a{color:inherit;text-decoration:none;}
           html += '<a href="suivi-membres.html" style="display:inline-flex;gap:8px;align-items:center;padding:11px 22px;border-radius:999px;background:rgba(220,184,104,.12);border:1px solid rgba(220,184,104,.5);color:#E6C685;font-family:Oswald,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:.82rem;">&#9881; Membres (admin)</a>';
           html += '<a href="admin-events.html" style="display:inline-flex;gap:8px;align-items:center;padding:11px 22px;border-radius:999px;background:rgba(220,184,104,.12);border:1px solid rgba(220,184,104,.5);color:#E6C685;font-family:Oswald,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:.82rem;">&#128197; Événements (admin)</a>';
         }
-        html += '<button id="tlc-logout" style="padding:11px 22px;border-radius:999px;background:transparent;border:1px solid rgba(255,255,255,.18);color:#9AA1AB;font-family:Oswald,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:.82rem;cursor:pointer;">Déconnexion</button>';
-        bar.innerHTML = html;
-        content.insertBefore(bar, content.firstChild);
-        var lo = document.getElementById('tlc-logout');
-        if (lo) lo.addEventListener('click', function () { window.TLCAuth.signOut(); location.replace('index.html'); });
-      }
-    })();
-  </script>
-</body>
-</html>
+        html += '<button id="tlc-logout" style="padding:11px 22px;border-radius:999px;background:transparent;border:1px solid rgba(255,255,255,.18);color:#9AA1AB;font-family:Oswald,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:.82re

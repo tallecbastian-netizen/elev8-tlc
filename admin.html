@@ -1,73 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8" />
+<html lang="fr"><head><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Espace admin — TLC</title>
 <meta name="robots" content="noindex" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
-<style>
-:root{
-  --bg:#0A0B0E; --surface:#15171D; --surface-2:#1C1F27; --border:rgba(255,255,255,.08); --border-2:rgba(255,255,255,.15);
-  --text:#ECEEF1; --muted:#9AA1AB; --silver:#CDD4DD;
-  --gold:#E6C685; --grad-gold:linear-gradient(135deg,#F7E7BC 0%,#DCB868 44%,#B0853A 100%); --ring:rgba(220,184,104,.45);
-  --fd:"Sora",system-ui,sans-serif; --fc:"Oswald",system-ui,sans-serif; --fb:"Inter",system-ui,sans-serif;
-}
-*,*::before,*::after{box-sizing:border-box;} *{margin:0;}
-body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;display:grid;place-items:center;padding:24px;
-  background-image:radial-gradient(60% 45% at 50% -8%,rgba(220,184,104,.12),transparent 60%);}
-a{color:var(--gold);text-decoration:none;}
-.card{width:min(100%,420px);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:34px 30px;text-align:center;}
-.brand-mark{display:inline-grid;place-items:center;height:46px;padding:0 14px;border-radius:12px;background:rgba(220,184,104,.10);border:1px solid var(--ring);font-family:var(--fd);font-weight:800;letter-spacing:.12em;margin-bottom:18px;}
-.brand-mark b{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
-h1{font-family:var(--fd);font-weight:700;font-size:1.4rem;margin-bottom:6px;}
-.sub{color:var(--muted);font-size:.9rem;margin-bottom:22px;}
-label{display:block;text-align:left;font-family:var(--fc);text-transform:uppercase;letter-spacing:.14em;font-size:.74rem;color:var(--silver);margin:0 0 7px 2px;}
-input{width:100%;padding:14px 15px;border-radius:11px;background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);font-size:1rem;font-family:var(--fb);outline:none;}
-input:focus{border-color:var(--gold);}
-button{width:100%;margin-top:16px;padding:14px 16px;border:0;border-radius:11px;background:var(--grad-gold);color:#1a1407;font-family:var(--fc);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:.95rem;cursor:pointer;}
-.msg{margin-top:14px;font-size:.86rem;min-height:1.1em;}
-.msg.err{color:#ff9b9b;} .msg.ok{color:#9be3b0;}
-.back{display:inline-block;margin-top:18px;font-family:var(--fc);text-transform:uppercase;letter-spacing:.12em;font-size:.76rem;color:var(--muted);}
-.back:hover{color:var(--gold);}
-</style>
-</head>
-<body>
-  <div class="card">
-    <span class="brand-mark"><b>TLC</b></span>
-    <h1>Espace admin</h1>
-    <p class="sub">Réservé à Bastian. Entre ton e-mail admin pour gérer les membres.</p>
-
-    <label for="email">E-mail admin</label>
-    <input type="email" id="email" placeholder="tallecbastian.pro@gmail.com" autocomplete="email" />
-    <button id="btn">Accéder à la gestion</button>
-
-    <div class="msg" id="msg"></div>
-    <a class="back" href="index.html">← Retour au site</a>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/auth-config.js"></script>
-  <script src="js/auth.js"></script>
-  <script>
-  (function(){
-    var $ = function(id){ return document.getElementById(id); };
-    var msg = $("msg");
-    function show(t,k){ msg.textContent=t||""; msg.className="msg"+(k?(" "+k):""); }
-
-    if (window.TLCAuth.isAdmin && window.TLCAuth.isAdmin()) { location.replace("gestion-membres.html"); return; }
-
-    function enter(){
-      var email = ($("email").value||"").trim().toLowerCase();
-      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ show("Entre une adresse e-mail valide.","err"); return; }
-      if(window.TLCAuth.adminLogin(email)){ show("Accès admin confirmé ✓","ok"); location.replace("gestion-membres.html"); }
-      else { show("Cette adresse n'est pas administratrice. (Ajoute-la dans js/auth-config.js -> ADMIN_EMAILS.)","err"); }
-    }
-    $("btn").addEventListener("click", enter);
-    $("email").addEventListener("keydown", function(e){ if(e.key==="Enter") enter(); });
-  })();
-  </script>
-</body>
-</html>
+<title>Espace admin — TLC</title>
+<meta http-equiv="refresh" content="0; url=connexion.html?admin=1" />
+<script>location.replace("connexion.html?admin=1");</script>
+</head><body style="background:#0A0B0E;color:#9AA1AB;font-family:system-ui;display:grid;place-items:center;height:100vh;margin:0;">
+<p>Redirection vers la connexion… <a href="connexion.html?admin=1" style="color:#E6C685;">cliquer ici</a></p>
+</body></html>
