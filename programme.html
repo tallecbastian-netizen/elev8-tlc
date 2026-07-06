@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Programme Elite 90 Days — Bastian Tallec</title>
+  <meta name="description" content="Découvrez le programme Elite 90 Days : 3 phases intensives pour scaler votre business en 90 jours avec Bastian Tallec." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Oswald:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ===================== TOKENS ===================== */
+    :root{
+      --bg:#0A0B0E;
+      --bg-2:#111318;
+      --surface:#161B26;
+      --surface-2:#1C2133;
+      --border:rgba(255,255,255,.07);
+      --border-2:rgba(255,255,255,.12);
+      --text:#E8EAF0;
+      --text-2:#C4C8D4;
+      --muted:#838899;
+      --muted-2:#5A5E6E;
+      --silver:#BFC5D5;
+      --gold:#E6C685;
+      --gold-light:#F7E7BC;
+      --gold-dark:#B0853A;
+      --grad-gold:linear-gradient(135deg,#F7E7BC 0%,#DCB868 44%,#B0853A 100%);
+      --ring:rgba(230,198,133,.18);
+      --shadow:0 8px 32px rgba(0,0,0,.45);
+      --shadow-lg:0 16px 56px rgba(0,0,0,.55);
+      --r:14px;
+      --r-sm:10px;
+      --r-lg:20px;
+      --font-display:'Sora',sans-serif;
+      --font-cond:'Oswald',sans-serif;
+      --font-body:'Inter',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+    body{
+      font-family:var(--font-body);
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.65;
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+    img{max-width:100%;display:block;}
+    a{color:inherit;text-decoration:none;}
+
+    /* ===================== NAV ===================== */
+    .nav{
+      position:sticky;top:0;z-index:100;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 32px;height:64px;
+      background:rgba(10,11,14,.85);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo{
+      font-family:var(--font-display);
+      font-weight:800;font-size:1.1rem;
+      background:var(--grad-gold);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .nav-links{display:flex;gap:28px;align-items:center;}
+    .nav-links a{
+      font-size:.88rem;font-weight:500;color:var(--muted);
+      transition:color .2s;
+    }
+    .nav-links a:hover,.nav-links a.active{color:var(--gold);}
+    .nav-cta{
+      padding:8px 20px;border-radius:8px;
+      background:var(--grad-gold);
+      color:#000;font-weight:700;font-size:.85rem;
+      transition:opacity .2s;
+    }
+    .nav-cta:hover{opacity:.85;}
+    @media(max-width:640px){
+      .nav-links{display:none;}
+    }
+
+    /* ===================== CONTAINER ===================== */
+    .container{width:100%;max-width:900px;margin:0 auto;padding:0 24px;}
+
+    /* ===================== HERO ===================== */
+    .prog-hero{
+      padding:100px 0 60px;
+      text-align:center;
+      border-bottom:1px solid var(--border);
+    }
+    .prog-badge{
+      display:inline-block;
+      padding:6px 18px;
+      border:1px solid var(--gold);
+      border-radius:100px;
+      color:var(--gold);
+      font-size:.8rem;
+      font-weight:600;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:28px;
+    }
+    .prog-hero h1{
+      font-family:var(--font-display);
+      font-size:clamp(2.4rem,6vw,4rem);
+      font-weight:800;
+      line-height:1.1;
+      margin-bottom:20px;
+    }
+    .prog-hero h1 span{
+      background:var(--grad-gold);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .prog-hero p{
+      color:var(--text-2);
+      font-size:1.1rem;
+      max-width:580px;
+      margin:0 auto 36px;
+    }
+
+    /* ===================== PHASES ===================== */
+    .phases{padding:80px 0;}
+    .section-label{
+      font-family:var(--font-cond);
+      font-size:.78rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--gold);
+      margin-bottom:12px;
+    }
+    .section-title{
+      font-family:var(--font-display);
+      font-size:clamp(1.8rem,4vw,2.6rem);
+      font-weight:800;
+      line-height:1.15;
+      margin-bottom:48px;
+    }
+    .phase-grid{
+      display:grid;
+      gap:28px;
+    }
+    .phase-card{
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--r-lg);
+      padding:40px;
+      position:relative;
+      overflow:hidden;
+      transition:border-color .25s, transform .25s;
+    }
+    .phase-card:hover{
+      border-color:var(--border-2);
+      transform:translateY(-3px);
+    }
+    .phase-card::before{
+      content:'';
+      position:absolute;top:0;left:0;right:0;height:3px;
+      background:var(--grad-gold);
+      border-radius:var(--r-lg) var(--r-lg) 0 0;
+    }
+    .phase-num{
+      font-family:var(--font-cond);
+      font-size:.75rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--gold);
+      margin-bottom:8px;
+    }
+    .phase-name{
+      font-family:var(--font-display);
+      font-size:1.5rem;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+    .phase-weeks{
+      font-size:.85rem;
+      color:var(--muted);
+      margin-bottom:20px;
+    }
+    .phase-desc{
+      color:var(--text-2);
+      font-size:.95rem;
+      line-height:1.7;
+      margin-bottom:24px;
+    }
+    .phase-list{
+      list-style:none;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .phase-list li{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      color:var(--text-2);
+      font-size:.9rem;
+    }
+    .phase-list li::before{
+      content:'→';
+      color:var(--gold);
+      flex-shrink:0;
+      margin-top:1px;
+    }
+
+    /* ===================== INCLUDED ===================== */
+    .included{
+      padding:80px 0;
+      border-top:1px solid var(--border);
+    }
+    .inc-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:20px;
+      margin-top:48px;
+    }
+    .inc-item{
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      padding:28px;
+      transition:border-color .2s;
+    }
+    .inc-item:hover{border-color:var(--gold);}
+    .inc-icon{
+      font-size:1.6rem;
+      margin-bottom:14px;
+    }
+    .inc-title{
+      font-weight:700;
+      font-size:1rem;
+      margin-bottom:8px;
+      color:var(--text);
+    }
+    .inc-desc{
+      font-size:.875rem;
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    /* ===================== FOR WHO ===================== */
+    .forwho{
+      padding:80px 0;
+      border-top:1px solid var(--border);
+    }
+    .forwho-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:24px;
+      margin-top:48px;
+    }
+    @media(max-width:600px){.forwho-grid{grid-template-columns:1fr;}}
+    .forwho-col{
+      background:var(--surface);
+      border-radius:var(--r);
+      padding:28px;
+      border:1px solid var(--border);
+    }
+    .forwho-col.yes{border-color:rgba(134,197,130,.2);}
+    .forwho-col.no{border-color:rgba(255,100,100,.12);}
+    .forwho-head{
+      font-weight:700;
+      font-size:1rem;
+      margin-bottom:16px;
+      display:flex;align-items:center;gap:8px;
+    }
+    .forwho-head.yes-head{color:#86C582;}
+    .forwho-head.no-head{color:#FF6B6B;}
+    .forwho-list{
+      list-style:none;
+      display:flex;flex-direction:column;gap:10px;
+    }
+    .forwho-list li{
+      font-size:.875rem;
+      color:var(--text-2);
+      display:flex;align-items:flex-start;gap:8px;
+    }
+    .forwho-list li span{flex-shrink:0;}
+
+    /* ===================== CTA ===================== */
+    .prog-cta{
+      padding:100px 0;
+      text-align:center;
+      border-top:1px solid var(--border);
+    }
+    .prog-cta h2{
+      font-family:var(--font-display);
+      font-size:clamp(1.8rem,4vw,2.8rem);
+      font-weight:800;
+      margin-bottom:16px;
+    }
+    .prog-cta h2 span{
+      background:var(--grad-gold);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .prog-cta p{
+      color:var(--text-2);
+      max-width:480px;
+      margin:0 auto 36px;
+    }
+    .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      gap:8px;
+      padding:14px 32px;
+      border-radius:10px;
+      font-family:var(--font-display);
+      font-weight:700;
+      font-size:.95rem;
+      cursor:pointer;
+      border:none;
+      transition:opacity .2s, transform .15s;
+    }
+    .btn:hover{opacity:.85;transform:translateY(-1px);}
+    .btn-primary{
+      background:var(--grad-gold);
+      color:#000;
+    }
+    .btn-ghost{
+      background:transparent;
+      border:1px solid var(--border-2);
+      color:var(--text);
+    }
+    .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+
+    /* ===================== FOOTER ===================== */
+    .footer{
+      padding:40px 24px;
+      text-align:center;
+      border-top:1px solid var(--border);
+      color:var(--muted);
+      font-size:.82rem;
+    }
+    .footer a{color:var(--gold);}
+
+    /* ===================== REVEAL ===================== */
+    .reveal{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease;}
+    .reveal.visible{opacity:1;transform:none;}
+    @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;}}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">TLC</a>
+  <div class="nav-links">
+    <a href="index.html">Accueil</a>
+    <a href="programme.html" class="active">Programme</a>
+    <a href="temoignages.html">Témoignages</a>
+    <a href="index.html#reservation" class="nav-cta">Réserver un appel →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="prog-hero">
+  <div class="container">
+    <div class="prog-badge reveal">Programme</div>
+    <h1 class="reveal" data-d="1">
+      <span>Elite 90 Days</span>
+    </h1>
+    <p class="reveal" data-d="2">
+      Un accompagnement intensif conçu pour les entrepreneurs sérieux.<br />
+      3 phases. 90 jours. Des résultats concrets.
+    </p>
+    <div class="cta-row reveal" data-d="3">
+      <a href="index.html#reservation" class="btn btn-primary">Réserver un appel découverte →</a>
+      <a href="temoignages.html" class="btn btn-ghost">Voir les témoignages</a>
+    </div>
+  </div>
+</section>
+
+<!-- PHASES -->
+<section class="phases">
+  <div class="container">
+    <p class="section-label reveal">Le parcours</p>
+    <h2 class="section-title reveal" data-d="1">3 phases pour transformer<br />ton business</h2>
+
+    <div class="phase-grid">
+
+      <div class="phase-card reveal" data-d="1">
+        <div class="phase-num">Phase 01 · Semaines 1–3</div>
+        <div class="phase-name">Fondations & Clarté</div>
+        <div class="phase-weeks">Semaines 1 à 3</div>
+        <p class="phase-desc">
+          Avant de scaler, on pose des bases solides. On audit ton business actuel, on identifie les freins cachés, et on construit la vision claire de ce que tu veux atteindre.
+        </p>
+        <ul class="phase-list">
+          <li>Audit complet de ton offre, ta cible et ton positionnement</li>
+          <li>Clarification de ta proposition de valeur unique</li>
+          <li>Définition des KPIs et objectifs des 90 jours</li>
+          <li>Identification des actions à fort levier</li>
+        </ul>
+      </div>
+
+      <div class="phase-card reveal" data-d="2">
+        <div class="phase-num">Phase 02 · Semaines 4–8</div>
+        <div class="phase-name">Acquisition & Systèmes</div>
+        <div class="phase-weeks">Semaines 4 à 8</div>
+        <p class="phase-desc">
+          On passe à l'action. Construction des systèmes d'acquisition, optimisation des tunnels de vente, et mise en place des automatisations qui travaillent pour toi 24h/24.
+        </p>
+        <ul class="phase-list">
+          <li>Création ou optimisation de ton funnel principal</li>
+          <li>Stratégie de contenu et présence en ligne</li>
+          <li>Système d'acquisition organique et/ou payant</li>
+          <li>Automatisations et outils pour gagner du temps</li>
+        </ul>
+      </div>
+
+      <div class="phase-card reveal" data-d="3">
+        <div class="phase-num">Phase 03 · Semaines 9–12</div>
+        <div class="phase-name">Scale & Autonomie</div>
+        <div class="phase-weeks">Semaines 9 à 12</div>
+        <p class="phase-desc">
+          On accélère ce qui fonctionne et on prépare la suite. L'objectif est que tu sois autonome, avec des systèmes qui tournent sans que tu aies besoin d'être présent partout.
+        </p>
+        <ul class="phase-list">
+          <li>Scaling des acquisitions qui convertissent</li>
+          <li>Délégation et structuration de l'équipe</li>
+          <li>Optimisation des marges et revenus récurrents</li>
+          <li>Plan de croissance pour les 6 prochains mois</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- INCLUDED -->
+<section class="included">
+  <div class="container">
+    <p class="section-label reveal">Ce qui est inclus</p>
+    <h2 class="section-title reveal" data-d="1">Tout ce dont tu as besoin<br />pour réussir</h2>
+
+    <div class="inc-grid">
+
+      <div class="inc-item reveal" data-d="1">
+        <div class="inc-icon">📞</div>
+        <div class="inc-title">Sessions 1-to-1 hebdomadaires</div>
+        <p class="inc-desc">Un appel vidéo par semaine avec Bastian pour faire le point, débloquer les obstacles et adapter la stratégie en temps réel.</p>
+      </div>
+
+      <div class="inc-item reveal" data-d="1">
+        <div class="inc-icon">💬</div>
+        <div class="inc-title">Accès WhatsApp direct</div>
+        <p class="inc-desc">Messagerie directe entre les sessions pour ne jamais rester bloqué. Réponse sous 24h en jours ouvrés.</p>
+      </div>
+
+      <div class="inc-item reveal" data-d="2">
+        <div class="inc-icon">🎓</div>
+        <div class="inc-title">Modules de formation</div>
+        <p class="inc-desc">Accès à l'espace membre avec les formations vidéo organisées par thématique : offre, acquisition, mindset, délégation.</p>
+      </div>
+
+      <div class="inc-item reveal" data-d="2">
+        <div class="inc-icon">📋</div>
+        <div class="inc-title">Templates & ressources</div>
+        <p class="inc-desc">Scripts de vente, templates de contenu, trackers et outils prêts à l'emploi pour gagner du temps sur l'exécution.</p>
+      </div>
+
+      <div class="inc-item reveal" data-d="3">
+        <div class="inc-icon">🔄</div>
+        <div class="inc-title">Reviews & feedbacks</div>
+        <p class="inc-desc">Bastian revoit tes pages, tes copies et tes tunnels et te donne un feedback précis pour optimiser chaque élément.</p>
+      </div>
+
+      <div class="inc-item reveal" data-d="3">
+        <div class="inc-icon">🏆</div>
+        <div class="inc-title">Communauté privée</div>
+        <p class="inc-desc">Accès au groupe des membres Elite pour partager, s'entraider et progresser avec d'autres entrepreneurs du même niveau.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section class="forwho">
+  <div class="container">
+    <p class="section-label reveal">À qui s'adresse ce programme</p>
+    <h2 class="section-title reveal" data-d="1">Ce programme est fait pour toi<br />si tu corresponds à ce profil</h2>
+
+    <div class="forwho-grid">
+      <div class="forwho-col yes reveal" data-d="1">
+        <div class="forwho-head yes-head">
+          <span>✓</span> Oui, ce programme est pour toi
+        </div>
+        <ul class="forwho-list">
+          <li><span>→</span> Tu as déjà une activité en ligne ou un projet sérieux en cours</li>
+          <li><span>→</span> Tu veux passer un cap et tu cherches quelqu'un qui est passé par là</li>
+          <li><span>→</span> Tu es prêt(e) à investir du temps et des ressources dans ta croissance</li>
+          <li><span>→</span> Tu cherches de l'accompagnement personnalisé, pas juste une formation en ligne</li>
+          <li><span>→</span> Tu veux des résultats concrets, pas des théories</li>
+        </ul>
+      </div>
+
+      <div class="forwho-col no reveal" data-d="2">
+        <div class="forwho-head no-head">
+          <span>✕</span> Ce programme n'est pas pour toi si
+        </div>
+        <ul class="forwho-list">
+          <li><span>→</span> Tu cherches une solution miracle sans effort de ta part</li>
+          <li><span>→</span> Tu n'as pas encore d'idée concrète ou de projet à développer</li>
+          <li><span>→</span> Tu n'es pas prêt(e) à investir au minimum 500 €/mois</li>
+          <li><span>→</span> Tu as moins de 20 ans</li>
+          <li><span>→</span> Tu ne peux pas consacrer minimum 5 à 10h par semaine au programme</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="prog-cta">
+  <div class="container">
+    <h2 class="reveal">Prêt à passer au niveau<br /><span>supérieur ?</span></h2>
+    <p class="reveal" data-d="1">
+      Le programme Elite 90 Days est sélectif. Réserve un appel découverte pour voir si ton profil correspond.
+    </p>
+    <div class="cta-row reveal" data-d="2">
+      <a href="index.html#reservation" class="btn btn-primary">Réserver mon appel découverte →</a>
+      <a href="temoignages.html" class="btn btn-ghost">Voir les résultats</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>© 2025 Bastian Tallec — <a href="index.html">Accueil</a> · <a href="temoignages.html">Témoignages</a></p>
+</footer>
+
+<!-- SCROLL REVEAL -->
+<script>
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if(!els.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var d = parseFloat(e.target.dataset.d||0)*100;
+        setTimeout(function(){ e.target.classList.add('visible'); }, d);
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
+  els.forEach(function(el){ io.observe(el); });
+})();
+</script>
+
+</body>
+</html>

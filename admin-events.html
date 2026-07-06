@@ -732,4 +732,9 @@ function copySql(btn) {
 }
 
 // ── Keyboard shortcuts ─────────────────────────────────
-document.addEventListener('keyd
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>

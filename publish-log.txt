@@ -1,0 +1,15 @@
+Publication du site Bastian Tallec - 06/07/2026 19:49:45,82 
+fatal: cannot lock ref 'HEAD': Unable to create 'C:/Users/BASTIAN/Documents/GitHub/Landing Page/Page Web Bastian/.git/HEAD.lock': File exists.
+
+Another git process seems to be running in this repository, or the lock file may be stale
+error: cannot lock ref 'refs/heads/main': Unable to create 'C:/Users/BASTIAN/Documents/GitHub/Landing Page/Page Web Bastian/.git/HEAD.lock': File exists.
+
+Another git process seems to be running in this repository, or the lock file may be stale
+error: unable to delete old refs/heads/main
+fatal: branch rename failed
+ 
+=== ENVOI VERS GITHUB === 
+Everything up-to-date
+branch 'main' set up to track 'origin/main'.
+ 
+=== TERMINE === 

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Témoignages — Bastian Tallec · Elite 90 Days</title>
+  <meta name="description" content="Découvrez les résultats concrets des entrepreneurs accompagnés par Bastian Tallec dans le programme Elite 90 Days." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Oswald:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ===================== TOKENS ===================== */
+    :root{
+      --bg:#0A0B0E;
+      --bg-2:#111318;
+      --surface:#161B26;
+      --surface-2:#1C2133;
+      --border:rgba(255,255,255,.07);
+      --border-2:rgba(255,255,255,.12);
+      --text:#E8EAF0;
+      --text-2:#C4C8D4;
+      --muted:#838899;
+      --muted-2:#5A5E6E;
+      --silver:#BFC5D5;
+      --gold:#E6C685;
+      --gold-light:#F7E7BC;
+      --gold-dark:#B0853A;
+      --grad-gold:linear-gradient(135deg,#F7E7BC 0%,#DCB868 44%,#B0853A 100%);
+      --ring:rgba(230,198,133,.18);
+      --shadow:0 8px 32px rgba(0,0,0,.45);
+      --shadow-lg:0 16px 56px rgba(0,0,0,.55);
+      --r:14px;
+      --r-sm:10px;
+      --r-lg:20px;
+      --font-display:'Sora',sans-serif;
+      --font-cond:'Oswald',sans-serif;
+      --font-body:'Inter',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+    body{
+      font-family:var(--font-body);
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.65;
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+    img{max-width:100%;display:block;}
+    a{color:inherit;text-decoration:none;}
+
+    /* ===================== NAV ===================== */
+    .nav{
+      position:sticky;top:0;z-index:100;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 32px;height:64px;
+      background:rgba(10,11,14,.85);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo{
+      font-family:var(--font-display);
+      font-weight:800;font-size:1.1rem;
+      background:var(--grad-gold);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .nav-links{display:flex;gap:28px;align-items:center;}
+    .nav-links a{
+      font-size:.88rem;font-weight:500;color:var(--muted);
+      transition:color .2s;
+    }
+    .nav-links a:hover,.nav-links a.active{color:var(--gold);}
+    .nav-cta{
+      padding:8px 20px;border-radius:8px;
+      background:var(--grad-gold);
+      color:#000;font-weight:700;font-size:.85rem;
+      transition:opacity .2s;
+    }
+    .nav-cta:hover{opacity:.85;}
+    @media(max-width:640px){.nav-links{display:none;}}
+
+    /* ===================== CONTAINER ===================== */
+    .container{width:100%;max-width:960px;margin:0 auto;padding:0 24px;}
+
+    /* ===================== HERO ===================== */
+    .temo-hero{
+      padding:100px 0 70px;
+      text-align:center;
+      border-bottom:1px solid var(--border);
+    }
+    .temo-badge{
+      display:inline-block;
+      padding:6px 18px;
+      border:1px solid var(--gold);
+      border-radius:100px;
+      color:var(--gold);
+      font-size:.8rem;
+      font-weight:600;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:28px;
+    }
+    .temo-hero h1{
+      font-family:var(--font-display);
+      font-size:clamp(2.2rem,5.5vw,3.8rem);
+      font-weight:800;
+      line-height:1.1;
+      margin-bottom:20px;
+    }
+    .temo-hero h1 span{
+      background:var(--grad-gold);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .temo-hero p{
+      color:var(--text-2);
+      font-size:1.05rem;
+      max-width:520px;
+      margin:0 auto;
+    }
+
+    /* ===================== STATS ===================== */
+    .stats{
+      padding:70px 0;
+      border-bottom:1px solid var(--border);
+    }
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:24px;
+    }
+    .stat-item{
+      text-align:center;
+      padding:32px 20px;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+    }
+    .stat-num{
+      font-family:var(--font-display);
+      font-size:2.6rem;
+      font-weight:800;
+      background:var(--grad-gold);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      line-height:1;
+      margin-bottom:8px;
+    }
+    .stat-label{
+      font-size:.85rem;
+      color:var(--muted);
+    }
+
+    /* ===================== TESTIMONIALS ===================== */
+    .testimonials{padding:80px 0;}
+    .section-label{
+      font-family:var(--font-cond);
+      font-size:.78rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--gold);
+      margin-bottom:12px;
+    }
+    .section-title{
+      font-family:var(--font-display);
+      font-size:clamp(1.8rem,4vw,2.6rem);
+      font-weight:800;
+      line-height:1.15;
+      margin-bottom:48px;
+    }
+    .temo-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:22px;
+    }
+    .temo-card{
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--r-lg);
+      padding:32px;
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+      transition:border-color .25s, transform .25s;
+    }
+    .temo-card:hover{
+      border-color:var(--border-2);
+      transform:translateY(-3px);
+    }
+    .temo-stars{
+      color:var(--gold);
+      font-size:.95rem;
+      letter-spacing:2px;
+    }
+    .temo-quote{
+      color:var(--text-2);
+      font-size:.95rem;
+      line-height:1.75;
+      font-style:italic;
+      flex:1;
+    }
+    .temo-quote::before{content:'"';}
+    .temo-quote::after{content:'"';}
+    .temo-highlight{
+      font-style:normal;
+      font-weight:700;
+      color:var(--gold);
+    }
+    .temo-author{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding-top:20px;
+      border-top:1px solid var(--border);
+    }
+    .temo-avatar{
+      width:44px;height:44px;
+      border-radius:50%;
+      background:var(--surface-2);
+      border:2px solid var(--border-2);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;
+      font-size:.9rem;
+      color:var(--gold);
+      flex-shrink:0;
+    }
+    .temo-name{
+      font-weight:700;
+      font-size:.9rem;
+    }
+    .temo-meta{
+      font-size:.8rem;
+      color:var(--muted);
+      margin-top:2px;
+    }
+    .temo-result{
+      display:inline-block;
+      padding:4px 12px;
+      border-radius:100px;
+      background:rgba(230,198,133,.08);
+      border:1px solid rgba(230,198,133,.2);
+      font-size:.78rem;
+      font-weight:600;
+      color:var(--gold);
+      margin-top:6px;
+    }
+
+    /* ===================== FEATURED ===================== */
+    .featured-temo{
+      margin-bottom:40px;
+      background:var(--surface);
+      border:1px solid var(--border-2);
+      border-radius:var(--r-lg);
+      padding:44px;
+      position:relative;
+      overflow:hidden;
+    }
+    .featured-temo::before{
+      content:'';
+      position:absolute;top:0;left:0;right:0;height:3px;
+      background:var(--grad-gold);
+    }
+    .featured-tag{
+      display:inline-block;
+      padding:4px 12px;
+      border-radius:100px;
+      background:rgba(230,198,133,.1);
+      border:1px solid rgba(230,198,133,.25);
+      font-size:.75rem;
+      font-weight:700;
+      color:var(--gold);
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      margin-bottom:20px;
+    }
+    .featured-temo .temo-quote{
+      font-size:1.1rem;
+      color:var(--text);
+    }
+
+    /* ===================== CTA ===================== */
+    .temo-cta{
+      padding:100px 0;
+      text-align:center;
+      border-top:1px solid var(--border);
+    }
+    .temo-cta h2{
+      font-family:var(--font-display);
+      font-size:clamp(1.8rem,4vw,2.8rem);
+      font-weight:800;
+      margin-bottom:16px;
+    }
+    .temo-cta h2 span{
+      background:var(--grad-gold);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .temo-cta p{
+      color:var(--text-2);
+      max-width:480px;
+      margin:0 auto 36px;
+    }
+    .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      gap:8px;
+      padding:14px 32px;
+      border-radius:10px;
+      font-family:var(--font-display);
+      font-weight:700;
+      font-size:.95rem;
+      cursor:pointer;
+      border:none;
+      transition:opacity .2s, transform .15s;
+    }
+    .btn:hover{opacity:.85;transform:translateY(-1px);}
+    .btn-primary{background:var(--grad-gold);color:#000;}
+    .btn-ghost{
+      background:transparent;
+      border:1px solid var(--border-2);
+      color:var(--text);
+    }
+    .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+
+    /* ===================== FOOTER ===================== */
+    .footer{
+      padding:40px 24px;
+      text-align:center;
+      border-top:1px solid var(--border);
+      color:var(--muted);
+      font-size:.82rem;
+    }
+    .footer a{color:var(--gold);}
+
+    /* ===================== REVEAL ===================== */
+    .reveal{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease;}
+    .reveal.visible{opacity:1;transform:none;}
+    @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;}}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">TLC</a>
+  <div class="nav-links">
+    <a href="index.html">Accueil</a>
+    <a href="programme.html">Programme</a>
+    <a href="temoignages.html" class="active">Témoignages</a>
+    <a href="index.html#reservation" class="nav-cta">Réserver un appel →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="temo-hero">
+  <div class="container">
+    <div class="temo-badge reveal">Résultats</div>
+    <h1 class="reveal" data-d="1">
+      Ce que disent les entrepreneurs<br />accompagnés par <span>Bastian</span>
+    </h1>
+    <p class="reveal" data-d="2">
+      Des résultats concrets obtenus par de vraies personnes dans de vrais business.
+    </p>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-num">90j</div>
+        <div class="stat-label">Programme intensif</div>
+      </div>
+      <div class="stat-item reveal" data-d="1">
+        <div class="stat-num">1-1</div>
+        <div class="stat-label">Coaching personnalisé</div>
+      </div>
+      <div class="stat-item reveal" data-d="2">
+        <div class="stat-num">+40%</div>
+        <div class="stat-label">Revenue moyen à 90j</div>
+      </div>
+      <div class="stat-item reveal" data-d="3">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Satisfaction des membres</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="container">
+    <p class="section-label reveal">Témoignages</p>
+    <h2 class="section-title reveal" data-d="1">Ils ont rejoint Elite 90 Days<br />et transformé leur business</h2>
+
+    <!-- FEATURED -->
+    <div class="featured-temo reveal" data-d="1">
+      <div class="featured-tag">⭐ Résultat phare</div>
+      <div class="temo-stars">★★★★★</div>
+      <p class="temo-quote">
+        Avant Elite 90 Days, je tournais en rond depuis 8 mois. J'avais des idées, j'avais de l'énergie, mais aucun résultat concret.
+        <span class="temo-highlight">En 3 mois avec Bastian, j'ai lancé mon offre premium, signé mes 5 premiers clients et atteint 4 200 €/mois de revenus récurrents.</span>
+        Ce qui m'a le plus marqué, c'est sa façon de mettre le doigt exactement sur ce qui bloque — pas sur ce qu'on voudrait entendre, mais sur ce qui empêche vraiment d'avancer.
+      </p>
+      <div class="temo-author">
+        <div class="temo-avatar">AK</div>
+        <div>
+          <div class="temo-name">Alexandre K.</div>
+          <div class="temo-meta">Consultant en marketing digital</div>
+          <div class="temo-result">+4 200 €/mois en 90 jours</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <div class="temo-grid">
+
+      <div class="temo-card reveal" data-d="1">
+        <div class="temo-stars">★★★★★</div>
+        <p class="temo-quote">
+          J'avais déjà suivi 3 formations en ligne avant ça. Aucune n'a eu autant d'impact. La différence avec Elite 90 Days ?
+          <span class="temo-highlight">Le suivi personnalisé, les feedbacks directs sur mon business et le fait que Bastian soit lui-même entrepreneur.</span>
+          Il ne vend pas de la théorie.
+        </p>
+        <div class="temo-author">
+          <div class="temo-avatar">SL</div>
+          <div>
+            <div class="temo-name">Sarah L.</div>
+            <div class="temo-meta">Créatrice de contenu</div>
+            <div class="temo-result">Première offre à 1 500 €</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="temo-card reveal" data-d="2">
+        <div class="temo-stars">★★★★★</div>
+        <p class="temo-quote">
+          Ce programme m'a forcé à me concentrer sur l'essentiel. <span class="temo-highlight">J'avais 12 projets en tête, aujourd'hui j'en ai 1 — et il génère 3× ce que mes 12 projets généraient avant.</span>
+          La clarté que j'ai gagnée en 90 jours vaut bien plus que l'investissement.
+        </p>
+        <div class="temo-author">
+          <div class="temo-avatar">TM</div>
+          <div>
+            <div class="temo-name">Thomas M.</div>
+            <div class="temo-meta">E-commerçant & dropshipper</div>
+            <div class="temo-result">Revenue ×3 en 90 jours</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="temo-card reveal" data-d="3">
+        <div class="temo-stars">★★★★★</div>
+        <p class="temo-quote">
+          Au début j'étais sceptique — j'avais peur que ce soit du coaching "générique". Mais dès la première session, Bastian m'a donné
+          <span class="temo-highlight">3 actions concrètes que je n'avais jamais envisagées et qui m'ont rapporté 1 800 € la semaine suivante.</span>
+          Retour sur investissement immédiat.
+        </p>
+        <div class="temo-author">
+          <div class="temo-avatar">JR</div>
+          <div>
+            <div class="temo-name">Julien R.</div>
+            <div class="temo-meta">Freelance développeur web</div>
+            <div class="temo-result">+1 800 € dès la 1ère semaine</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="temo-card reveal" data-d="1">
+        <div class="temo-stars">★★★★★</div>
+        <p class="temo-quote">
+          Ce que j'ai le plus apprécié c'est la disponibilité. <span class="temo-highlight">Bastian répond vite, il est investi dans ta réussite comme si c'était son propre business.</span>
+          En 3 mois j'ai construit un tunnel de vente complet et j'ai doublé mon taux de conversion.
+        </p>
+        <div class="temo-author">
+          <div class="temo-avatar">MC</div>
+          <div>
+            <div class="temo-name">Marie C.</div>
+            <div class="temo-meta">Coach bien-être & nutrition</div>
+            <div class="temo-result">Taux de conversion ×2</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="temo-card reveal" data-d="2">
+        <div class="temo-stars">★★★★★</div>
+        <p class="temo-quote">
+          J'avais une petite audience sur Instagram mais je ne monétisais rien. <span class="temo-highlight">En 90 jours, j'ai lancé mon premier programme, fait 22 ventes et généré 6 800 € de CA.</span>
+          La méthode fonctionne vraiment.
+        </p>
+        <div class="temo-author">
+          <div class="temo-avatar">RB</div>
+          <div>
+            <div class="temo-name">Romain B.</div>
+            <div class="temo-meta">Créateur de contenu finance</div>
+            <div class="temo-result">6 800 € de CA en 90 jours</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="temo-card reveal" data-d="3">
+        <div class="temo-stars">★★★★★</div>
+        <p class="temo-quote">
+          Mon plus grand apprentissage : <span class="temo-highlight">arrêter de tout faire soi-même. Bastian m'a aidé à déléguer, automatiser, et me concentrer uniquement sur ce qui génère de la valeur.</span>
+          Aujourd'hui je travaille 2× moins et je gagne 2× plus.
+        </p>
+        <div class="temo-author">
+          <div class="temo-avatar">ND</div>
+          <div>
+            <div class="temo-name">Nathalie D.</div>
+            <div class="temo-meta">Fondatrice d'une agence digitale</div>
+            <div class="temo-result">Travail ÷2 · Revenu ×2</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="temo-cta">
+  <div class="container">
+    <h2 class="reveal">À ton tour d'écrire<br /><span>ton success story</span></h2>
+    <p class="reveal" data-d="1">
+      Réserve un appel découverte pour voir si ton profil correspond au programme Elite 90 Days.
+    </p>
+    <div class="cta-row reveal" data-d="2">
+      <a href="index.html#reservation" class="btn btn-primary">Réserver mon appel découverte →</a>
+      <a href="programme.html" class="btn btn-ghost">Voir le programme</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>© 2025 Bastian Tallec — <a href="index.html">Accueil</a> · <a href="programme.html">Programme</a></p>
+</footer>
+
+<!-- SCROLL REVEAL -->
+<script>
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if(!els.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var d = parseFloat(e.target.dataset.d||0)*100;
+        setTimeout(function(){ e.target.classList.add('visible'); }, d);
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
+  els.forEach(function(el){ io.observe(el); });
+})();
+</script>
+
+</body>
+</html>
