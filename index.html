@@ -560,9 +560,35 @@
           </select>
         </div>
 
+        <!-- Étape 2 — Coordonnées (affichées après l'étape 1) -->
+        <div id="qualif-step2" hidden>
+          <div class="qualif-divider"></div>
+          <div class="qualif-q">
+            <label class="qualif-label" for="qualif-email">Ton adresse email</label>
+            <input
+              class="qualif-input"
+              type="email"
+              id="qualif-email"
+              placeholder="exemple@email.com"
+              autocomplete="email"
+            />
+          </div>
+          <div class="qualif-divider"></div>
+          <div class="qualif-q">
+            <label class="qualif-label" for="qualif-tel">Ton numéro de téléphone</label>
+            <input
+              class="qualif-input"
+              type="tel"
+              id="qualif-tel"
+              placeholder="+33 6 00 00 00 00"
+              autocomplete="tel"
+            />
+          </div>
+        </div>
+
         <div class="qualif-btn-wrap">
           <button id="qualif-btn" class="btn btn-primary btn-block" type="button">
-            Voir le calendrier →
+            Continuer →
           </button>
         </div>
 
@@ -700,15 +726,20 @@
 })();
 </script>
 
-<!-- Qualification form — 2 questions + Calendly gate -->
+<!-- Qualification form — 2 étapes + capture Brevo + Calendly gate -->
 <script>
 (function(){
-  var CAL_URL    = 'https://calendar.app.google/EW5urnh1dZ4ECy5g6';
-  var btn        = document.getElementById('qualif-btn');
-  var refuseBox  = document.getElementById('qualif-refuse');
-  var gate       = document.getElementById('calendly-gate');
-  var calIframe  = document.getElementById('cal-widget');
-  var calLoaded  = false;
+  var CAL_URL   = 'https://calendar.app.google/EW5urnh1dZ4ECy5g6';
+  var BREVO_URL = 'https://2fabf66e.sibforms.com/v2/serve/MUIFABJZJ3joZtfAP8vy8_VvMCyx0M8ZpPc4YNzWi84sH29nFCN5v0IWmjnHjT0Um-_jtVCWGf8qdfmAuaDQGccXsF84zgXtDIFrKKT6kqGztv0UwyaPIPQmYemxperToJhqE9OI13q4Qo_Bh6BwCanHk8ObFDJIL74JP7KNcOQ8q89QPeJHUYrUOJqr8ldcns_dK_b8dHl09PTJPw==';
+
+  var btn       = document.getElementById('qualif-btn');
+  var refuseBox = document.getElementById('qualif-refuse');
+  var gate      = document.getElementById('calendly-gate');
+  var calIframe = document.getElementById('cal-widget');
+  var step2     = document.getElementById('qualif-step2');
+  var calLoaded = false;
+  var step1Done = false;
+  var savedAge, savedBudget;
 
   function loadCalendar(){
     if(calLoaded) return;
@@ -716,31 +747,75 @@
     calIframe.src = CAL_URL;
   }
 
+  /* Normalise le numéro FR au format Brevo : 33XXXXXXXXX */
+  function normPhone(raw){
+    var d = raw.replace(/[^\d+]/g, '').replace(/^\+/, '');
+    if(d.length === 10 && d.charAt(0) === '0') d = '33' + d.slice(1);
+    return d;
+  }
+
+  function sendToBrevo(email, tel){
+    var data = new URLSearchParams();
+    data.append('EMAIL', email);
+    data.append('SMS', normPhone(tel));
+    data.append('SMS__COUNTRY_CODE', '33');
+    data.append('email_address_check', ''); /* honeypot vide */
+    data.append('locale', 'fr');
+    fetch(BREVO_URL, { method:'POST', mode:'no-cors', body:data }).catch(function(){});
+  }
+
   if(!btn) return;
 
   btn.addEventListener('click', function(){
-    var ageRaw    = document.getElementById('qualif-age').value.trim();
-    var budgetVal = document.getElementById('qualif-budget').value;
 
-    if(!ageRaw || budgetVal === ''){
-      alert('Merci de répondre aux 2 questions pour continuer.');
+    /* ── ÉTAPE 1 : valider âge + budget, révéler les champs coordonnées ── */
+    if(!step1Done){
+      var ageRaw = document.getElementById('qualif-age').value.trim();
+      var budRaw = document.getElementById('qualif-budget').value;
+      if(!ageRaw || budRaw === ''){
+        alert('Merci de répondre aux 2 questions pour continuer.');
+        return;
+      }
+      savedAge    = parseInt(ageRaw, 10);
+      savedBudget = parseInt(budRaw, 10);
+      /* Toujours afficher l'étape 2 — on capture TOUS les leads dans Brevo */
+      step2.removeAttribute('hidden');
+      btn.textContent = 'Voir le calendrier →';
+      step1Done = true;
+      step2.scrollIntoView({ behavior:'smooth', block:'nearest' });
       return;
     }
 
-    var age    = parseInt(ageRaw, 10);
-    var budget = parseInt(budgetVal, 10);
+    /* ── ÉTAPE 2 : valider email + tél, envoyer à Brevo, puis décision ── */
+    var email = document.getElementById('qualif-email').value.trim();
+    var tel   = document.getElementById('qualif-tel').value.trim();
 
-    var ageOk    = (!isNaN(age)    && age    >= 20);
-    var budgetOk = (!isNaN(budget) && budget >= 500);
-
-    if(!ageOk || !budgetOk){
-      if(refuseBox) refuseBox.hidden = false;
+    if(!email || !email.includes('@')){
+      alert('Merci d\'entrer une adresse email valide.');
+      return;
+    }
+    if(!tel){
+      alert('Merci d\'entrer ton numéro de téléphone.');
       return;
     }
 
-    // Qualified — unlock Calendly
-    if(refuseBox) refuseBox.hidden = true;
-    if(gate)      gate.classList.add('is-hidden');
+    /* Envoi Brevo en arrière-plan (fire-and-forget) */
+    sendToBrevo(email, tel);
+
+    /* Qualification : âge ≥ 20 ET budget ≥ 500 €/mois */
+    var qualified = (!isNaN(savedAge) && savedAge >= 20)
+                 && (!isNaN(savedBudget) && savedBudget >= 500);
+
+    btn.disabled = true;
+
+    if(!qualified){
+      refuseBox.removeAttribute('hidden');
+      return;
+    }
+
+    /* Qualifié — déverrouiller le calendrier */
+    refuseBox.setAttribute('hidden','');
+    if(gate) gate.classList.add('is-hidden');
     loadCalendar();
 
     var wrap = document.getElementById('calendly-wrap');
