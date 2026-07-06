@@ -81,7 +81,7 @@ a{color:inherit;text-decoration:none;}
 .btn[disabled]{opacity:.6;cursor:default;transform:none;}
 .submit-note{text-align:center;color:var(--muted);font-size:.82rem;margin-top:14px;}
 
-/* Écran final */
+/* Écran final (succès et refus) */
 .final{display:none;text-align:center;padding:30px 0;}
 .final.show{display:block;animation:fade .5s ease;}
 @keyframes fade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
@@ -91,6 +91,9 @@ a{color:inherit;text-decoration:none;}
 .final p{color:var(--muted);max-width:50ch;margin:0 auto 14px;}
 .final .warn{color:var(--silver);font-weight:500;}
 .final .btn{max-width:360px;margin:28px auto 0;}
+
+/* Badge refus */
+.final.final--reject .badge{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.25);}
 
 @media (max-width:560px){ .opts.cols2{grid-template-columns:1fr;} }
 </style>
@@ -124,6 +127,18 @@ a{color:inherit;text-decoration:none;}
 
         <div class="qcard">
           <span class="qnum">Question 2</span>
+          <label class="qlabel" for="email">Adresse e-mail <span class="req">*</span></label>
+          <input class="f-input" id="email" name="Email" type="email" autocomplete="email" required placeholder="exemple@email.com" />
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 3</span>
+          <label class="qlabel" for="tel">Numéro de téléphone <span class="req">*</span></label>
+          <input class="f-input" id="tel" name="Téléphone" type="tel" autocomplete="tel" required placeholder="+33 6 00 00 00 00" />
+        </div>
+
+        <div class="qcard">
+          <span class="qnum">Question 4</span>
           <span class="qlabel">Quel âge as-tu ? <span class="req">*</span></span>
           <div class="opts cols2">
             <label class="opt"><input type="radio" name="Âge" value="18-24 ans" required><span class="dot"></span><span>18 – 24 ans</span></label>
@@ -134,7 +149,7 @@ a{color:inherit;text-decoration:none;}
         </div>
 
         <div class="qcard">
-          <span class="qnum">Question 3</span>
+          <span class="qnum">Question 5</span>
           <span class="qlabel">Quelle est ta situation actuelle ? <span class="req">*</span></span>
           <div class="opts cols2">
             <label class="opt"><input type="radio" name="Situation" value="Salarié" required><span class="dot"></span><span>Salarié</span></label>
@@ -146,7 +161,7 @@ a{color:inherit;text-decoration:none;}
         </div>
 
         <div class="qcard">
-          <span class="qnum">Question 4</span>
+          <span class="qnum">Question 6</span>
           <span class="qlabel">Quel est ton revenu mensuel actuel ? <span class="req">*</span></span>
           <div class="opts cols2">
             <label class="opt"><input type="radio" name="Revenu mensuel" value="Moins de 1000€" required><span class="dot"></span><span>Moins de 1000&nbsp;€</span></label>
@@ -158,13 +173,13 @@ a{color:inherit;text-decoration:none;}
         </div>
 
         <div class="qcard">
-          <span class="qnum">Question 5</span>
-          <label class="qlabel" for="q5">Pourquoi regardes-tu cette présentation aujourd'hui ? <span class="req">*</span></label>
-          <textarea class="f-textarea" id="q5" name="Pourquoi cette présentation" required placeholder="Dis-moi où tu en es et ce qui t'a amené ici…"></textarea>
+          <span class="qnum">Question 7</span>
+          <label class="qlabel" for="q7">Pourquoi regardes-tu cette présentation aujourd'hui ? <span class="req">*</span></label>
+          <textarea class="f-textarea" id="q7" name="Pourquoi cette présentation" required placeholder="Dis-moi où tu en es et ce qui t'a amené ici…"></textarea>
         </div>
 
         <div class="qcard">
-          <span class="qnum">Question 6</span>
+          <span class="qnum">Question 8</span>
           <span class="qlabel">Quelle est ta plus grande frustration aujourd'hui ? <span class="req">*</span></span>
           <div class="opts">
             <label class="opt"><input type="radio" name="Plus grande frustration" value="Manque d'argent" required><span class="dot"></span><span>Manque d'argent</span></label>
@@ -177,7 +192,7 @@ a{color:inherit;text-decoration:none;}
         </div>
 
         <div class="qcard">
-          <span class="qnum">Question 7</span>
+          <span class="qnum">Question 9</span>
           <span class="qlabel">As-tu déjà essayé de gagner de l'argent en ligne ? <span class="req">*</span></span>
           <div class="opts">
             <label class="opt"><input type="radio" name="Déjà gagné en ligne" value="Oui avec succès" required><span class="dot"></span><span>Oui, avec succès</span></label>
@@ -187,7 +202,7 @@ a{color:inherit;text-decoration:none;}
         </div>
 
         <div class="qcard">
-          <span class="qnum">Question 8</span>
+          <span class="qnum">Question 10</span>
           <span class="qlabel">As-tu déjà tradé ou investi ? <span class="req">*</span></span>
           <div class="opts">
             <label class="opt"><input type="radio" name="Déjà tradé / investi" value="Oui régulièrement" required><span class="dot"></span><span>Oui, régulièrement</span></label>
@@ -197,7 +212,7 @@ a{color:inherit;text-decoration:none;}
         </div>
 
         <div class="qcard">
-          <span class="qnum">Question 9</span>
+          <span class="qnum">Question 11</span>
           <span class="qlabel">Combien de temps peux-tu consacrer à ton développement durant les 90 prochains jours ? <span class="req">*</span></span>
           <div class="opts cols2">
             <label class="opt"><input type="radio" name="Temps disponible / semaine" value="Moins de 5h" required><span class="dot"></span><span>Moins de 5h / semaine</span></label>
@@ -208,7 +223,7 @@ a{color:inherit;text-decoration:none;}
         </div>
 
         <div class="qcard">
-          <span class="qnum">Question 10</span>
+          <span class="qnum">Question 12</span>
           <span class="qlabel">Sur une échelle de 1 à 10, à quel point es-tu déterminé à changer ta situation ? <span class="req">*</span></span>
           <div class="scale">
             <input type="range" id="determination" name="Détermination (1-10)" min="1" max="10" value="8" />
@@ -217,7 +232,7 @@ a{color:inherit;text-decoration:none;}
         </div>
 
         <div class="qcard">
-          <span class="qnum">Question 11</span>
+          <span class="qnum">Question 13</span>
           <span class="qlabel">Si nous décidons de travailler ensemble, es-tu prêt à investir dans ton développement personnel et professionnel ? <span class="req">*</span></span>
           <div class="opts cols2">
             <label class="opt"><input type="radio" name="Prêt à investir" value="Oui" required><span class="dot"></span><span>Oui</span></label>
@@ -226,9 +241,9 @@ a{color:inherit;text-decoration:none;}
         </div>
 
         <div class="qcard">
-          <span class="qnum">Question 12</span>
-          <label class="qlabel" for="q12">Pourquoi devrions-nous te sélectionner plutôt qu'une autre personne ? <span class="req">*</span></label>
-          <textarea class="f-textarea" id="q12" name="Pourquoi te sélectionner" required placeholder="Convaincs-moi."></textarea>
+          <span class="qnum">Question 14</span>
+          <label class="qlabel" for="q14">Pourquoi devrions-nous te sélectionner plutôt qu'une autre personne ? <span class="req">*</span></label>
+          <textarea class="f-textarea" id="q14" name="Pourquoi te sélectionner" required placeholder="Convaincs-moi."></textarea>
         </div>
 
         <div class="qcard">
@@ -248,7 +263,7 @@ a{color:inherit;text-decoration:none;}
       </form>
     </div>
 
-    <!-- ===== Écran final ===== -->
+    <!-- ===== Écran final — Succès ===== -->
     <div class="final" id="final" role="status" aria-live="polite">
       <div class="badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="#E6C685" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M4 12.5l5 5 11-11"/></svg></div>
       <h2>Félicitations.</h2>
@@ -259,6 +274,13 @@ a{color:inherit;text-decoration:none;}
          déterminer si nous sommes capables de t'aider à atteindre tes objectifs durant les 90 prochains jours.</p>
       <!-- REMPLACER par ton vrai lien Calendly -->
       <a class="btn" href="https://calendly.com/TON-LIEN/entretien-strategique" target="_blank" rel="noopener">Réserver mon entretien →</a>
+    </div>
+
+    <!-- ===== Écran final — Refus ===== -->
+    <div class="final final--reject" id="final-reject" role="status" aria-live="polite">
+      <div class="badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="var(--silver)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 6v4m0 4h.01"/></svg></div>
+      <h2 style="font-size:clamp(1.4rem,4vw,2rem);">Merci pour votre intérêt.</h2>
+      <p>Merci pour votre intérêt, malheureusement ce programme et accompagnement n'est pas adapté à votre situation actuelle.</p>
     </div>
 
   </div>
@@ -272,13 +294,28 @@ a{color:inherit;text-decoration:none;}
       f.addEventListener('submit',function(e){
         e.preventDefault();
         if(!f.checkValidity()){ f.reportValidity(); return; }
-        var data=new URLSearchParams(new FormData(f));
+
+        /* Vérification des critères de disqualification */
+        var fd=new FormData(f);
+        var budget=fd.get('Budget envisagé');
+        var pret=fd.get('Prêt à investir');
+        var disqualifie=(budget==='Moins de 500€')||(pret==='Non');
+
+        var data=new URLSearchParams(fd);
         var btn=f.querySelector('button[type=submit]');
         if(btn){ btn.disabled=true; btn.textContent='Envoi…'; }
+
         fetch(f.action,{method:'POST',mode:'no-cors',body:data}).then(done).catch(done);
+
         function done(){
           document.getElementById('cand-wrap').hidden=true;
-          var fin=document.getElementById('final'); fin.classList.add('show');
+          if(disqualifie){
+            var rej=document.getElementById('final-reject');
+            rej.classList.add('show');
+          } else {
+            var fin=document.getElementById('final');
+            fin.classList.add('show');
+          }
           window.scrollTo({top:0,behavior:'smooth'});
         }
       });
