@@ -840,23 +840,46 @@
   }
 
   function sendToBrevo(email, tel, nom, prenom, onDone){
-    /* POST fire-and-forget vers Brevo via fetch no-cors (pas de CORS bloquant) */
+    /* POST fire-and-forget vers Brevo — formulaire HTML simulé via iframe caché */
     var BREVO_URL = 'https://2fabf66e.sibforms.com/v2/serve/MUIFABJZJ3joZtfAP8vy8_VvMCyx0M8ZpPc4YNzWi84sH29nFCN5v0IWmjnHjT0Um-_jtVCWGf8qdfmAuaDQGccXsF84zgXtDIFrKKT6kqGztv0UwyaPIPQmYemxperToJhqE9OI13q4Qo_Bh6BwCanHk8ObFDJIL74JP7KNcOQ8q89QPeJHUYrUOJqr8ldcns_dK_b8dHl09PTJPw==';
     try {
-      var params = new URLSearchParams();
-      params.append('EMAIL', email);
-      params.append('SMS', normPhone(tel));
-      params.append('SMS__COUNTRY_CODE', '+33');
-      params.append('NOM', nom || '');
-      params.append('PRENOM', prenom || '');
-      params.append('email_address_check', '');
-      params.append('locale', 'fr');
-      fetch(BREVO_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params.toString()
-      }).catch(function(){});
+      /* Crée un iframe + formulaire caché — contourne les restrictions CORS de fetch no-cors */
+      var iframe = document.createElement('iframe');
+      iframe.name = '_brevo_submit_' + Date.now();
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      var form = document.createElement('form');
+      form.method  = 'POST';
+      form.action  = BREVO_URL;
+      form.target  = iframe.name;
+      form.enctype = 'application/x-www-form-urlencoded';
+      form.style.display = 'none';
+
+      var fields = {
+        EMAIL:              email,
+        SMS:                normPhone(tel),
+        SMS__COUNTRY_CODE:  '+33',
+        NOM:                nom   || '',
+        PRENOM:             prenom|| '',
+        email_address_check: '',
+        locale:             'fr'
+      };
+      Object.keys(fields).forEach(function(k){
+        var inp = document.createElement('input');
+        inp.type  = 'hidden';
+        inp.name  = k;
+        inp.value = fields[k];
+        form.appendChild(inp);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+
+      /* Nettoie après envoi */
+      setTimeout(function(){
+        try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e){}
+      }, 5000);
     } catch(e){}
     /* Continuer après 1,5 s — on n'attend pas la réponse Brevo */
     setTimeout(function(){ if(onDone) onDone(); }, 1500);
