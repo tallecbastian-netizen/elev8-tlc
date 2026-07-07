@@ -817,13 +817,24 @@
     return d;
   }
 
-  function sendToBrevo(email, tel){
+  function sendToBrevo(email, tel, onDone){
+    /* Vrai POST via iframe — on attend la réponse avant d'afficher le calendrier */
+    var done = false;
+    function finish(){
+      if(done) return;
+      done = true;
+      if(onDone) onDone();
+    }
     try {
-      /* Vrai POST de formulaire via iframe caché — fiable sans CORS */
       document.getElementById('bsf-email').value = email;
       document.getElementById('bsf-sms').value   = normPhone(tel);
+      /* Écouter le load de l'iframe = Brevo a répondu */
+      var iframe = document.querySelector('iframe[name="brevo-hidden"]');
+      if(iframe){ iframe.addEventListener('load', finish, { once: true }); }
+      /* Fallback : 3 secondes max, puis on continue quand même */
+      setTimeout(finish, 3000);
       document.getElementById('brevo-shadow-form').submit();
-    } catch(e){ /* silently fail */ }
+    } catch(e){ finish(); /* silently fail but continue */ }
   }
 
   if(!btn) return;
@@ -862,30 +873,33 @@
       return;
     }
 
-    /* Envoi Brevo en arrière-plan (fire-and-forget) */
-    sendToBrevo(email, tel);
-
-    /* Qualification : âge ≥ 20 uniquement */
-    var qualified = (!isNaN(savedAge) && savedAge >= 20);
-
+    /* Bloquer le bouton pendant l'envoi Brevo */
     btn.disabled = true;
+    btn.textContent = 'Envoi en cours…';
 
-    if(!qualified){
-      refuseBox.removeAttribute('hidden');
-      return;
-    }
+    /* Envoi Brevo — on attend la réponse (ou 3s max) avant d'afficher la suite */
+    sendToBrevo(email, tel, function(){
 
-    /* Qualifié — déverrouiller le calendrier */
-    refuseBox.setAttribute('hidden','');
-    if(gate) gate.classList.add('is-hidden');
-    loadCalendar();
+      /* Qualification : âge ≥ 20 uniquement */
+      var qualified = (!isNaN(savedAge) && savedAge >= 20);
 
-    var wrap = document.getElementById('calendly-wrap');
-    if(wrap){
-      setTimeout(function(){
-        wrap.scrollIntoView({behavior:'smooth', block:'start'});
-      }, 350);
-    }
+      if(!qualified){
+        refuseBox.removeAttribute('hidden');
+        return;
+      }
+
+      /* Qualifié — déverrouiller le calendrier */
+      refuseBox.setAttribute('hidden','');
+      if(gate) gate.classList.add('is-hidden');
+      loadCalendar();
+
+      var wrap = document.getElementById('calendly-wrap');
+      if(wrap){
+        setTimeout(function(){
+          wrap.scrollIntoView({behavior:'smooth', block:'start'});
+        }, 350);
+      }
+    });
   });
 })();
 </script>
