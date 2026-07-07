@@ -627,6 +627,28 @@
         <div id="qualif-step2" hidden>
           <div class="qualif-divider"></div>
           <div class="qualif-q">
+            <label class="qualif-label" for="qualif-prenom">Ton prénom</label>
+            <input
+              class="qualif-input"
+              type="text"
+              id="qualif-prenom"
+              placeholder="Prénom"
+              autocomplete="given-name"
+            />
+          </div>
+          <div class="qualif-divider"></div>
+          <div class="qualif-q">
+            <label class="qualif-label" for="qualif-nom">Ton nom</label>
+            <input
+              class="qualif-input"
+              type="text"
+              id="qualif-nom"
+              placeholder="Nom"
+              autocomplete="family-name"
+            />
+          </div>
+          <div class="qualif-divider"></div>
+          <div class="qualif-q">
             <label class="qualif-label" for="qualif-email">Ton adresse email</label>
             <input
               class="qualif-input"
@@ -817,7 +839,7 @@
     return d;
   }
 
-  function sendToBrevo(email, tel, onDone){
+  function sendToBrevo(email, tel, nom, prenom, onDone){
     /* POST fire-and-forget vers Brevo via fetch no-cors (pas de CORS bloquant) */
     var BREVO_URL = 'https://2fabf66e.sibforms.com/v2/serve/MUIFABJZJ3joZtfAP8vy8_VvMCyx0M8ZpPc4YNzWi84sH29nFCN5v0IWmjnHjT0Um-_jtVCWGf8qdfmAuaDQGccXsF84zgXtDIFrKKT6kqGztv0UwyaPIPQmYemxperToJhqE9OI13q4Qo_Bh6BwCanHk8ObFDJIL74JP7KNcOQ8q89QPeJHUYrUOJqr8ldcns_dK_b8dHl09PTJPw==';
     try {
@@ -825,8 +847,8 @@
       params.append('EMAIL', email);
       params.append('SMS', normPhone(tel));
       params.append('SMS__COUNTRY_CODE', '+33');
-      params.append('NOM', '');
-      params.append('PRENOM', '');
+      params.append('NOM', nom || '');
+      params.append('PRENOM', prenom || '');
       params.append('email_address_check', '');
       params.append('locale', 'fr');
       fetch(BREVO_URL, {
@@ -863,10 +885,20 @@
       return;
     }
 
-    /* ── ÉTAPE 2 : valider email + tél, envoyer à Brevo, puis décision ── */
-    var email = document.getElementById('qualif-email').value.trim();
-    var tel   = document.getElementById('qualif-tel').value.trim();
+    /* ── ÉTAPE 2 : valider prénom + nom + email + tél, envoyer à Brevo, puis décision ── */
+    var prenom = document.getElementById('qualif-prenom').value.trim();
+    var nom    = document.getElementById('qualif-nom').value.trim();
+    var email  = document.getElementById('qualif-email').value.trim();
+    var tel    = document.getElementById('qualif-tel').value.trim();
 
+    if(!prenom){
+      alert('Merci d\'entrer ton prénom.');
+      return;
+    }
+    if(!nom){
+      alert('Merci d\'entrer ton nom.');
+      return;
+    }
     if(!email || !email.includes('@')){
       alert('Merci d\'entrer une adresse email valide.');
       return;
@@ -881,7 +913,7 @@
     btn.textContent = 'Envoi en cours…';
 
     /* Envoi Brevo — on attend la réponse (ou 3s max) avant d'afficher la suite */
-    sendToBrevo(email, tel, function(){
+    sendToBrevo(email, tel, nom, prenom, function(){
 
       /* Qualification : âge ≥ 20 uniquement */
       var qualified = (!isNaN(savedAge) && savedAge >= 20);
