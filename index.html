@@ -840,28 +840,22 @@
   }
 
   function sendToBrevo(email, tel, nom, prenom, onDone){
-    /* POST vers Brevo — XHR simple (application/x-www-form-urlencoded = pas de preflight CORS)
-       La requête est envoyée directement ; la réponse est bloquée par CORS côté navigateur
-       mais Brevo traite bien la requête et enregistre le contact. */
-    var BREVO_URL = 'https://2fabf66e.sibforms.com/v2/serve/MUIFABJZJ3joZtfAP8vy8_VvMCyx0M8ZpPc4YNzWi84sH29nFCN5v0IWmjnHjT0Um-_jtVCWGf8qdfmAuaDQGccXsF84zgXtDIFrKKT6kqGztv0UwyaPIPQmYemxperToJhqE9OI13q4Qo_Bh6BwCanHk8ObFDJIL74JP7KNcOQ8q89QPeJHUYrUOJqr8ldcns_dK_b8dHl09PTJPw==';
-    try {
-      var body = [
-        'EMAIL='             + encodeURIComponent(email),
-        'SMS='               + encodeURIComponent(normPhone(tel)),
-        'SMS__COUNTRY_CODE=' + encodeURIComponent('+33'),
-        'NOM='               + encodeURIComponent(nom    || ''),
-        'PRENOM='            + encodeURIComponent(prenom || ''),
-        'email_address_check=',
-        'locale=fr'
-      ].join('&');
+    /* Appel via Supabase Edge Function (proxy serveur → API REST Brevo)
+       La clé Brevo n'est jamais exposée côté client. */
+    var FN_URL  = 'https://vnyereucdquqkutgsddv.supabase.co/functions/v1/brevo-contact';
+    var ANON_KEY = 'sb_publishable_PUx879zmrMAbCcsX7SaQsQ_dZ_MW2Eh';
 
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', BREVO_URL, true);
-      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      xhr.send(body);
-    } catch(e){}
-    /* Continuer après 1,5 s — erreur CORS en console = normale, le contact est bien ajouté */
-    setTimeout(function(){ if(onDone) onDone(); }, 1500);
+    fetch(FN_URL, {
+      method : 'POST',
+      headers: {
+        'Content-Type' : 'application/json',
+        'Authorization': 'Bearer ' + ANON_KEY
+      },
+      body: JSON.stringify({ email: email, tel: tel, nom: nom || '', prenom: prenom || '' })
+    }).catch(function(err){ console.warn('sendToBrevo:', err); });
+
+    /* On n'attend pas la réponse pour ne pas bloquer l'UX */
+    setTimeout(function(){ if(onDone) onDone(); }, 1800);
   }
 
   if(!btn) return;
