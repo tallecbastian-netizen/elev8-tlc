@@ -840,48 +840,27 @@
   }
 
   function sendToBrevo(email, tel, nom, prenom, onDone){
-    /* POST fire-and-forget vers Brevo — formulaire HTML simulé via iframe caché */
+    /* POST vers Brevo — XHR simple (application/x-www-form-urlencoded = pas de preflight CORS)
+       La requête est envoyée directement ; la réponse est bloquée par CORS côté navigateur
+       mais Brevo traite bien la requête et enregistre le contact. */
     var BREVO_URL = 'https://2fabf66e.sibforms.com/v2/serve/MUIFABJZJ3joZtfAP8vy8_VvMCyx0M8ZpPc4YNzWi84sH29nFCN5v0IWmjnHjT0Um-_jtVCWGf8qdfmAuaDQGccXsF84zgXtDIFrKKT6kqGztv0UwyaPIPQmYemxperToJhqE9OI13q4Qo_Bh6BwCanHk8ObFDJIL74JP7KNcOQ8q89QPeJHUYrUOJqr8ldcns_dK_b8dHl09PTJPw==';
     try {
-      /* Crée un iframe + formulaire caché — contourne les restrictions CORS de fetch no-cors */
-      var iframe = document.createElement('iframe');
-      iframe.name = '_brevo_submit_' + Date.now();
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
+      var body = [
+        'EMAIL='             + encodeURIComponent(email),
+        'SMS='               + encodeURIComponent(normPhone(tel)),
+        'SMS__COUNTRY_CODE=' + encodeURIComponent('+33'),
+        'NOM='               + encodeURIComponent(nom    || ''),
+        'PRENOM='            + encodeURIComponent(prenom || ''),
+        'email_address_check=',
+        'locale=fr'
+      ].join('&');
 
-      var form = document.createElement('form');
-      form.method  = 'POST';
-      form.action  = BREVO_URL;
-      form.target  = iframe.name;
-      form.enctype = 'application/x-www-form-urlencoded';
-      form.style.display = 'none';
-
-      var fields = {
-        EMAIL:              email,
-        SMS:                normPhone(tel),
-        SMS__COUNTRY_CODE:  '+33',
-        NOM:                nom   || '',
-        PRENOM:             prenom|| '',
-        email_address_check: '',
-        locale:             'fr'
-      };
-      Object.keys(fields).forEach(function(k){
-        var inp = document.createElement('input');
-        inp.type  = 'hidden';
-        inp.name  = k;
-        inp.value = fields[k];
-        form.appendChild(inp);
-      });
-
-      document.body.appendChild(form);
-      form.submit();
-
-      /* Nettoie après envoi */
-      setTimeout(function(){
-        try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e){}
-      }, 5000);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', BREVO_URL, true);
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.send(body);
     } catch(e){}
-    /* Continuer après 1,5 s — on n'attend pas la réponse Brevo */
+    /* Continuer après 1,5 s — erreur CORS en console = normale, le contact est bien ajouté */
     setTimeout(function(){ if(onDone) onDone(); }, 1500);
   }
 
