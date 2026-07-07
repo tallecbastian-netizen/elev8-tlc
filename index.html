@@ -267,6 +267,28 @@
     }
     .qualif-divider{height:1px;background:var(--border);margin:30px 0;}
     .qualif-btn-wrap{margin-top:30px;}
+    /* Radio cards */
+    .qualif-radios{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .qr-opt{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:13px 16px;
+      border:1px solid var(--border-2);
+      border-radius:12px;
+      cursor:pointer;
+      font-size:.9rem;line-height:1.4;
+      transition:border-color .2s,background .2s;
+    }
+    .qr-opt:hover{background:rgba(255,255,255,.04);}
+    .qr-opt input[type="radio"]{
+      accent-color:var(--gold);
+      width:16px;height:16px;flex-shrink:0;margin-top:2px;
+    }
+    .qr-opt:has(input:checked){
+      border-color:var(--gold);
+      background:rgba(230,198,133,.09);
+    }
+    .qr-full{grid-column:1/-1;}
+    @media(max-width:520px){.qualif-radios{grid-template-columns:1fr;}}
     .qualif-refuse{
       margin-top:22px;
       padding:20px 24px;
@@ -526,7 +548,7 @@
 
       <h2 class="qualif-title reveal">Réserve ton appel<br />découverte</h2>
       <p class="qualif-subtitle reveal" data-d="1">
-        Réponds à 2 questions pour accéder à mon calendrier.
+        Réponds à quelques questions pour accéder à mon calendrier.
       </p>
 
       <!-- Form card -->
@@ -548,16 +570,57 @@
         <div class="qualif-divider"></div>
 
         <div class="qualif-q">
-          <label class="qualif-label" for="qualif-budget">
-            Combien es-tu prêt(e) à investir par mois pour mon accompagnement ?
-          </label>
-          <select class="qualif-input" id="qualif-budget">
-            <option value="">— Sélectionne une option —</option>
-            <option value="0">Moins de 500 € / mois</option>
-            <option value="500">500 – 999 € / mois</option>
-            <option value="1000">1 000 – 1 999 € / mois</option>
-            <option value="2000">2 000 € / mois et plus</option>
-          </select>
+          <label class="qualif-label">Combien es-tu prêt à investir sur ta réussite ?</label>
+          <div class="qualif-radios" id="qualif-budget">
+            <label class="qr-opt">
+              <input type="radio" name="budget" value="200-500" />
+              <span>200 – 500 €</span>
+            </label>
+            <label class="qr-opt">
+              <input type="radio" name="budget" value="500-750" />
+              <span>500 – 750 €</span>
+            </label>
+            <label class="qr-opt">
+              <input type="radio" name="budget" value="1000+" />
+              <span>+ de 1 000 €</span>
+            </label>
+            <label class="qr-opt qr-full">
+              <input type="radio" name="budget" value="infini" />
+              <span>Infini tant que je réussis 🔥 <small style="opacity:.65">(la daronne à l'abri)</small></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="qualif-divider"></div>
+
+        <div class="qualif-q">
+          <label class="qualif-label">As-tu déjà entrepris dans ta vie ?</label>
+          <div class="qualif-radios" id="qualif-entrepris">
+            <label class="qr-opt">
+              <input type="radio" name="entrepris" value="oui" />
+              <span>Oui</span>
+            </label>
+            <label class="qr-opt">
+              <input type="radio" name="entrepris" value="non" />
+              <span>Non</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="qualif-divider"></div>
+
+        <div class="qualif-q">
+          <label class="qualif-label">As-tu déjà investi dans ta vie ?</label>
+          <div class="qualif-radios" id="qualif-investi">
+            <label class="qr-opt">
+              <input type="radio" name="investi" value="oui" />
+              <span>Oui</span>
+            </label>
+            <label class="qr-opt">
+              <input type="radio" name="investi" value="non" />
+              <span>Non</span>
+            </label>
+          </div>
         </div>
 
         <!-- Étape 2 — Coordonnées (affichées après l'étape 1) -->
@@ -755,13 +818,12 @@
   }
 
   function sendToBrevo(email, tel){
-    var data = new URLSearchParams();
-    data.append('EMAIL', email);
-    data.append('SMS', normPhone(tel));
-    data.append('SMS__COUNTRY_CODE', '33');
-    data.append('email_address_check', ''); /* honeypot vide */
-    data.append('locale', 'fr');
-    fetch(BREVO_URL, { method:'POST', mode:'no-cors', body:data }).catch(function(){});
+    try {
+      /* Vrai POST de formulaire via iframe caché — fiable sans CORS */
+      document.getElementById('bsf-email').value = email;
+      document.getElementById('bsf-sms').value   = normPhone(tel);
+      document.getElementById('brevo-shadow-form').submit();
+    } catch(e){ /* silently fail */ }
   }
 
   if(!btn) return;
@@ -770,14 +832,15 @@
 
     /* ── ÉTAPE 1 : valider âge + budget, révéler les champs coordonnées ── */
     if(!step1Done){
-      var ageRaw = document.getElementById('qualif-age').value.trim();
-      var budRaw = document.getElementById('qualif-budget').value;
-      if(!ageRaw || budRaw === ''){
-        alert('Merci de répondre aux 2 questions pour continuer.');
+      var ageRaw       = document.getElementById('qualif-age').value.trim();
+      var budgetSel    = document.querySelector('input[name="budget"]:checked');
+      var entreprisSel = document.querySelector('input[name="entrepris"]:checked');
+      var investiSel   = document.querySelector('input[name="investi"]:checked');
+      if(!ageRaw || !budgetSel || !entreprisSel || !investiSel){
+        alert('Merci de répondre à toutes les questions pour continuer.');
         return;
       }
-      savedAge    = parseInt(ageRaw, 10);
-      savedBudget = parseInt(budRaw, 10);
+      savedAge = parseInt(ageRaw, 10);
       /* Toujours afficher l'étape 2 — on capture TOUS les leads dans Brevo */
       step2.removeAttribute('hidden');
       btn.textContent = 'Voir le calendrier →';
@@ -802,9 +865,8 @@
     /* Envoi Brevo en arrière-plan (fire-and-forget) */
     sendToBrevo(email, tel);
 
-    /* Qualification : âge ≥ 20 ET budget ≥ 500 €/mois */
-    var qualified = (!isNaN(savedAge) && savedAge >= 20)
-                 && (!isNaN(savedBudget) && savedBudget >= 500);
+    /* Qualification : âge ≥ 20 uniquement */
+    var qualified = (!isNaN(savedAge) && savedAge >= 20);
 
     btn.disabled = true;
 
@@ -832,6 +894,23 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/auth-config.js"></script>
 <script src="js/auth.js"></script>
+
+<!-- Brevo shadow form (hidden) — vrai POST sans CORS -->
+<iframe name="brevo-hidden" style="display:none;position:absolute;width:0;height:0;" tabindex="-1" aria-hidden="true"></iframe>
+<form
+  id="brevo-shadow-form"
+  method="POST"
+  action="https://2fabf66e.sibforms.com/v2/serve/MUIFABJZJ3joZtfAP8vy8_VvMCyx0M8ZpPc4YNzWi84sH29nFCN5v0IWmjnHjT0Um-_jtVCWGf8qdfmAuaDQGccXsF84zgXtDIFrKKT6kqGztv0UwyaPIPQmYemxperToJhqE9OI13q4Qo_Bh6BwCanHk8ObFDJIL74JP7KNcOQ8q89QPeJHUYrUOJqr8ldcns_dK_b8dHl09PTJPw=="
+  target="brevo-hidden"
+  style="display:none;"
+  aria-hidden="true"
+>
+  <input type="hidden" name="EMAIL" id="bsf-email" value="" />
+  <input type="hidden" name="SMS" id="bsf-sms" value="" />
+  <input type="hidden" name="SMS__COUNTRY_CODE" value="33" />
+  <input type="hidden" name="email_address_check" value="" />
+  <input type="hidden" name="locale" value="fr" />
+</form>
 
 </body>
 </html>
