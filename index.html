@@ -810,31 +810,34 @@
     calIframe.src = CAL_URL;
   }
 
-  /* Normalise le numéro FR au format Brevo : 33XXXXXXXXX */
+  /* Normalise le numéro FR : supprime tout sauf chiffres, enlève le 0 initial */
   function normPhone(raw){
-    var d = raw.replace(/[^\d+]/g, '').replace(/^\+/, '');
-    if(d.length === 10 && d.charAt(0) === '0') d = '33' + d.slice(1);
+    var d = raw.replace(/[^\d]/g, '');
+    if(d.length === 10 && d.charAt(0) === '0') d = d.slice(1);
     return d;
   }
 
   function sendToBrevo(email, tel, onDone){
-    /* Vrai POST via iframe — on attend la réponse avant d'afficher le calendrier */
-    var done = false;
-    function finish(){
-      if(done) return;
-      done = true;
-      if(onDone) onDone();
-    }
+    /* POST fire-and-forget vers Brevo via fetch no-cors (pas de CORS bloquant) */
+    var BREVO_URL = 'https://2fabf66e.sibforms.com/v2/serve/MUIFABJZJ3joZtfAP8vy8_VvMCyx0M8ZpPc4YNzWi84sH29nFCN5v0IWmjnHjT0Um-_jtVCWGf8qdfmAuaDQGccXsF84zgXtDIFrKKT6kqGztv0UwyaPIPQmYemxperToJhqE9OI13q4Qo_Bh6BwCanHk8ObFDJIL74JP7KNcOQ8q89QPeJHUYrUOJqr8ldcns_dK_b8dHl09PTJPw==';
     try {
-      document.getElementById('bsf-email').value = email;
-      document.getElementById('bsf-sms').value   = normPhone(tel);
-      /* Écouter le load de l'iframe = Brevo a répondu */
-      var iframe = document.querySelector('iframe[name="brevo-hidden"]');
-      if(iframe){ iframe.addEventListener('load', finish, { once: true }); }
-      /* Fallback : 3 secondes max, puis on continue quand même */
-      setTimeout(finish, 3000);
-      document.getElementById('brevo-shadow-form').submit();
-    } catch(e){ finish(); /* silently fail but continue */ }
+      var params = new URLSearchParams();
+      params.append('EMAIL', email);
+      params.append('SMS', normPhone(tel));
+      params.append('SMS__COUNTRY_CODE', '+33');
+      params.append('NOM', '');
+      params.append('PRENOM', '');
+      params.append('email_address_check', '');
+      params.append('locale', 'fr');
+      fetch(BREVO_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString()
+      }).catch(function(){});
+    } catch(e){}
+    /* Continuer après 1,5 s — on n'attend pas la réponse Brevo */
+    setTimeout(function(){ if(onDone) onDone(); }, 1500);
   }
 
   if(!btn) return;
@@ -909,22 +912,7 @@
 <script src="js/auth-config.js"></script>
 <script src="js/auth.js"></script>
 
-<!-- Brevo shadow form (hidden) — vrai POST sans CORS -->
-<iframe name="brevo-hidden" style="display:none;position:absolute;width:0;height:0;" tabindex="-1" aria-hidden="true"></iframe>
-<form
-  id="brevo-shadow-form"
-  method="POST"
-  action="https://2fabf66e.sibforms.com/v2/serve/MUIFABJZJ3joZtfAP8vy8_VvMCyx0M8ZpPc4YNzWi84sH29nFCN5v0IWmjnHjT0Um-_jtVCWGf8qdfmAuaDQGccXsF84zgXtDIFrKKT6kqGztv0UwyaPIPQmYemxperToJhqE9OI13q4Qo_Bh6BwCanHk8ObFDJIL74JP7KNcOQ8q89QPeJHUYrUOJqr8ldcns_dK_b8dHl09PTJPw=="
-  target="brevo-hidden"
-  style="display:none;"
-  aria-hidden="true"
->
-  <input type="hidden" name="EMAIL" id="bsf-email" value="" />
-  <input type="hidden" name="SMS" id="bsf-sms" value="" />
-  <input type="hidden" name="SMS__COUNTRY_CODE" value="33" />
-  <input type="hidden" name="email_address_check" value="" />
-  <input type="hidden" name="locale" value="fr" />
-</form>
+<!-- Brevo : envoi via fetch no-cors, pas de formulaire caché nécessaire -->
 
 </body>
 </html>
