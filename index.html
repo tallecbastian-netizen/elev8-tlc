@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bastian Tallec — Investisseur · Créateur · Mentor</title>
+<meta name="description" content="Bastian Tallec accompagne des entrepreneurs et créateurs à scaler leur business avec méthode. Réserve un appel découverte." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Oswald:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+  body{font-family:'Inter',sans-serif;background:#0A0B0E;color:#E8EAF0;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  a:hover{color:#2DD4A0;}
+  button{cursor:pointer;font:inherit;border:none;background:none;}
+  ::selection{background:#2DD4A0;color:#0A0B0E;}
+  input::placeholder{color:#5A5E6E;}
+  input:focus{outline:none;border-color:#2DD4A0 !important;box-shadow:0 0 0 3px rgba(45,212,160,.18);}
+  .qr-opt{display:flex;align-items:flex-start;gap:10px;padding:13px 16px;border:1px solid rgba(255,255,255,.12);border-radius:12px;cursor:pointer;font-size:.9rem;line-height:1.4;transition:border-color .2s,background .2s;}
+  .qr-opt:hover{background:rgba(255,255,255,.04);}
+  .qr-opt.is-selected{border-color:#2DD4A0;background:rgba(45,212,160,.12);}
+  .qr-full{grid-column:1/-1;}
+  @media(max-width:520px){.qualif-radios{grid-template-columns:1fr!important;}}
+  @media(max-width:768px){
+    .nav-list{display:none!important;}
+  }
+</style>
+</head>
+<body>
+
+<div style="position:relative;background:radial-gradient(120% 60% at 15% 0%, #10241D 0%, transparent 55%), radial-gradient(100% 55% at 100% 35%, #0D2019 0%, transparent 60%), radial-gradient(90% 50% at 20% 100%, #0F241C 0%, transparent 60%), linear-gradient(165deg,#0A0B0E 0%,#0E1F18 40%,#0A0F0C 70%,#122A20 100%);min-height:100vh;overflow:hidden;">
+  <div style="position:absolute;inset:0;z-index:0;pointer-events:none;background-image:repeating-radial-gradient(circle at 50% 0%, transparent 0, transparent 78px, rgba(69,180,140,.10) 79px, rgba(69,180,140,.10) 80px);mask-image:radial-gradient(120% 90% at 50% 20%, #000 40%, transparent 100%);"></div>
+  <div style="position:relative;z-index:1;">
+
+  <!-- HEADER -->
+  <header style="position:sticky;top:0;z-index:100;padding:14px 0;background:rgba(10,11,14,.35);backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(255,255,255,.07);">
+    <div style="width:min(100%,1200px);margin-inline:auto;padding-inline:clamp(20px,5vw,60px);display:flex;align-items:center;justify-content:space-between;gap:20px;">
+      <a href="#" style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+        <img src="assets/img/elev8-mark.png" alt="Elev8" style="width:44px;height:44px;object-fit:contain;flex-shrink:0;" />
+        <div style="display:flex;flex-direction:column;line-height:1.15;">
+          <span style="font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;color:#E8EAF0;">Bastian Tallec</span>
+        </div>
+      </a>
+      <nav class="nav-list" style="display:flex;align-items:center;gap:28px;">
+        <a href="#" style="font-size:.85rem;font-weight:500;color:#C4C8D4;">Programme</a>
+        <a href="#" style="font-size:.85rem;font-weight:500;color:#C4C8D4;">Témoignages</a>
+        <a href="#" style="font-size:.85rem;font-weight:500;color:#C4C8D4;">Marques</a>
+        <a href="#" style="font-size:.85rem;font-weight:500;color:#C4C8D4;">Espace membre</a>
+        <a href="#reservation" style="padding:8px 20px;border-radius:50px;background:linear-gradient(135deg,#7EE8C6 0%,#2DD4A0 44%,#0E7C5A 100%);color:#0A0B0E;font-weight:700;">Réserver un appel</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- VSL -->
+    <section style="padding:clamp(60px,8vw,90px) 0 clamp(50px,6vw,70px);background:transparent;border-bottom:1px solid rgba(255,255,255,.07);">
+      <div style="width:min(100%,1200px);margin-inline:auto;padding-inline:clamp(20px,5vw,60px);">
+        <div style="width:min(100%,780px);margin-inline:auto;text-align:center;">
+          <p style="font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:.72rem;color:#2DD4A0;margin:0 0 14px;">Regarde cette vidéo avant tout</p>
+          <h2 style="font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(1.3rem,2.6vw,1.85rem);color:#E8EAF0;line-height:1.35;margin:0 0 36px;">
+            Comment j'ai construit un business rentable<br />et comment tu peux faire pareil en 90 jours
+          </h2>
+          <div style="position:relative;border-radius:24px;padding:3px;background:linear-gradient(135deg,#7EE8C6 0%,#2DD4A0 44%,#0E7C5A 100%);box-shadow:0 0 50px rgba(45,212,160,.45),0 0 120px rgba(45,212,160,.22),0 16px 56px rgba(0,0,0,.55);">
+            <div style="position:relative;width:100%;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:21px;background:#000;">
+              <iframe src="https://www.youtube.com/embed/u7dvBvDFAkM?rel=0&modestbranding=1&autoplay=0" title="Vidéo de présentation — Bastian Tallec" allowfullscreen loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BIO -->
+    <section style="padding:clamp(70px,10vw,120px) 0 clamp(70px,8vw,100px);">
+      <div style="width:min(100%,1200px);margin-inline:auto;padding-inline:clamp(20px,5vw,60px);">
+        <div style="width:min(100%,680px);margin-inline:auto;text-align:center;">
+
+          <div style="width:min(100%,520px);margin:0 auto 44px;border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:0 16px 56px rgba(0,0,0,.55);">
+            <picture>
+              <source type="image/webp" srcset="assets/img/hero-portrait.webp" />
+              <img src="assets/img/hero-portrait.jpg" alt="Bastian Tallec" width="520" height="780" fetchpriority="high" decoding="async" style="width:100%;height:auto;display:block;" />
+            </picture>
+          </div>
+
+          <h1 style="font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(2.4rem,8vw,4.5rem);letter-spacing:.04em;text-transform:uppercase;line-height:1;margin:0 0 12px;background:linear-gradient(135deg,#7EE8C6 0%,#2DD4A0 44%,#0E7C5A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">BASTIAN TALLEC</h1>
+          <p style="font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:.78rem;color:#838899;margin:0 0 40px;">Investisseur · Créateur · Mentor</p>
+
+          <div style="text-align:left;margin-bottom:40px;">
+            <p style="font-size:clamp(1rem,1.3vw,1.08rem);line-height:1.8;color:#C4C8D4;margin:0 0 22px;">
+              Bastian Tallec n'a pas commencé par vouloir bâtir un business. Il a commencé par regarder les gens autour de lui, sa famille, ses amis, compter les jours avant la fin du mois, un salaire qui ne suffit jamais vraiment, une pression financière qui use en silence. Il n'a pas cherché de client. Il a d'abord voulu les aider, eux.
+            </p>
+            <p style="font-size:clamp(1rem,1.3vw,1.08rem);line-height:1.8;color:#C4C8D4;margin:0 0 22px;">
+              Alors il commence à les aider, concrètement, sans rien vendre au départ. Pas de méthode miracle, pas de promesse de liberté financière en trois mois, juste du temps passé à comprendre leur situation, et à construire avec eux un deuxième pilier de revenu, à côté de leur travail.
+            </p>
+            <p style="font-size:clamp(1rem,1.3vw,1.08rem);line-height:1.8;color:#C4C8D4;margin:0 0 22px;">
+              Il commence pourtant lui-même en parallèle de ses études, un DUT, puis une école d'ingénieur. Pas de statut, pas de temps libre à revendre. Juste une contrainte qui l'oblige à apprendre, très vite, à optimiser chaque heure de sa journée. Cette discipline-là, il ne l'a plus jamais lâchée, c'est elle qu'il transmet aujourd'hui à ceux qui, comme lui à l'époque, doivent construire quelque chose en plus d'une vie déjà bien remplie.
+            </p>
+            <p style="font-size:clamp(1rem,1.3vw,1.08rem);line-height:1.8;color:#C4C8D4;margin:0 0 22px;">
+              En cinq ans, Bastian accompagne près de <strong style="color:#E8EAF0;font-weight:600;">4 000 personnes</strong> et génère <strong style="color:#E8EAF0;font-weight:600;">1,2M€ de chiffre d'affaires</strong>, non pas en vendant du contenu, mais en aidant chacun à créer le sien : contenu, personal branding, nouvelles sources de revenus pensées pour durer dans le temps.
+            </p>
+            <p style="font-size:clamp(1rem,1.3vw,1.08rem);line-height:1.8;color:#C4C8D4;margin:0 0 22px;">
+              Sa méthode commence toujours au même endroit : un audit. Pas des chiffres d'abord, une personne. Qui es-tu, pourquoi veux-tu réellement évoluer. L'argent n'est jamais le point de départ, c'est une conséquence d'une évolution humaine.
+            </p>
+            <p style="font-size:clamp(1rem,1.3vw,1.08rem);line-height:1.8;color:#C4C8D4;margin:0 0 22px;">
+              Les preuves ne sont pas dans une levée de fonds ou une couverture presse, mais dans des centaines de messages et de vidéos de clients qui expriment, avec leurs mots, leur dévouement et leur transformation.
+            </p>
+            <p style="font-size:clamp(1rem,1.3vw,1.08rem);line-height:1.8;color:#C4C8D4;margin:0 0 22px;">
+              Aujourd'hui, Bastian ne veut plus seulement accompagner en 1 à 1. Il construit <strong style="color:#E8EAF0;font-weight:600;">ELEV8</strong>, un cercle d'entrepreneurs qui s'entraident, où chacun avance avec les autres plutôt que seul.
+            </p>
+            <p style="font-size:clamp(1rem,1.3vw,1.08rem);line-height:1.8;color:#C4C8D4;margin:0;">
+              Son pourquoi n'a jamais changé : aider les gens, heureux ou non dans leur quotidien, à se débarrasser de la pression financière qui les ronge. Il a commencé par ceux qu'il aime. Il ne s'arrête plus.
+            </p>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;">
+            <a href="#reservation" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Sora',sans-serif;font-weight:700;font-size:.92rem;letter-spacing:.03em;padding:14px 28px;border-radius:50px;background:linear-gradient(135deg,#7EE8C6 0%,#2DD4A0 44%,#0E7C5A 100%);color:#0A0B0E;">Réserver un appel découverte →</a>
+            <a href="programme.html" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Sora',sans-serif;font-weight:700;font-size:.92rem;letter-spacing:.03em;padding:14px 28px;border-radius:50px;background:transparent;color:#E8EAF0;border:1px solid rgba(255,255,255,.12);">Voir le programme</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- RESERVATION / QUALIFICATION -->
+    <section id="reservation" style="padding:clamp(70px,8vw,100px) 0;background:rgba(17,19,24,.15);border-top:1px solid rgba(255,255,255,.07);">
+      <div style="width:min(100%,680px);margin-inline:auto;padding-inline:clamp(20px,5vw,60px);">
+
+        <h2 style="font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(1.6rem,3.5vw,2.4rem);text-transform:uppercase;text-align:center;margin:0 0 10px;letter-spacing:.02em;">Réserve ton appel<br />découverte</h2>
+        <p style="text-align:center;color:#838899;margin:0 0 44px;font-size:.95rem;">Réponds à quelques questions pour accéder à mon calendrier.</p>
+
+        <div style="background:rgba(22,27,38,.55);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:clamp(28px,4vw,44px);margin-bottom:32px;backdrop-filter:blur(6px);">
+
+          <div style="margin-bottom:30px;">
+            <label style="display:block;font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:14px;line-height:1.35;" for="qualif-age">Quel âge as-tu ?</label>
+            <input class="qualif-input" type="number" id="qualif-age" min="10" max="99" placeholder="Ex : 27" autocomplete="off" style="width:100%;font:inherit;font-size:1rem;color:#E8EAF0;background:#0A0B0E;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 18px;" />
+          </div>
+
+          <div style="height:1px;background:rgba(255,255,255,.07);margin:30px 0;"></div>
+
+          <div style="margin-bottom:30px;">
+            <label style="display:block;font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:14px;line-height:1.35;">Combien es-tu prêt à investir sur ta réussite ?</label>
+            <div class="qualif-radios" id="qualif-budget" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <label class="qr-opt"><input type="radio" name="budget" value="200-500" style="accent-color:#2DD4A0;width:16px;height:16px;flex-shrink:0;margin-top:2px;" /><span>200 – 500 €</span></label>
+              <label class="qr-opt"><input type="radio" name="budget" value="500-750" style="accent-color:#2DD4A0;width:16px;height:16px;flex-shrink:0;margin-top:2px;" /><span>500 – 750 €</span></label>
+              <label class="qr-opt"><input type="radio" name="budget" value="1000+" style="accent-color:#2DD4A0;width:16px;height:16px;flex-shrink:0;margin-top:2px;" /><span>+ de 1 000 €</span></label>
+              <label class="qr-opt qr-full"><input type="radio" name="budget" value="infini" style="accent-color:#2DD4A0;width:16px;height:16px;flex-shrink:0;margin-top:2px;" /><span>Infini tant que je réussis 🔥 <small style="opacity:.65">(la daronne à l'abri)</small></span></label>
+            </div>
+          </div>
+
+          <div style="height:1px;background:rgba(255,255,255,.07);margin:30px 0;"></div>
+
+          <div style="margin-bottom:30px;">
+            <label style="display:block;font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:14px;line-height:1.35;">As-tu déjà entrepris dans ta vie ?</label>
+            <div class="qualif-radios" id="qualif-entrepris" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <label class="qr-opt"><input type="radio" name="entrepris" value="oui" style="accent-color:#2DD4A0;width:16px;height:16px;flex-shrink:0;margin-top:2px;" /><span>Oui</span></label>
+              <label class="qr-opt"><input type="radio" name="entrepris" value="non" style="accent-color:#2DD4A0;width:16px;height:16px;flex-shrink:0;margin-top:2px;" /><span>Non</span></label>
+            </div>
+          </div>
+
+          <div style="height:1px;background:rgba(255,255,255,.07);margin:30px 0;"></div>
+
+          <div style="margin-bottom:0;">
+            <label style="display:block;font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:14px;line-height:1.35;">As-tu déjà investi dans ta vie ?</label>
+            <div class="qualif-radios" id="qualif-investi" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <label class="qr-opt"><input type="radio" name="investi" value="oui" style="accent-color:#2DD4A0;width:16px;height:16px;flex-shrink:0;margin-top:2px;" /><span>Oui</span></label>
+              <label class="qr-opt"><input type="radio" name="investi" value="non" style="accent-color:#2DD4A0;width:16px;height:16px;flex-shrink:0;margin-top:2px;" /><span>Non</span></label>
+            </div>
+          </div>
+
+          <div id="qualif-step2" hidden>
+            <div style="height:1px;background:rgba(255,255,255,.07);margin:30px 0;"></div>
+            <div style="margin-bottom:30px;">
+              <label style="display:block;font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:14px;" for="qualif-prenom">Ton prénom</label>
+              <input class="qualif-input" type="text" id="qualif-prenom" placeholder="Prénom" autocomplete="given-name" style="width:100%;font:inherit;font-size:1rem;color:#E8EAF0;background:#0A0B0E;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 18px;" />
+            </div>
+            <div style="height:1px;background:rgba(255,255,255,.07);margin:30px 0;"></div>
+            <div style="margin-bottom:30px;">
+              <label style="display:block;font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:14px;" for="qualif-nom">Ton nom</label>
+              <input class="qualif-input" type="text" id="qualif-nom" placeholder="Nom" autocomplete="family-name" style="width:100%;font:inherit;font-size:1rem;color:#E8EAF0;background:#0A0B0E;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 18px;" />
+            </div>
+            <div style="height:1px;background:rgba(255,255,255,.07);margin:30px 0;"></div>
+            <div style="margin-bottom:30px;">
+              <label style="display:block;font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:14px;" for="qualif-email">Ton adresse email</label>
+              <input class="qualif-input" type="email" id="qualif-email" placeholder="exemple@email.com" autocomplete="email" style="width:100%;font:inherit;font-size:1rem;color:#E8EAF0;background:#0A0B0E;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 18px;" />
+            </div>
+            <div style="height:1px;background:rgba(255,255,255,.07);margin:30px 0;"></div>
+            <div style="margin-bottom:0;">
+              <label style="display:block;font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:14px;" for="qualif-tel">Ton numéro de téléphone</label>
+              <input class="qualif-input" type="tel" id="qualif-tel" placeholder="+33 6 00 00 00 00" autocomplete="tel" style="width:100%;font:inherit;font-size:1rem;color:#E8EAF0;background:#0A0B0E;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 18px;" />
+            </div>
+          </div>
+
+          <div style="margin-top:30px;">
+            <button id="qualif-btn" type="button" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Sora',sans-serif;font-weight:700;font-size:.92rem;letter-spacing:.03em;padding:14px 28px;border-radius:50px;background:linear-gradient(135deg,#7EE8C6 0%,#2DD4A0 44%,#0E7C5A 100%);color:#0A0B0E;border:none;cursor:pointer;">Continuer →</button>
+          </div>
+
+          <div id="qualif-refuse" hidden style="margin-top:22px;padding:20px 24px;border-radius:14px;background:rgba(180,40,40,.1);border:1px solid rgba(220,80,80,.25);text-align:center;">
+            <p style="color:#BFC5D5;font-size:.93rem;line-height:1.65;margin:0;">Merci pour votre intérêt, malheureusement ce programme et accompagnement n'est pas adapté à votre situation actuelle.</p>
+          </div>
+
+        </div>
+
+        <div style="position:relative;margin-top:8px;">
+          <div class="calendly-gate" id="calendly-gate" style="position:absolute;inset:0;z-index:10;background:rgba(10,11,14,.85);backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border-radius:20px;border:1px solid rgba(255,255,255,.12);text-align:center;padding:28px 20px;transition:opacity .4s ease;">
+            <div style="font-size:2rem;line-height:1;">🔒</div>
+            <p style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.1rem;text-transform:uppercase;letter-spacing:.04em;margin:0;">Réponds au formulaire d'abord</p>
+            <p style="color:#838899;font-size:.87rem;max-width:300px;margin:0;">Remplis les questions ci-dessus pour accéder au calendrier.</p>
+          </div>
+          <iframe id="cal-widget" src="" title="Calendrier de réservation" allowfullscreen style="width:100%;height:700px;border:1px solid rgba(255,255,255,.07);border-radius:20px;overflow:hidden;display:block;min-width:320px;"></iframe>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer style="padding:48px 0 28px;border-top:1px solid rgba(255,255,255,.07);background:transparent;">
+    <div style="width:min(100%,1200px);margin-inline:auto;padding-inline:clamp(20px,5vw,60px);">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:36px;">
+        <a href="#" style="display:flex;align-items:center;gap:12px;">
+          <img src="assets/img/elev8-mark.png" alt="Elev8" style="width:44px;height:44px;object-fit:contain;flex-shrink:0;" />
+          <div style="display:flex;flex-direction:column;line-height:1.15;">
+            <span style="font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;color:#E8EAF0;">Bastian Tallec</span>
+            <span style="font-family:'Oswald',sans-serif;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:#2DD4A0;">Elite 90 Days</span>
+          </div>
+        </a>
+        <nav style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <a href="programme.html" style="font-size:.83rem;color:#838899;">Programme</a>
+          <a href="temoignages.html" style="font-size:.83rem;color:#838899;">Témoignages</a>
+          <a href="marques.html" style="font-size:.83rem;color:#838899;">Marques</a>
+          <a href="event.html" style="font-size:.83rem;color:#838899;">Événements</a>
+          <a href="connexion.html" style="font-size:.83rem;color:#838899;">Espace membre</a>
+        </nav>
+        <div style="display:flex;gap:10px;">
+          <a href="https://www.instagram.com/bastian_tallec/" target="_blank" rel="noopener" style="width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:#838899;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="5"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/bastian-tallec/" target="_blank" rel="noopener" style="width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:#838899;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4"></rect><path d="M8 11v5M8 8v.01M12 16v-5M12 11a3 3 0 0 1 6 0v5"></path></svg>
+          </a>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:24px;border-top:1px solid rgba(255,255,255,.07);font-size:.78rem;color:#5A5E6E;">
+        <span>© 2025 Bastian Tallec · Tous droits réservés</span>
+        <span><a href="confidentialite.html" style="color:#838899;">Mentions légales</a> · <a href="confidentialite.html" style="color:#838899;">Politique de confidentialité</a></span>
+      </div>
+    </div>
+  </footer>
+
+  </div>
+</div>
+
+<!-- Formulaire de qualification : 2 étapes + gate calendrier -->
+<script>
+(function () {
+  var CAL_URL = 'https://calendar.app.google/EW5urnh1dZ4ECy5g6';
+
+  var btn = document.getElementById('qualif-btn');
+  var refuseBox = document.getElementById('qualif-refuse');
+  var gate = document.getElementById('calendly-gate');
+  var calIframe = document.getElementById('cal-widget');
+  var step2 = document.getElementById('qualif-step2');
+  var calLoaded = false;
+  var step1Done = false;
+  var savedAge;
+
+  // Sélection visuelle des cartes radio
+  document.querySelectorAll('.qr-opt input[type="radio"]').forEach(function (input) {
+    input.addEventListener('change', function () {
+      var name = input.name;
+      document.querySelectorAll('input[name="' + name + '"]').forEach(function (i) {
+        i.closest('.qr-opt').classList.toggle('is-selected', i.checked);
+      });
+    });
+  });
+
+  function loadCalendar() {
+    if (calLoaded) return;
+    calLoaded = true;
+    calIframe.src = CAL_URL;
+  }
+
+  if (!btn) return;
+
+  btn.addEventListener('click', function () {
+    if (!step1Done) {
+      var ageRaw = document.getElementById('qualif-age').value.trim();
+      var budgetSel = document.querySelector('input[name="budget"]:checked');
+      var entreprisSel = document.querySelector('input[name="entrepris"]:checked');
+      var investiSel = document.querySelector('input[name="investi"]:checked');
+      if (!ageRaw || !budgetSel || !entreprisSel || !investiSel) {
+        alert('Merci de répondre à toutes les questions pour continuer.');
+        return;
+      }
+      savedAge = parseInt(ageRaw, 10);
+      step2.removeAttribute('hidden');
+      btn.textContent = 'Voir le calendrier →';
+      step1Done = true;
+      return;
+    }
+
+    var prenom = document.getElementById('qualif-prenom').value.trim();
+    var nom = document.getElementById('qualif-nom').value.trim();
+    var email = document.getElementById('qualif-email').value.trim();
+    var tel = document.getElementById('qualif-tel').value.trim();
+
+    if (!prenom) { alert("Merci d'entrer ton prénom."); return; }
+    if (!nom) { alert('Merci d\'entrer ton nom.'); return; }
+    if (!email || !email.includes('@')) { alert('Merci d\'entrer une adresse email valide.'); return; }
+    if (!tel) { alert('Merci d\'entrer ton numéro de téléphone.'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours…';
+
+    setTimeout(function () {
+      var qualified = (!isNaN(savedAge) && savedAge >= 20);
+      btn.disabled = false;
+      btn.textContent = 'Voir le calendrier →';
+
+      if (!qualified) {
+        refuseBox.removeAttribute('hidden');
+        return;
+      }
+
+      refuseBox.setAttribute('hidden', '');
+      if (gate) gate.classList.add('is-hidden');
+      if (gate) gate.style.opacity = '0';
+      if (gate) gate.style.pointerEvents = 'none';
+      loadCalendar();
+    }, 800);
+  });
+})();
+</script>
+
+</body>
+</html>
