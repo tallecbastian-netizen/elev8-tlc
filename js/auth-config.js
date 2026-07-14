@@ -14,5 +14,5 @@ window.TLC_CONFIG = {
   SUPABASE_URL: "https://vnyereucdquqkutgsddv.supabase.co",
   SUPABASE_ANON_KEY: "sb_publishable_PUx879zmrMAbCcsX7SaQsQ_dZ_MW2Eh",
   // Adresses qui ont accès au tableau de bord admin (suivi-membres).
-  ADMIN_EMAILS: ["tallecbastian.pro@gmail.com"]
+  ADMIN_EMAILS: ["tallecbastian.pro@gmail.com", "bastian@elev8-tlc.com"]
 };
