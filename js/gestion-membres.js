@@ -158,9 +158,25 @@
     return "https://wa.me/" + intlTel(m) + "?text=" + encodeURIComponent(msg);
   }
 
+  // Applique un filtre et garde boutons "provenance" + menu déroulant synchronisés.
+  function setFilter(val) {
+    filt = val;
+    var sel = $("filter");
+    if (sel) sel.value = val;
+    var btns = document.querySelectorAll(".segbtn[data-prov]");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle("is-active", btns[i].getAttribute("data-prov") === val);
+    }
+    render();
+  }
+
   function bind() {
     $("search").addEventListener("input", function (e) { q = (e.target.value || "").toLowerCase().trim(); render(); });
-    $("filter").addEventListener("change", function (e) { filt = e.target.value; render(); });
+    $("filter").addEventListener("change", function (e) { setFilter(e.target.value); });
+    var provBtns = document.querySelectorAll(".segbtn[data-prov]");
+    for (var i = 0; i < provBtns.length; i++) {
+      provBtns[i].addEventListener("click", function () { setFilter(this.getAttribute("data-prov")); });
+    }
     $("btn-add").addEventListener("click", function () { openModal(null); });
     $("btn-export").addEventListener("click", exportCsv);
     $("btn-cancel").addEventListener("click", closeModal);
