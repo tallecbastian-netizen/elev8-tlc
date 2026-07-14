@@ -360,12 +360,16 @@
     btn.disabled = true;
     btn.textContent = 'Envoi en cours…';
 
+    // Normalise le téléphone au format international français (+33) par défaut
+    var telFR = tel.replace(/[^\d+]/g, '');
+    if (telFR.charAt(0) !== '+') { telFR = '+33' + telFR.replace(/^0+/, ''); }
+
     // Enregistre le prospect dans la base (non bloquant : le calendrier s'ouvre même si ça échoue)
     try {
       if (window.TLCAuth && window.TLCAuth.addProspect) {
         var notes = 'Age ' + savedAge + ' · budget ' + savedBudget +
                     ' · entrepreneur ' + savedEntrepris + ' · déjà investi ' + savedInvesti;
-        window.TLCAuth.addProspect(email, nom, tel, prenom, notes);
+        window.TLCAuth.addProspect(email, nom, telFR, prenom, notes);
       }
     } catch (e) {}
 
