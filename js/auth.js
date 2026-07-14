@@ -112,10 +112,15 @@
     return { sent: true };
   }
 
-  async function addProspect(email, nom, tel) {
+  async function addProspect(email, nom, tel, prenom, notes) {
     if (!configured()) return;
     var c = client(); if (!c) return;
-    try { await c.rpc("add_prospect", { p_email: (email || "").toLowerCase(), p_nom: nom || null, p_tel: tel || null }); } catch (e) {}
+    try {
+      await c.rpc("add_prospect", {
+        p_email: (email || "").toLowerCase(), p_nom: nom || null, p_tel: tel || null,
+        p_prenom: prenom || null, p_notes: notes || null
+      });
+    } catch (e) {}
   }
 
   async function signOut() {

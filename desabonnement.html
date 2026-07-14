@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Désabonnement — Elev8 TLC</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0A0B0E; --surface:#15171D; --border:rgba(255,255,255,.08); --border-2:rgba(255,255,255,.15);
+  --text:#ECEEF1; --muted:#9AA1AB; --gold:#E6C685;
+  --grad-gold:linear-gradient(135deg,#F7E7BC 0%,#DCB868 44%,#B0853A 100%); --ring:rgba(220,184,104,.45);
+  --fb:"Inter",system-ui,sans-serif; --fd:"Sora",system-ui,sans-serif;
+  --ok:#9be3b0; --exp:#ff9b9b;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;display:grid;place-items:center;padding:24px;line-height:1.55;}
+.card{width:min(100%,440px);background:var(--surface);border:1px solid var(--border-2);border-radius:18px;padding:32px;text-align:center;}
+.mark{display:inline-grid;place-items:center;height:44px;padding:0 14px;border-radius:11px;background:rgba(220,184,104,.10);border:1px solid var(--ring);font-family:var(--fd);font-weight:800;letter-spacing:.12em;margin-bottom:18px;}
+.mark b{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
+h1{font-family:var(--fd);font-size:1.25rem;margin-bottom:12px;}
+p{color:var(--muted);font-size:.95rem;}
+.ok{color:var(--ok);} .err{color:var(--exp);}
+a.home{display:inline-block;margin-top:20px;font-size:.85rem;color:var(--gold);border:1px solid var(--ring);border-radius:9px;padding:9px 16px;text-decoration:none;}
+</style>
+</head>
+<body>
+  <div class="card">
+    <span class="mark"><b>TLC</b></span>
+    <h1 id="title">Désabonnement…</h1>
+    <p id="msg">Un instant, on traite ta demande.</p>
+    <a class="home" href="index.html">← Retour au site</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth-config.js"></script>
+  <script>
+  (function () {
+    var title = document.getElementById("title");
+    var msg = document.getElementById("msg");
+    function show(t, m, cls) { title.textContent = t; msg.textContent = m; if (cls) msg.className = cls; }
+
+    var params = new URLSearchParams(location.search);
+    var token = params.get("t");
+    var CFG = window.TLC_CONFIG || {};
+    var configured = CFG.SUPABASE_URL && CFG.SUPABASE_URL.indexOf("VOTRE") < 0 &&
+                     CFG.SUPABASE_ANON_KEY && CFG.SUPABASE_ANON_KEY.indexOf("VOTRE") < 0;
+
+    if (!token) { show("Lien invalide", "Ce lien de désabonnement est incomplet.", "err"); return; }
+    if (!configured || !window.supabase) { show("Indisponible", "La connexion n'est pas configurée. Réessaie plus tard.", "err"); return; }
+
+    var sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
+    sb.rpc("mailing_unsubscribe", { p_token: token }).then(function (r) {
+      if (r.error) { show("Oups", "Une erreur est survenue : " + r.error.message, "err"); return; }
+      if (r.data === true) { show("C'est fait ✓", "Tu ne recevras plus nos e-mails. Tu peux fermer cette page.", "ok"); }
+      else { show("Déjà désabonné", "Cette adresse n'est plus dans notre liste d'envoi.", "ok"); }
+    }).catch(function (e) {
+      show("Oups", "Une erreur est survenue : " + (e && e.message ? e.message : e), "err");
+    });
+  })();
+  </script>
+</body>
+</html>

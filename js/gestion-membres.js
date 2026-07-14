@@ -3,9 +3,13 @@
    Lecture/écriture Supabase via fonctions (list_membres / membre_save /
    membre_action) -> synchro automatique. Admin par e-mail seul.
    Catégorie calculée en direct depuis date_dernier_paiement (+28 j).
+   + Sélection multiple -> Email groupé (Edge Function send-mailing / Brevo)
+     et WhatsApp (message templé, export numéros, ouverture 1 par 1).
 ============================================================ */
 (function () {
   var sb = null, rows = [], q = "", filt = "all", editing = null;
+  var selected = {};          // id -> true (sélection pour email/WhatsApp)
+  var waList = [], waPos = 0;  // file d'ouverture WhatsApp
   var $ = function (id) { return document.getElementById(id); };
 
   function today() { return new Date().toISOString().slice(0, 10); }
@@ -44,7 +48,7 @@
   }
 
   function matches(m) {
-    if (q && ((((m.nom || "") + " " + (m.email || "") + " " + (m.promo || "")).toLowerCase()).indexOf(q) < 0)) return false;
+    if (q && (((((m.prenom || "") + " " + (m.nom || "") + " " + (m.email || "") + " " + (m.promo || "")).toLowerCase()).indexOf(q)) < 0)) return false;
     var cat = category(m), dl = daysLeft(accessUntil(m));
     switch (filt) {
       case "prospect": return cat === "prospect";
@@ -56,6 +60,25 @@
   }
 
   function badge(n, l) { return '<span class="stat"><b>' + n + "</b> " + l + "</span>"; }
+
+  /* ---------- Sélection ---------- */
+  function selCount() { return Object.keys(selected).length; }
+  function selRows() { return rows.filter(function (m) { return selected[m.id]; }); }
+  function toggleSel(id, on) { if (on) selected[id] = true; else delete selected[id]; updateBulk(); syncCheckAll(); }
+  function clearSel() { selected = {}; render(); }
+  function updateBulk() {
+    Object.keys(selected).forEach(function (id) { if (!find(id)) delete selected[id]; });
+    var n = selCount();
+    var bar = $("bulkbar"); if (bar) bar.style.display = n ? "flex" : "none";
+    var c = $("sel-count"); if (c) c.textContent = n + " sélectionné(s)";
+  }
+  function syncCheckAll() {
+    var ca = $("check-all"); if (!ca) return;
+    var list = rows.filter(matches);
+    var sv = list.filter(function (m) { return selected[m.id]; }).length;
+    ca.checked = list.length > 0 && sv === list.length;
+    ca.indeterminate = sv > 0 && sv < list.length;
+  }
 
   function render() {
     var list = rows.filter(matches);
@@ -73,8 +96,10 @@
       rv.innerHTML = "&#128197; Revue hebdo : <b>" + bientot.length + "</b> actif(s) expire(nt) sous 7 jours, <b>" + inactifs.length + "</b> inactif(s). Renouvelle (paiement +28j) ceux qui ont repayé.";
     } else rv.style.display = "none";
 
-    if (!list.length) { $("rows").innerHTML = '<tr><td colspan="7" class="empty">Aucune fiche.</td></tr>'; return; }
-    $("rows").innerHTML = list.map(rowHtml).join("");
+    if (!list.length) { $("rows").innerHTML = '<tr><td colspan="8" class="empty">Aucune fiche.</td></tr>'; }
+    else { $("rows").innerHTML = list.map(rowHtml).join(""); }
+    updateBulk();
+    syncCheckAll();
   }
 
   function rowHtml(m) {
@@ -96,8 +121,11 @@
       gestion = '<button class="act gold" data-pay="' + m.id + '">Réactiver (+28j)</button>';
     }
 
+    var who = ((m.prenom || "") + " " + (m.nom || "")).trim() || "—";
+    var optout = m.mailing_optout ? ' <span class="sub" title="Désabonné des emails">🚫</span>' : "";
     return "<tr>" +
-      "<td><b>" + esc(m.nom || "—") + "</b><br><span class=\"sub\">" + esc(m.email) + (m.telephone ? " · " + esc(m.telephone) : "") + "</span></td>" +
+      '<td class="selcol"><input type="checkbox" class="rowchk" data-sel="' + m.id + '"' + (selected[m.id] ? " checked" : "") + " /></td>" +
+      "<td><b>" + esc(who) + "</b>" + optout + "<br><span class=\"sub\">" + esc(m.email) + (m.telephone ? " · " + esc(m.telephone) : "") + "</span></td>" +
       "<td>" + esc(m.promo || "—") + "</td>" +
       "<td>" + esc(m.date_dernier_paiement || "—") + "</td>" +
       "<td>" + esc(au || "—") + "</td>" +
@@ -107,11 +135,14 @@
       "</tr>";
   }
 
+  function intlTel(m) {
+    var t = (m.telephone || "").replace(/[^0-9]/g, "");
+    if (t.charAt(0) === "0") t = "33" + t.slice(1);
+    return t;
+  }
   function waLink(m) {
-    var tel = (m.telephone || "").replace(/[^0-9]/g, "");
-    if (tel.charAt(0) === "0") tel = "33" + tel.slice(1);
-    var msg = "Salut " + (m.nom || "") + " ! Voici ton accès à l'espace membre TLC : https://tallecbastian-netizen.github.io/Landing-Page/connexion.html";
-    return "https://wa.me/" + tel + "?text=" + encodeURIComponent(msg);
+    var msg = "Salut " + (m.prenom || m.nom || "") + " ! Voici ton accès à l'espace membre TLC : https://tallecbastian-netizen.github.io/Landing-Page/connexion.html";
+    return "https://wa.me/" + intlTel(m) + "?text=" + encodeURIComponent(msg);
   }
 
   function bind() {
@@ -123,10 +154,31 @@
     $("btn-save").addEventListener("click", save);
     $("btn-signout").addEventListener("click", function () { window.TLCAuth.signOut(); location.replace("index.html"); });
     $("rows").addEventListener("click", onRowClick);
+
+    // Sélection multiple
+    $("check-all").addEventListener("change", function (e) {
+      var on = e.target.checked;
+      rows.filter(matches).forEach(function (m) { if (on) selected[m.id] = true; else delete selected[m.id]; });
+      render();
+    });
+    $("btn-clearsel").addEventListener("click", clearSel);
+
+    // Email groupé
+    $("btn-mail").addEventListener("click", openMail);
+    $("mail-cancel").addEventListener("click", function () { $("mailmodal").style.display = "none"; });
+    $("mail-send").addEventListener("click", sendMail);
+
+    // WhatsApp
+    $("btn-wa").addEventListener("click", openWa);
+    $("wa-cancel").addEventListener("click", function () { $("wamodal").style.display = "none"; });
+    $("wa-open").addEventListener("click", waOpenNext);
+    $("wa-copy").addEventListener("click", waCopy);
+    $("wa-export").addEventListener("click", waExport);
   }
 
   function onRowClick(e) {
     var t = e.target, id;
+    if (t.classList.contains("rowchk")) { return toggleSel(t.getAttribute("data-sel"), t.checked); }
     if ((id = t.getAttribute("data-pay"))) return doAction(id, "pay");
     if ((id = t.getAttribute("data-tomembre"))) return doAction(id, "to_member");
     if ((id = t.getAttribute("data-off"))) return doAction(id, "off");
@@ -144,6 +196,7 @@
   function openModal(m) {
     editing = m;
     $("m-title").textContent = m ? "Modifier la fiche" : "Nouvelle fiche";
+    $("m-prenom").value = m ? (m.prenom || "") : "";
     $("m-nom").value = m ? (m.nom || "") : "";
     $("m-email").value = m ? (m.email || "") : "";
     $("m-tel").value = m ? (m.telephone || "") : "";
@@ -162,6 +215,7 @@
     var r = await sb.rpc("membre_save", {
       p_id: editing ? editing.id : null,
       p_nom: $("m-nom").value.trim(),
+      p_prenom: $("m-prenom").value.trim(),
       p_email: email,
       p_tel: $("m-tel").value.trim(),
       p_statut: $("m-statut").value,
@@ -173,8 +227,82 @@
     closeModal(); await load();
   }
 
+  /* ---------- Email groupé (Edge Function send-mailing) ---------- */
+  function openMail() {
+    var dests = selRows().filter(function (m) { return m.email && !m.mailing_optout; });
+    var optout = selRows().filter(function (m) { return m.mailing_optout; }).length;
+    if (!dests.length) { alert("Aucun destinataire avec e-mail (et non désabonné) dans la sélection."); return; }
+    $("mail-to").textContent = dests.length + " destinataire(s)" + (optout ? " · " + optout + " désabonné(s) ignoré(s)" : "");
+    $("mail-result").textContent = "";
+    $("mailmodal").style.display = "flex";
+  }
+  async function sendMail() {
+    if (!sb) { alert("Supabase non configuré."); return; }
+    var subject = ($("mail-subject").value || "").trim();
+    var text = $("mail-body").value || "";
+    if (!subject) { alert("Ajoute un objet."); return; }
+    if (!text.trim()) { alert("Ajoute un message."); return; }
+    var ids = selRows().filter(function (m) { return m.email && !m.mailing_optout; }).map(function (m) { return m.id; });
+    if (!ids.length) { alert("Aucun destinataire."); return; }
+
+    var btn = $("mail-send"), old = btn.textContent; btn.disabled = true; btn.textContent = "Envoi…";
+    $("mail-result").innerHTML = "Envoi en cours…";
+    try {
+      var res = await sb.functions.invoke("send-mailing", { body: { subject: subject, text: text, ids: ids } });
+      if (res.error) {
+        $("mail-result").innerHTML = "<span style='color:var(--exp)'>Erreur : " + esc(res.error.message || String(res.error)) + "</span>";
+      } else {
+        var d = res.data || {};
+        var sent = (d.envoyes != null) ? d.envoyes : ids.length;
+        $("mail-result").innerHTML = "<span style='color:var(--ok)'>✓ " + sent + " email(s) envoyé(s)" +
+          (d.erreurs ? " · " + d.erreurs + " erreur(s)" : "") + "</span>";
+      }
+    } catch (e) {
+      $("mail-result").innerHTML = "<span style='color:var(--exp)'>Erreur : " + esc(e.message || String(e)) + "</span>";
+    }
+    btn.disabled = false; btn.textContent = old;
+  }
+
+  /* ---------- WhatsApp ---------- */
+  function openWa() {
+    var r = selRows().filter(function (m) { return m.telephone; });
+    if (!r.length) { alert("Aucun numéro de téléphone dans la sélection."); return; }
+    waList = r; waPos = 0;
+    $("wa-to").textContent = r.length + " contact(s) avec numéro";
+    updateWaHint();
+    $("wamodal").style.display = "flex";
+  }
+  function updateWaHint() {
+    var b = $("wa-open");
+    if (waPos >= waList.length) { b.disabled = true; b.textContent = "Terminé"; $("wa-hint").textContent = "Tous les contacts ont été ouverts (" + waList.length + ")."; }
+    else { b.disabled = false; b.textContent = "Ouvrir le suivant (" + (waPos + 1) + "/" + waList.length + ")"; }
+  }
+  function waMsgFor(m) { return ($("wa-msg").value || "").replace(/\{prenom\}/g, m.prenom || m.nom || ""); }
+  function waOpenNext() {
+    if (waPos >= waList.length) return;
+    var m = waList[waPos++];
+    window.open("https://wa.me/" + intlTel(m) + "?text=" + encodeURIComponent(waMsgFor(m)), "_blank");
+    updateWaHint();
+  }
+  function waCopy() {
+    var msg = $("wa-msg").value || "";
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(msg).then(
+        function () { $("wa-hint").textContent = "Message copié ✓"; },
+        function () { $("wa-hint").textContent = "Copie impossible (copie-le manuellement)."; }
+      );
+    } else { $("wa-hint").textContent = "Copie non supportée par ce navigateur."; }
+  }
+  function waExport() {
+    var r = selRows().filter(function (m) { return m.telephone; });
+    var lines = r.map(function (m) { return "+" + intlTel(m); });
+    var blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "numeros-whatsapp-tlc.txt"; a.click();
+    $("wa-hint").textContent = r.length + " numéro(s) exporté(s).";
+  }
+
   function exportCsv() {
-    var head = ["nom", "email", "telephone", "statut", "promo", "date_dernier_paiement", "actif", "notes", "source"];
+    var head = ["prenom", "nom", "email", "telephone", "statut", "promo", "date_dernier_paiement", "actif", "notes", "source", "mailing_optout"];
     var lines = [head.join(",")].concat(rows.map(function (m) {
       return head.map(function (k) { return '"' + String(m[k] == null ? "" : m[k]).replace(/"/g, '""') + '"'; }).join(",");
     }));

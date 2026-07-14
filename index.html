@@ -292,6 +292,10 @@
 </div>
 
 <!-- Formulaire de qualification : 2 étapes + gate calendrier -->
+<!-- Supabase (capture des prospects dans la base) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/auth-config.js"></script>
+<script src="js/auth.js"></script>
 <script>
 (function () {
   var CAL_URL = 'https://calendar.app.google/EW5urnh1dZ4ECy5g6';
@@ -303,7 +307,7 @@
   var step2 = document.getElementById('qualif-step2');
   var calLoaded = false;
   var step1Done = false;
-  var savedAge;
+  var savedAge, savedBudget, savedEntrepris, savedInvesti;
 
   // Sélection visuelle des cartes radio
   document.querySelectorAll('.qr-opt input[type="radio"]').forEach(function (input) {
@@ -334,6 +338,9 @@
         return;
       }
       savedAge = parseInt(ageRaw, 10);
+      savedBudget = budgetSel.value;
+      savedEntrepris = entreprisSel.value;
+      savedInvesti = investiSel.value;
       step2.removeAttribute('hidden');
       btn.textContent = 'Voir le calendrier →';
       step1Done = true;
@@ -352,6 +359,15 @@
 
     btn.disabled = true;
     btn.textContent = 'Envoi en cours…';
+
+    // Enregistre le prospect dans la base (non bloquant : le calendrier s'ouvre même si ça échoue)
+    try {
+      if (window.TLCAuth && window.TLCAuth.addProspect) {
+        var notes = 'Age ' + savedAge + ' · budget ' + savedBudget +
+                    ' · entrepreneur ' + savedEntrepris + ' · déjà investi ' + savedInvesti;
+        window.TLCAuth.addProspect(email, nom, tel, prenom, notes);
+      }
+    } catch (e) {}
 
     setTimeout(function () {
       var qualified = (!isNaN(savedAge) && savedAge >= 20);

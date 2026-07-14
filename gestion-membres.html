@@ -53,6 +53,12 @@ tr:last-child td{border-bottom:0;}
 .act{font-family:var(--fc);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem;padding:6px 10px;margin:2px;border-radius:7px;border:1px solid var(--border-2);background:transparent;color:var(--silver);cursor:pointer;display:inline-block;}
 .act:hover{border-color:var(--gold);color:var(--gold);}
 .act.gold{background:rgba(220,184,104,.14);border-color:var(--ring);color:var(--gold);}
+.bulkbar{display:none;gap:10px;align-items:center;flex-wrap:wrap;background:rgba(220,184,104,.08);border:1px solid var(--ring);border-radius:11px;padding:10px 14px;margin-bottom:14px;}
+.bulkbar #sel-count{font-family:var(--fc);letter-spacing:.06em;color:var(--gold);font-size:.82rem;margin-right:4px;}
+th.selcol,td.selcol{width:34px;text-align:center;}
+input[type=checkbox]{accent-color:var(--gold);width:16px;height:16px;cursor:pointer;vertical-align:middle;}
+.hint{color:var(--muted);font-size:.8rem;margin-top:6px;line-height:1.45;}
+.mailres{font-size:.82rem;margin-top:10px;}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;align-items:center;justify-content:center;padding:20px;}
 .modal .box{width:min(100%,460px);background:var(--surface);border:1px solid var(--border-2);border-radius:16px;padding:24px;max-height:90vh;overflow:auto;}
 .modal h2{font-family:var(--fd);font-size:1.1rem;margin-bottom:12px;}
@@ -96,9 +102,17 @@ tr:last-child td{border-bottom:0;}
 
     <div class="stats" id="stats"></div>
 
+    <div class="bulkbar" id="bulkbar">
+      <span id="sel-count">0 sélectionné(s)</span>
+      <button class="btn gold" id="btn-mail">✉️ Email groupé</button>
+      <button class="btn" id="btn-wa">WhatsApp</button>
+      <button class="btn" id="btn-clearsel">Désélectionner</button>
+    </div>
+
     <div class="tablewrap">
       <table>
         <thead><tr>
+          <th class="selcol"><input type="checkbox" id="check-all" title="Tout sélectionner" /></th>
           <th>Personne</th><th>Promo</th><th>Dernier paiement</th><th>Accès jusqu'au</th><th>Catégorie</th><th>Gestion</th><th></th>
         </tr></thead>
         <tbody id="rows"></tbody>
@@ -110,6 +124,7 @@ tr:last-child td{border-bottom:0;}
     <div class="box">
       <h2 id="m-title">Nouvelle fiche</h2>
       <input type="hidden" id="m-id" />
+      <label for="m-prenom">Prénom</label><input id="m-prenom" type="text" />
       <label for="m-nom">Nom</label><input id="m-nom" type="text" />
       <label for="m-email">E-mail *</label><input id="m-email" type="email" />
       <label for="m-tel">Téléphone</label><input id="m-tel" type="tel" placeholder="06…" />
@@ -123,6 +138,45 @@ tr:last-child td{border-bottom:0;}
         <button class="btn" id="btn-cancel">Annuler</button>
         <button class="btn gold" id="btn-save">Enregistrer</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Modale Email groupé -->
+  <div class="modal" id="mailmodal">
+    <div class="box">
+      <h2>✉️ Email groupé</h2>
+      <p class="sub" id="mail-to"></p>
+      <label for="mail-subject">Objet</label>
+      <input id="mail-subject" type="text" placeholder="ex : Ta place pour l'accompagnement TLC" />
+      <label for="mail-body">Message</label>
+      <textarea id="mail-body" rows="8" placeholder="Bonjour {prenom},&#10;&#10;..."></textarea>
+      <p class="hint"><b>{prenom}</b> est remplacé par le prénom de chaque destinataire. Un lien de désabonnement est ajouté automatiquement (obligation RGPD). Envoi limité à ~300 emails/jour (Brevo gratuit).</p>
+      <div class="mailres" id="mail-result"></div>
+      <div class="actions">
+        <button class="btn" id="mail-cancel">Annuler</button>
+        <button class="btn gold" id="mail-send">Envoyer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale WhatsApp -->
+  <div class="modal" id="wamodal">
+    <div class="box">
+      <h2>WhatsApp</h2>
+      <p class="sub" id="wa-to"></p>
+      <label for="wa-msg">Message</label>
+      <textarea id="wa-msg" rows="5">Salut {prenom} ! Ici Bastian de TLC 👋</textarea>
+      <p class="hint">WhatsApp n'autorise pas l'envoi de masse automatique. Trois options :<br>
+        • <b>Copier</b> le message puis le coller dans une liste de diffusion WhatsApp.<br>
+        • <b>Exporter les numéros</b> pour créer la liste de diffusion.<br>
+        • <b>Ouvrir 1 par 1</b> : ouvre chaque conversation préremplie, une à la fois.</p>
+      <div class="actions" style="justify-content:flex-start;flex-wrap:wrap;">
+        <button class="btn" id="wa-copy">Copier le message</button>
+        <button class="btn" id="wa-export">Exporter les numéros</button>
+        <button class="btn gold" id="wa-open">Ouvrir le suivant</button>
+      </div>
+      <p class="hint" id="wa-hint"></p>
+      <div class="actions"><button class="btn" id="wa-cancel">Fermer</button></div>
     </div>
   </div>
 
