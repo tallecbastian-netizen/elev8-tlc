@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
     const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY");
     const SENDER_EMAIL = Deno.env.get("BREVO_SENDER_EMAIL");
     const SENDER_NAME = Deno.env.get("BREVO_SENDER_NAME") || "Elev8 TLC";
-    const SITE_URL = (Deno.env.get("SITE_URL") || "https://tallecbastian-netizen.github.io/Landing-Page").replace(/\/+$/, "");
+    const SITE_URL = (Deno.env.get("SITE_URL") || "https://elev8-tlc.vercel.app").replace(/\/+$/, "");
     const ADMIN_EMAILS = (Deno.env.get("ADMIN_EMAILS") || "tallecbastian.pro@gmail.com")
       .toLowerCase().split(",").map((s) => s.trim()).filter(Boolean);
 

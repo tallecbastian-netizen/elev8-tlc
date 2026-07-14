@@ -154,7 +154,7 @@
     return t;
   }
   function waLink(m) {
-    var msg = "Salut " + (m.prenom || m.nom || "") + " ! Voici ton accès à l'espace membre TLC : https://tallecbastian-netizen.github.io/Landing-Page/connexion.html";
+    var msg = "Salut " + (m.prenom || m.nom || "") + " ! Voici ton accès à l'espace membre TLC : https://elev8-tlc.vercel.app/connexion.html";
     return "https://wa.me/" + intlTel(m) + "?text=" + encodeURIComponent(msg);
   }
 
