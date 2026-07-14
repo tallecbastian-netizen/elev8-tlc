@@ -51,6 +51,8 @@
     if (q && (((((m.prenom || "") + " " + (m.nom || "") + " " + (m.email || "") + " " + (m.promo || "")).toLowerCase()).indexOf(q)) < 0)) return false;
     var cat = category(m), dl = daysLeft(accessUntil(m));
     switch (filt) {
+      case "site": return (m.source !== "event");
+      case "event": return (m.source === "event");
       case "prospect": return cat === "prospect";
       case "actif": return cat === "actif";
       case "inactif": return cat === "inactif";
@@ -102,6 +104,17 @@
     syncCheckAll();
   }
 
+  function srcChip(m) {
+    var isEv = (m.source === "event");
+    var label = isEv ? "Event" : "Site";
+    var st = isEv
+      ? "background:rgba(24,227,158,.14);color:#18e39e;border:1px solid rgba(24,227,158,.4)"
+      : "background:rgba(212,175,55,.14);color:#d4af37;border:1px solid rgba(212,175,55,.4)";
+    return ' <span title="Provenance : ' + label + '" style="' + st +
+      ';font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;vertical-align:middle;display:inline-block">' +
+      label + "</span>";
+  }
+
   function rowHtml(m) {
     var cat = category(m), au = accessUntil(m), dl = daysLeft(au), state, cls;
     if (cat === "prospect") { state = "Prospect"; cls = "s-prospect"; }
@@ -125,7 +138,7 @@
     var optout = m.mailing_optout ? ' <span class="sub" title="Désabonné des emails">🚫</span>' : "";
     return "<tr>" +
       '<td class="selcol"><input type="checkbox" class="rowchk" data-sel="' + m.id + '"' + (selected[m.id] ? " checked" : "") + " /></td>" +
-      "<td><b>" + esc(who) + "</b>" + optout + "<br><span class=\"sub\">" + esc(m.email) + (m.telephone ? " · " + esc(m.telephone) : "") + "</span></td>" +
+      "<td><b>" + esc(who) + "</b>" + srcChip(m) + optout + "<br><span class=\"sub\">" + esc(m.email) + (m.telephone ? " · " + esc(m.telephone) : "") + "</span></td>" +
       "<td>" + esc(m.promo || "—") + "</td>" +
       "<td>" + esc(m.date_dernier_paiement || "—") + "</td>" +
       "<td>" + esc(au || "—") + "</td>" +
