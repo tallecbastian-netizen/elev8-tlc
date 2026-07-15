@@ -59,14 +59,23 @@ begin
 end;
 $$;
 
--- 6) ADMIN : réservé à l'admin CONNECTÉ. Chaque fonction vérifie l'identité.
---    👉 Mets ici le(s) même(s) e-mail(s) admin que dans js/auth-config.js.
+-- 6) ADMIN : réservé au(x) admin(s) CONNECTÉ(s).
+--    👉 UNE SEULE LISTE POUR TOUTE LA BASE : les mêmes adresses que
+--       ADMIN_EMAILS dans js/auth-config.js. Pour ajouter/retirer un admin,
+--       il n'y a QUE cette fonction à modifier (+ auth-config.js).
+create or replace function public.est_admin() returns boolean
+language sql stable security definer set search_path = public as $$
+  select coalesce(lower(auth.jwt() ->> 'email'), '') in (
+    'tallecbastian.pro@gmail.com',
+    'bastian@elev8-tlc.com'
+  );
+$$;
+grant execute on function public.est_admin() to authenticated, anon;
+
 create or replace function public.list_membres()
 returns setof public.membres language plpgsql security definer set search_path = public as $$
 begin
-  if coalesce(lower(auth.jwt() ->> 'email'), '') not in ('tallecbastian.pro@gmail.com') then
-    raise exception 'Accès refusé';
-  end if;
+  if not public.est_admin() then raise exception 'Accès refusé'; end if;
   return query select * from public.membres order by created_at desc;
 end;
 $$;
@@ -77,9 +86,7 @@ create or replace function public.membre_save(
 returns uuid language plpgsql security definer set search_path = public as $$
 declare v_id uuid;
 begin
-  if coalesce(lower(auth.jwt() ->> 'email'), '') not in ('tallecbastian.pro@gmail.com') then
-    raise exception 'Accès refusé';
-  end if;
+  if not public.est_admin() then raise exception 'Accès refusé'; end if;
   if p_id is null then
     insert into public.membres(nom, email, telephone, statut, date_dernier_paiement, promo, notes, source)
     values (p_nom, lower(p_email), p_tel, coalesce(p_statut,'prospect'), p_paiement, p_promo, p_notes, 'manuel')
@@ -98,9 +105,7 @@ $$;
 create or replace function public.membre_action(p_id uuid, p_action text)
 returns void language plpgsql security definer set search_path = public as $$
 begin
-  if coalesce(lower(auth.jwt() ->> 'email'), '') not in ('tallecbastian.pro@gmail.com') then
-    raise exception 'Accès refusé';
-  end if;
+  if not public.est_admin() then raise exception 'Accès refusé'; end if;
   if p_action = 'pay' then
     update public.membres set statut='membre', actif=true, date_dernier_paiement=current_date where id=p_id;
   elsif p_action = 'to_member' then

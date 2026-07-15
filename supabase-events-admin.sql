@@ -113,9 +113,7 @@ create or replace function public.list_inscriptions_events()
 returns table (email text, event_id uuid, event_nom text, created_at timestamptz)
 language plpgsql security definer set search_path = public as $$
 begin
-  if coalesce(lower(auth.jwt() ->> 'email'), '') not in ('tallecbastian.pro@gmail.com') then
-    raise exception 'Accès refusé';
-  end if;
+  if not public.est_admin() then raise exception 'Accès refusé'; end if;
   return query
     select i.email,
            i.event_id,

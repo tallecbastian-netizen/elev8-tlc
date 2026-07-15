@@ -35,9 +35,7 @@ create or replace function public.membre_save(
 returns uuid language plpgsql security definer set search_path = public as $$
 declare v_id uuid;
 begin
-  if coalesce(lower(auth.jwt() ->> 'email'), '') not in ('tallecbastian.pro@gmail.com') then
-    raise exception 'Accès refusé';
-  end if;
+  if not public.est_admin() then raise exception 'Accès refusé'; end if;
   if p_id is null then
     insert into public.membres(nom, prenom, email, telephone, statut, date_dernier_paiement, promo, notes, source)
     values (p_nom, p_prenom, lower(p_email), p_tel, coalesce(p_statut,'prospect'), p_paiement, p_promo, p_notes, 'manuel')

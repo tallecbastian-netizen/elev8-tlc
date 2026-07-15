@@ -277,9 +277,16 @@ CREATE TABLE IF NOT EXISTS events (
 ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "public_read_events"
   ON events FOR SELECT USING (true);
+
+-- Écriture réservée aux admins. est_admin() est LA liste d'admins de la
+-- base (définie dans supabase-setup.sql) : ne recopie jamais une adresse
+-- en dur ici, sinon la base et js/auth-config.js finissent par diverger.
+-- USING = quelles lignes je peux modifier ; WITH CHECK = ce que j'ai le
+-- droit d'insérer. Sans WITH CHECK, la création d'un event est refusée.
 CREATE POLICY "admin_write_events"
   ON events FOR ALL
-  USING (auth.jwt() ->> 'email' = 'tallecbastian.pro@gmail.com');</pre>
+  USING (public.est_admin())
+  WITH CHECK (public.est_admin());</pre>
           <button class="btn btn-gold btn-sm" style="margin-top:1rem" onclick="copySql(this)">
             📋 Copier le SQL
           </button>
