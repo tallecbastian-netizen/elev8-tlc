@@ -665,6 +665,29 @@
   function onScroll(){ if(header) header.classList.toggle('scrolled', window.scrollY > 8); }
   window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 
+  // Ancres internes : on scrolle en JS sans écrire le hash dans l'URL.
+  // Un hash présent fait re-scroller Chrome vers la cible à chaque changement
+  // de mise en page (images/iframe qui finissent de charger) : l'utilisateur
+  // est alors ramené en bas dès qu'il essaie de remonter.
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    if(!id) return;
+    a.addEventListener('click', function(e){
+      var cible = document.getElementById(id);
+      if(!cible) return;
+      e.preventDefault();
+      cible.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block:'start' });
+    });
+  });
+
+  // Si on arrive avec un hash (lien partagé, favori), on le retire une fois le
+  // saut initial effectué, pour la même raison.
+  if (location.hash) {
+    setTimeout(function(){
+      history.replaceState(null, '', location.pathname + location.search);
+    }, 1000);
+  }
+
   // Reveal au scroll
   var reveals = document.querySelectorAll('.reveal');
   if(reduce || !('IntersectionObserver' in window)){
