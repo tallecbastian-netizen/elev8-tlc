@@ -45,12 +45,21 @@ La vidéo est le héros absolu du premier écran. Un titre court, la VSL grande 
   **Sous-titre :** « Et elle ne commence jamais par l'argent. Elle commence par toi. »
 
   Le titre tue l'objection n°1 de la cible (le manque de temps), ancré dans la story 02 (DUT + école d'ingénieur sans temps libre, apprendre à optimiser chaque heure). Le sous-titre porte la vraie différence face aux coachs business, ancré dans la story 04 (« L'argent n'est jamais le point de départ »). Les deux phrases gardent la même mécanique — une négation puis une affirmation.
-- **Lecteur en façade** (remplace l'iframe nu) :
-  - la miniature YouTube s'affiche immédiatement (`https://img.youtube.com/vi/u7dvBvDFAkM/maxresdefault.jpg`) ;
-  - par-dessus : un bouton play proéminent aux couleurs de la marque, un badge « Regarder la vidéo » et la durée ;
-  - **au clic**, l'`<iframe>` est injecté avec `autoplay=1` et remplace la façade.
-  - Bénéfices : affichage instantané, affordance de lecture évidente, YouTube n'est chargé que pour ceux qui regardent.
-  - La façade doit être un vrai contrôle accessible : `<button>`, focus visible, `aria-label` explicite.
+- **Lecteur : démarrage automatique en muet, son au clic.**
+
+  Aucun navigateur n'autorise l'autoplay **avec le son** avant une interaction du visiteur (politique Chrome / Safari / Firefox). Le forcer ne donnerait pas du son : la lecture serait purement et simplement bloquée. Le seul démarrage automatique possible est muet.
+
+  - Au chargement, l'`<iframe>` démarre avec `autoplay=1&mute=1&playsinline=1` (`playsinline` est indispensable sur iOS).
+  - Par-dessus, un bouton **« 🔊 Activer le son — la vidéo repart du début »** couvre toute la vidéo : impossible à rater, et un clic n'importe où sur l'image suffit.
+  - **Au clic**, l'iframe est **remplacée** par une nouvelle avec `mute=0`. On passe par un remplacement plutôt que par l'API JS de YouTube : le clic étant une interaction utilisateur, le son est garanti sans blocage, et la vidéo repart de zéro — sinon le prospect a déjà raté l'accroche.
+  - **Deux exceptions** où rien ne démarre seul et où la miniature reste cliquable (le clic lance alors directement le son) :
+    - `prefers-reduced-motion: reduce` — une vidéo qui se lance seule est du mouvement non sollicité ;
+    - `navigator.connection.saveData` — on ne télécharge pas une VSL sans accord en mode économie de données.
+  - La façade doit rester un vrai contrôle accessible : `<button>`, focus visible, `aria-label` explicite.
+
+  **Compromis assumé :** l'autoplay impose de charger YouTube dès l'arrivée, ce qui coûte la vitesse d'affichage que la façade seule apportait. Arbitrage tranché en faveur de l'attention (une vidéo qui bouge capte) plutôt que de la performance pure.
+
+- **Aucune durée affichée** tant que la VSL définitive n'est pas en ligne. La vidéo actuellement intégrée (`u7dvBvDFAkM`) est un test de 1 min 41 intitulé « TEST » ; le montage final (`~/Desktop/VSL/edit/VSL_Elite90_v12.mp4`, 9 min 54) n'a jamais été publié. Afficher une durée reviendrait à annoncer un chiffre faux.
 - **CTA « Postuler »** juste sous la vidéo, conservant le style `.apply-btn` existant (lueur orbitale) et sa note « Quelques questions, 2 minutes — places limitées. »
 - Sur mobile, la vidéo **et** son bouton play doivent tenir au-dessus de la ligne de flottaison.
 

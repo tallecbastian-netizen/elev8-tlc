@@ -288,6 +288,45 @@
   }
   .screen .inner iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
 
+  /* Bouton « Activer le son » : posé sur la VSL qui tourne déjà en muet.
+     Il couvre toute la vidéo — le prospect ne peut pas le rater, et un clic
+     n'importe où sur l'image donne le son. */
+  .son-btn{
+    position:absolute; inset:0; z-index:3; width:100%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+    background:radial-gradient(circle at 50% 50%, rgba(4,20,15,.30) 0%, rgba(4,20,15,.62) 100%);
+    color:#fff; text-align:center; padding:16px;
+    transition:background .25s ease;
+  }
+  .son-btn:hover{ background:radial-gradient(circle at 50% 50%, rgba(4,20,15,.16) 0%, rgba(4,20,15,.5) 100%); }
+  .son-btn .son-ico{
+    font-size:clamp(1.6rem,4vw,2.2rem); line-height:1;
+    filter:drop-shadow(0 0 18px rgba(45,212,160,.8));
+    animation:sonPulse 2.2s ease-in-out infinite;
+  }
+  /* Le texte est posé sur une image de vidéo dont on ne maîtrise pas la
+     luminosité : sans ce fond, « la vidéo repart du début » devient illisible
+     dès que l'image est claire. */
+  .son-btn .son-txt{
+    font-family:var(--font-display); font-weight:800; text-transform:uppercase;
+    font-size:clamp(.82rem,2.2vw,1.05rem); letter-spacing:.08em; color:#fff;
+    padding:9px 20px; border-radius:50px; margin-top:4px;
+    background:rgba(6,10,9,.72); border:1px solid rgba(45,212,160,.45);
+    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+    box-shadow:0 8px 30px rgba(0,0,0,.5);
+  }
+  .son-btn .son-sub{
+    font-size:clamp(.62rem,1.5vw,.75rem); color:var(--em-lt); letter-spacing:.04em;
+    padding:3px 12px; border-radius:50px; background:rgba(6,10,9,.6);
+    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  }
+  .son-btn:hover .son-ico{ transform:scale(1.06); }
+  .son-btn:focus-visible{ outline:3px solid var(--em-lt); outline-offset:-4px; }
+  @keyframes sonPulse{
+    0%,100%{ transform:scale(1); filter:drop-shadow(0 0 12px rgba(45,212,160,.6)); }
+    50%    { transform:scale(1.12); filter:drop-shadow(0 0 26px rgba(45,212,160,1)); }
+  }
+
   /* façade : miniature + bouton play */
   .facade{
     position:absolute; inset:0; width:100%; height:100%;
@@ -911,20 +950,64 @@
   function onScroll(){ if(header) header.classList.toggle('scrolled', window.scrollY > 8); }
   window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 
-  // Façade VSL : la miniature est déjà là, l'iframe YouTube n'est chargée qu'au clic.
+  // ---------------------------------------------------------------------
+  // VSL : démarrage automatique en MUET, puis le son au clic.
+  //
+  // Aucun navigateur n'autorise l'autoplay AVEC le son tant que le visiteur
+  // n'a pas interagi avec la page (politique Chrome/Safari/Firefox). Le seul
+  // démarrage automatique possible est muet — d'où le bouton « Activer le son »
+  // par-dessus, qui recharge la vidéo AVEC le son : le clic étant une
+  // interaction, le navigateur ne bloque plus. On en profite pour repartir de
+  // zéro, sinon le prospect a déjà raté l'accroche.
+  //
+  // Deux cas où l'on NE démarre PAS tout seul, et où la miniature reste
+  // cliquable comme avant :
+  //   - prefers-reduced-motion : une vidéo qui se lance seule est du mouvement
+  //     non sollicité ;
+  //   - mode économie de données : on ne télécharge pas une VSL sans accord.
+  // ---------------------------------------------------------------------
+  var VID = 'u7dvBvDFAkM';
   var facade = document.getElementById('vsl-facade');
   var vslInner = document.getElementById('vsl-inner');
+  var saveData = !!(navigator.connection && navigator.connection.saveData);
+
+  function vslIframe(muet){
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube.com/embed/' + VID +
+            '?rel=0&modestbranding=1&playsinline=1&autoplay=1&mute=' + (muet ? '1' : '0');
+    f.title = 'Vidéo de présentation — Bastian Tallec';
+    f.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+    f.setAttribute('allowfullscreen', '');
+    return f;
+  }
+
+  function lireAvecSon(){
+    if (!vslInner) return;
+    vslInner.innerHTML = '';
+    var f = vslIframe(false);
+    vslInner.appendChild(f);
+    f.focus();
+  }
+
   if (facade && vslInner) {
-    facade.addEventListener('click', function(){
-      var f = document.createElement('iframe');
-      f.src = 'https://www.youtube.com/embed/u7dvBvDFAkM?rel=0&modestbranding=1&autoplay=1';
-      f.title = 'Vidéo de présentation — Bastian Tallec';
-      f.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-      f.setAttribute('allowfullscreen', '');
+    if (reduce || saveData) {
+      // Comportement classique : la miniature attend le clic, qui lance le son.
+      facade.addEventListener('click', lireAvecSon);
+    } else {
+      // Démarrage muet immédiat, sous un bouton « Activer le son ».
       vslInner.innerHTML = '';
-      vslInner.appendChild(f);
-      f.focus();
-    });
+      vslInner.appendChild(vslIframe(true));
+
+      var son = document.createElement('button');
+      son.type = 'button';
+      son.className = 'son-btn';
+      son.id = 'vsl-son';
+      son.innerHTML = '<span class="son-ico" aria-hidden="true">🔊</span>' +
+                      '<span class="son-txt">Activer le son</span>' +
+                      '<span class="son-sub">la vidéo repart du début</span>';
+      vslInner.appendChild(son);
+      son.addEventListener('click', lireAvecSon);
+    }
   }
 
   // Ancres internes : on scrolle en JS sans écrire le hash dans l'URL.
