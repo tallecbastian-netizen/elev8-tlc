@@ -112,6 +112,10 @@ input[type=checkbox]{accent-color:var(--gold);width:16px;height:16px;cursor:poin
       <button type="button" class="segbtn is-active" data-prov="all">Tous</button>
       <button type="button" class="segbtn" data-prov="site">🌐 Site</button>
       <button type="button" class="segbtn" data-prov="event">🎟️ Event</button>
+      <select id="filter-event" style="display:none;margin-left:auto"
+              title="N'afficher que les inscrits d'un event — puis « tout sélectionner » et « Email groupé »">
+        <option value="">🎟️ Tous les events</option>
+      </select>
     </div>
 
     <div class="stats" id="stats"></div>

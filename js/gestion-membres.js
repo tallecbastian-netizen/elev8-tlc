@@ -8,6 +8,9 @@
 ============================================================ */
 (function () {
   var sb = null, rows = [], q = "", filt = "all", editing = null;
+  // Inscriptions aux events : email (minuscule) -> [nom d'event, ...].
+  // Alimente la pastille sur chaque fiche et le filtre "Event" du mailing.
+  var evByEmail = {}, evNoms = [], evFilt = "";
   var selected = {};          // id -> true (sélection pour email/WhatsApp)
   var waList = [], waPos = 0;  // file d'ouverture WhatsApp
   var $ = function (id) { return document.getElementById(id); };
@@ -44,11 +47,50 @@
     var r = await sb.rpc("list_membres");
     if (r.error) { notice("Erreur de lecture : " + r.error.message + " — as-tu (re)lancé supabase-setup.sql sur CE projet ?"); rows = []; }
     else { notice(""); rows = r.data || []; }
+    await loadInscriptionsEvents();
     render();
+  }
+
+  // Deux lectures séparées, jointes par email côté client : on ne touche pas à
+  // list_membres() qui fonctionne déjà.
+  async function loadInscriptionsEvents() {
+    evByEmail = {}; evNoms = [];
+    var r = await sb.rpc("list_inscriptions_events");
+    if (r.error) {
+      // La table n'existe pas encore -> l'admin reste utilisable sans les events.
+      evFilt = "";
+      return;
+    }
+    var noms = {};
+    (r.data || []).forEach(function (i) {
+      var mail = (i.email || "").toLowerCase();
+      if (!mail || !i.event_nom) return;
+      if (!evByEmail[mail]) evByEmail[mail] = [];
+      if (evByEmail[mail].indexOf(i.event_nom) < 0) evByEmail[mail].push(i.event_nom);
+      noms[i.event_nom] = true;
+    });
+    evNoms = Object.keys(noms).sort();
+    // Un event filtré qui n'a plus d'inscrit : on retombe sur "tous".
+    if (evFilt && evNoms.indexOf(evFilt) < 0) evFilt = "";
+    fillEvSelect();
+  }
+
+  function eventsOf(m) { return evByEmail[(m.email || "").toLowerCase()] || []; }
+
+  function fillEvSelect() {
+    var sel = $("filter-event");
+    if (!sel) return;
+    sel.innerHTML = '<option value="">🎟️ Tous les events</option>' +
+      evNoms.map(function (n) {
+        return '<option value="' + esc(n) + '"' + (n === evFilt ? " selected" : "") + ">" + esc(n) + "</option>";
+      }).join("");
+    sel.style.display = evNoms.length ? "" : "none";
   }
 
   function matches(m) {
     if (q && (((((m.prenom || "") + " " + (m.nom || "") + " " + (m.email || "") + " " + (m.promo || "")).toLowerCase()).indexOf(q)) < 0)) return false;
+    // Filtre event : se combine avec les autres (ex. Event "Lyon" + Prospects).
+    if (evFilt && eventsOf(m).indexOf(evFilt) < 0) return false;
     var cat = category(m), dl = daysLeft(accessUntil(m));
     switch (filt) {
       case "site": return (m.source !== "event");
@@ -115,6 +157,16 @@
       label + "</span>";
   }
 
+  // Les events auxquels la personne s'est inscrite. Une pastille par event :
+  // quelqu'un peut être inscrit à Montpellier ET à Lyon.
+  function evChips(m) {
+    return eventsOf(m).map(function (n) {
+      return ' <span title="Inscrit à : ' + esc(n) + '" style="background:rgba(24,227,158,.10);color:#18e39e;' +
+        'border:1px solid rgba(24,227,158,.28);font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;' +
+        'white-space:nowrap;vertical-align:middle;display:inline-block">🎟️ ' + esc(n) + "</span>";
+    }).join("");
+  }
+
   function rowHtml(m) {
     var cat = category(m), au = accessUntil(m), dl = daysLeft(au), state, cls;
     if (cat === "prospect") { state = "Prospect"; cls = "s-prospect"; }
@@ -138,7 +190,7 @@
     var optout = m.mailing_optout ? ' <span class="sub" title="Désabonné des emails">🚫</span>' : "";
     return "<tr>" +
       '<td class="selcol"><input type="checkbox" class="rowchk" data-sel="' + m.id + '"' + (selected[m.id] ? " checked" : "") + " /></td>" +
-      "<td><b>" + esc(who) + "</b>" + srcChip(m) + optout + "<br><span class=\"sub\">" + esc(m.email) + (m.telephone ? " · " + esc(m.telephone) : "") + "</span></td>" +
+      "<td><b>" + esc(who) + "</b>" + srcChip(m) + evChips(m) + optout + "<br><span class=\"sub\">" + esc(m.email) + (m.telephone ? " · " + esc(m.telephone) : "") + "</span></td>" +
       "<td>" + esc(m.promo || "—") + "</td>" +
       "<td>" + esc(m.date_dernier_paiement || "—") + "</td>" +
       "<td>" + esc(au || "—") + "</td>" +
@@ -173,6 +225,8 @@
   function bind() {
     $("search").addEventListener("input", function (e) { q = (e.target.value || "").toLowerCase().trim(); render(); });
     $("filter").addEventListener("change", function (e) { setFilter(e.target.value); });
+    // Filtre event -> le tableau ne garde que ses inscrits, prêts pour l'email groupé.
+    $("filter-event").addEventListener("change", function (e) { evFilt = e.target.value || ""; render(); });
     var provBtns = document.querySelectorAll(".segbtn[data-prov]");
     for (var i = 0; i < provBtns.length; i++) {
       provBtns[i].addEventListener("click", function () { setFilter(this.getAttribute("data-prov")); });
@@ -331,9 +385,13 @@
   }
 
   function exportCsv() {
-    var head = ["prenom", "nom", "email", "telephone", "statut", "promo", "date_dernier_paiement", "actif", "notes", "source", "mailing_optout"];
-    var lines = [head.join(",")].concat(rows.map(function (m) {
-      return head.map(function (k) { return '"' + String(m[k] == null ? "" : m[k]).replace(/"/g, '""') + '"'; }).join(",");
+    var head = ["prenom", "nom", "email", "telephone", "statut", "promo", "date_dernier_paiement", "actif", "notes", "source", "mailing_optout", "events"];
+    // On exporte ce qui est affiché : si un filtre event est actif, le CSV le suit.
+    var lines = [head.join(",")].concat(rows.filter(matches).map(function (m) {
+      return head.map(function (k) {
+        var v = (k === "events") ? eventsOf(m).join(" | ") : m[k];
+        return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
+      }).join(",");
     }));
     var blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
     var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "membres-tlc.csv"; a.click();

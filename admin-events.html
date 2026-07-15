@@ -351,12 +351,48 @@ CREATE POLICY "admin_write_events"
           <input type="url" id="f-brevo" placeholder="https://2fabf66e.sibforms.com/serve/…">
           <span class="hint">L'URL complète de ton formulaire hébergé Brevo / Sendinblue</span>
         </div>
+
+        <div class="form-field span2" style="border-top:1px solid var(--border);padding-top:1.25rem;margin-top:.25rem">
+          <div style="font-family:var(--font-display);font-weight:700;font-size:1rem;margin-bottom:.35rem">
+            🎟️ Page pub (elev8-event)
+          </div>
+          <span class="hint">
+            À remplir seulement si tu lances une campagne pub sur une ville.
+            Ces champs pilotent la page <strong>elev8-event.vercel.app</strong> —
+            tu n'as jamais besoin de toucher au code.
+          </span>
+        </div>
+        <div class="form-field">
+          <label for="f-ville">Ville</label>
+          <input type="text" id="f-ville" placeholder="Montpellier" maxlength="60">
+          <span class="hint">Affichée en grand sur la page pub. C'est aussi le nom que tu retrouves dans Gestion des membres pour ton mailing.</span>
+        </div>
+        <div class="form-field">
+          <label for="f-slug">Lien court</label>
+          <input type="text" id="f-slug" placeholder="montpellier" maxlength="40">
+          <span class="hint">Uniquement des lettres minuscules et des tirets. Donne l'adresse de la pub.</span>
+        </div>
+        <div class="form-field span2">
+          <label for="f-accroche">Accroche</label>
+          <input type="text" id="f-accroche" placeholder="Une semaine · Centre-ville de Montpellier" maxlength="120">
+          <span class="hint">La petite ligne au-dessus du titre, sur la page pub.</span>
+        </div>
+        <div class="form-field span2" id="lien-pub-row" style="display:none">
+          <label>Lien à mettre dans ta pub</label>
+          <div style="display:flex;gap:.5rem;align-items:center">
+            <input type="text" id="f-lien-pub" readonly
+                   style="flex:1;font-family:ui-monospace,monospace;font-size:.85rem">
+            <button type="button" class="btn btn-gold btn-sm" onclick="copierLienPub(this)">📋 Copier</button>
+          </div>
+          <span class="hint">Colle ce lien dans ta campagne Meta. Chaque ville a le sien : plusieurs pubs peuvent tourner en même temps.</span>
+        </div>
+
         <div class="form-field span2">
           <div class="toggle-row">
             <div class="toggle" id="f-actif-toggle" onclick="toggleActif()" role="switch" aria-checked="false" tabindex="0" onkeydown="if(event.key===' ')toggleActif()"></div>
-            <label class="toggle-label" for="f-actif-toggle">Événement actif (affiché sur la page publique)</label>
+            <label class="toggle-label" for="f-actif-toggle">Événement en ligne</label>
           </div>
-          <span class="hint" style="padding-left:calc(44px + .75rem)">Un seul événement actif à la fois est recommandé.</span>
+          <span class="hint" style="padding-left:calc(44px + .75rem)">Tu peux en avoir plusieurs en ligne en même temps (une pub par ville). Le site elev8-tlc, lui, affiche toujours le prochain à venir.</span>
         </div>
       </div>
       <div class="form-error" id="form-error"></div>
@@ -441,6 +477,14 @@ async function doLogin() {
 
 $('auth-email').addEventListener('keydown', e => { if (e.key === 'Enter') $('auth-pwd').focus(); });
 $('auth-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+// Le lien de la pub se met à jour en direct pendant la frappe.
+$('f-slug').addEventListener('input', majLienPub);
+// Ville saisie sans lien court -> on en propose un, que Bastian peut écraser.
+$('f-ville').addEventListener('input', () => {
+  if (!$('f-slug').dataset.touched) { $('f-slug').value = nettoieSlug($('f-ville').value); majLienPub(); }
+});
+$('f-slug').addEventListener('input', () => { $('f-slug').dataset.touched = '1'; });
 
 async function doLogout() {
   if (sb) await sb.auth.signOut();
@@ -538,7 +582,14 @@ async function deleteEvent(id) {
     await loadEvents();
     toast('🗑️ Événement supprimé');
   } catch(err) {
-    toast('Erreur : ' + err.message, 'err');
+    // 23503 = la base refuse : des inscrits sont rattachés à cet event.
+    // Garde-fou volontaire — sans lui, la suppression emporterait les inscrits
+    // et donc la segmentation du mailing.
+    if (err.code === '23503') {
+      toast('Suppression refusée : des inscrits sont rattachés à cet événement. Mets-le hors ligne au lieu de le supprimer.', 'err');
+    } else {
+      toast('Erreur : ' + err.message, 'err');
+    }
   }
 }
 
@@ -554,6 +605,11 @@ function openCreate() {
   $('f-image').value = '';
   $('f-desc').value = '';
   $('f-brevo').value = '';
+  $('f-ville').value = '';
+  $('f-slug').value = '';
+  $('f-accroche').value = '';
+  delete $('f-slug').dataset.touched;   // nouvel event : le lien court suit la ville
+  majLienPub();
   $('form-error').textContent = '';
   actifVal = false;
   updateToggleUI();
@@ -579,6 +635,13 @@ function openEdit(id) {
   $('f-image').value = ev.image_url || '';
   $('f-desc').value = ev.description || '';
   $('f-brevo').value = ev.brevo_form_url || '';
+  $('f-ville').value = ev.ville || '';
+  $('f-slug').value = ev.slug || '';
+  $('f-accroche').value = ev.accroche || '';
+  // Event existant : son lien court est peut-être déjà dans une pub qui tourne.
+  // On ne le réécrit jamais tout seul en modifiant la ville.
+  $('f-slug').dataset.touched = '1';
+  majLienPub();
   $('form-error').textContent = '';
   actifVal = !!ev.actif;
   updateToggleUI();
@@ -588,6 +651,36 @@ function openEdit(id) {
 
 function closeModal() { $('modal-overlay').classList.remove('open'); }
 function closeModalOnOverlay(e) { if (e.target === $('modal-overlay')) closeModal(); }
+
+// ── Page pub : lien court -> adresse à coller dans la campagne Meta ──
+const URL_PAGE_PUB = 'https://elev8-event.vercel.app';
+
+// Le lien court finit dans une URL : on n'accepte que du minuscule/tirets.
+function nettoieSlug(v) {
+  return (v || '').toLowerCase().trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')  // "Montpéllier" -> "montpellier"
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function majLienPub() {
+  const slug = nettoieSlug($('f-slug').value);
+  const row = $('lien-pub-row');
+  if (!slug) { row.style.display = 'none'; return; }
+  $('f-lien-pub').value = `${URL_PAGE_PUB}/?e=${slug}`;
+  row.style.display = '';
+}
+
+async function copierLienPub(btn) {
+  try {
+    await navigator.clipboard.writeText($('f-lien-pub').value);
+    const t = btn.textContent;
+    btn.textContent = '✅ Copié';
+    setTimeout(() => { btn.textContent = t; }, 1500);
+  } catch (e) {
+    $('f-lien-pub').select();   // repli : la sélection permet un Cmd+C manuel
+  }
+}
 
 function toggleActif() {
   actifVal = !actifVal;
@@ -606,27 +699,32 @@ async function saveEvent() {
   if (!titre) { $('form-error').textContent = 'Le titre est requis.'; return; }
   if (!date_event) { $('form-error').textContent = 'La date est requise.'; return; }
 
+  // Le lien court n'est pas obligatoire (un event peut n'exister que sur le site),
+  // mais s'il y en a un il finit dans une URL de pub : on le nettoie avant d'écrire.
+  const slug = nettoieSlug($('f-slug').value);
+  const ville = $('f-ville').value.trim();
+  if (ville && !slug) {
+    $('form-error').textContent = 'Ajoute un lien court : c\'est lui qui donne l\'adresse de la pub.';
+    return;
+  }
+
   const payload = {
     titre,
     date_event: new Date(date_event).toISOString(),
     description: $('f-desc').value.trim() || null,
     image_url: $('f-image').value.trim() || null,
     brevo_form_url: $('f-brevo').value.trim() || null,
+    ville: ville || null,
+    slug: slug || null,
+    accroche: $('f-accroche').value.trim() || null,
     actif: actifVal,
   };
 
+  // Plusieurs events peuvent être en ligne en même temps (une pub par ville).
+  // On ne désactive donc plus les autres à l'activation de celui-ci.
+
   setLoading('save-btn', true);
   try {
-    if (actifVal) {
-      // Désactive les autres si on active celui-ci
-      const existingId = $('f-id').value;
-      if (existingId) {
-        await sb.from('events').update({ actif: false }).neq('id', existingId);
-      } else {
-        await sb.from('events').update({ actif: false });
-      }
-    }
-
     let err;
     const id = $('f-id').value;
     if (id) {
@@ -640,7 +738,16 @@ async function saveEvent() {
     await loadEvents();
     toast(id ? '✅ Événement mis à jour' : '✅ Événement créé');
   } catch(err) {
-    $('form-error').textContent = err.message || 'Erreur lors de la sauvegarde.';
+    // 23505 = doublon. Le seul doublon possible ici est le lien court (index unique).
+    if (err.code === '23505') {
+      $('form-error').textContent =
+        `Le lien court « ${slug} » est déjà utilisé par un autre événement. Choisis-en un autre.`;
+    } else if (/column .*(slug|ville|accroche)/i.test(err.message || '')) {
+      $('form-error').textContent =
+        'La base n\'est pas à jour : lance supabase-events-admin.sql dans Supabase.';
+    } else {
+      $('form-error').textContent = err.message || 'Erreur lors de la sauvegarde.';
+    }
   } finally {
     setLoading('save-btn', false, 'Enregistrer');
   }
