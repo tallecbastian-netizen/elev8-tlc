@@ -41,8 +41,10 @@ La vidéo est le héros absolu du premier écran. Un titre court, la VSL grande 
 
 ### 3. Premier écran — la VSL
 
-- **Titre (`<h1>`) :** « Construis ton deuxième pilier de revenu en 90 jours. Sans quitter ton job. »
-  Ancré dans la story 01 du site (« un deuxième pilier de revenu, à côté de leur travail »).
+- **Titre (`<h1>`) :** « Tu n'as pas besoin de plus de temps. Tu as besoin d'une méthode. »
+  **Sous-titre :** « Et elle ne commence jamais par l'argent. Elle commence par toi. »
+
+  Le titre tue l'objection n°1 de la cible (le manque de temps), ancré dans la story 02 (DUT + école d'ingénieur sans temps libre, apprendre à optimiser chaque heure). Le sous-titre porte la vraie différence face aux coachs business, ancré dans la story 04 (« L'argent n'est jamais le point de départ »). Les deux phrases gardent la même mécanique — une négation puis une affirmation.
 - **Lecteur en façade** (remplace l'iframe nu) :
   - la miniature YouTube s'affiche immédiatement (`https://img.youtube.com/vi/u7dvBvDFAkM/maxresdefault.jpg`) ;
   - par-dessus : un bouton play proéminent aux couleurs de la marque, un badge « Regarder la vidéo » et la durée ;
