@@ -397,9 +397,13 @@ CREATE POLICY "admin_write_events"
         <div class="form-field span2">
           <div class="toggle-row">
             <div class="toggle" id="f-actif-toggle" onclick="toggleActif()" role="switch" aria-checked="false" tabindex="0" onkeydown="if(event.key===' ')toggleActif()"></div>
-            <label class="toggle-label" for="f-actif-toggle">Événement en ligne</label>
+            <label class="toggle-label" for="f-actif-toggle">Afficher sur le site elev8-tlc</label>
           </div>
-          <span class="hint" style="padding-left:calc(44px + .75rem)">Tu peux en avoir plusieurs en ligne en même temps (une pub par ville). Le site elev8-tlc, lui, affiche toujours le prochain à venir.</span>
+          <span class="hint" style="padding-left:calc(44px + .75rem)">
+            Ne concerne que la page Événements du site, qui affiche le prochain event actif à venir.
+            <strong>Sans effet sur la page pub</strong> : son lien <code>?e=…</code> fonctionne dans tous les cas —
+            c'est ta campagne Meta qui l'allume ou l'éteint. Tu peux en cocher plusieurs.
+          </span>
         </div>
       </div>
       <div class="form-error" id="form-error"></div>
