@@ -74,7 +74,11 @@
   }
 
   /* ---------- Aurora background ---------- */
-  .aurora{ position:relative; min-height:100vh; overflow:hidden; isolation:isolate; }
+  /* overflow:clip et pas hidden — hidden ferait de .aurora un conteneur
+     scrollable : un clic sur une ancre y ferait défiler le contenu de
+     l'intérieur (sans barre pour revenir), rendant la VSL inaccessible.
+     clip rogne pareil mais n'autorise aucun défilement. */
+  .aurora{ position:relative; min-height:100vh; overflow:hidden; overflow:clip; isolation:isolate; }
   .aurora::before{
     content:""; position:absolute; inset:0; z-index:-2; pointer-events:none;
     background:
