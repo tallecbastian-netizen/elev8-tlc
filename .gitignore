@@ -11,3 +11,7 @@ desktop.ini
 
 # Journal de publication
 publish-log.txt
+
+.superpowers/
+variante-*.html
+variantes.html
